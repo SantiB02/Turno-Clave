@@ -14,7 +14,7 @@ export default function IniciarPruebaGratuita() {
             de crédito.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 max-w-7xl mx-auto gap-12 items-start">
+        <div className="grid md:grid-cols-2 max-w-7xl mx-auto gap-12 items-start mb-16">
           <div className="flex items-center">
             <Image
               width={600}
@@ -30,7 +30,9 @@ export default function IniciarPruebaGratuita() {
             </h3>
             <ul className="space-y-6">
               <li className="flex items-start gap-4">
-                <span className="text-orange-500 text-2xl mt-1">✓</span>
+                <span className="text-primary-orange font-bold text-2xl mt-1">
+                  ✓
+                </span>
                 <div>
                   <h4 className="font-bold text-gray-900 mb-1">
                     Acceso Completo a Funcionalidades
@@ -42,7 +44,9 @@ export default function IniciarPruebaGratuita() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-orange-500 text-2xl mt-1">✓</span>
+                <span className="text-primary-orange font-bold text-2xl mt-1">
+                  ✓
+                </span>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">
                     Gestión de Turnos Simplificada
@@ -54,7 +58,9 @@ export default function IniciarPruebaGratuita() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-orange-500 text-2xl mt-1">✓</span>
+                <span className="text-primary-orange font-bold text-2xl mt-1">
+                  ✓
+                </span>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">
                     Recordatorios Automáticos
@@ -66,7 +72,9 @@ export default function IniciarPruebaGratuita() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-orange-500 text-2xl mt-1">✓</span>
+                <span className="text-primary-orange font-bold text-2xl mt-1">
+                  ✓
+                </span>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">
                     Integración Perfecta
@@ -78,7 +86,9 @@ export default function IniciarPruebaGratuita() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-orange-500 text-2xl mt-1">✓</span>
+                <span className="text-primary-orange font-bold text-2xl mt-1">
+                  ✓
+                </span>
                 <div>
                   <h3 className="font-bold text-gray-900 mb-1">Soporte 24/7</h3>
                   <p className="text-gray-600">

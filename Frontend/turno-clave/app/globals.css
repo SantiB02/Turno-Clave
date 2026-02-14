@@ -3,15 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
-  --primary-orange: #FF8C42;
+  --primary-orange: #FD6100;
+  --secondary-orange: #FF8D00;
+  --dark-blue: #1A202C;
   --light-blue: #E3F2FD;
   --blue-accent: #0D9FFF;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary-orange);
+  --color-primary-orange: var(--primary-orange);
+  --color-secondary-orange: var(--secondary-orange);
+  --color-dark-blue: var(--dark-blue);
   --color-blue: var(--blue-accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);

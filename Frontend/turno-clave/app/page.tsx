@@ -9,8 +9,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Administra tus turnos con{" "}
-                <span className="text-orange-500">Turno Clave</span>
+                Administra tus turnos con Turno{" "}
+                <span className="text-primary-orange">Clave</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                 La poderosa plataforma de gestión de turnos diseñada para
@@ -19,11 +19,11 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/iniciar-prueba-gratuita"
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg transition text-lg"
+                  className="bg-primary-orange hover:bg-primary-orange/80 text-white text-center font-semibold px-8 py-3 rounded-lg transition text-lg"
                 >
                   Iniciar Prueba Gratuita
                 </Link>
-                <button className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 font-semibold px-8 py-3 rounded-lg transition text-lg">
+                <button className="border-2 border-primary-orange text-primary-orange hover:bg-primary-orange/10 font-semibold px-8 py-3 rounded-lg transition text-lg">
                   Ver Demo
                 </button>
               </div>
@@ -120,7 +120,7 @@ export default function Home() {
       <section id="benefits" className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="bg-orange-500 bg-opacity-10 rounded-2xl h-96 flex items-center justify-center">
+            <div className="bg-primary-orange/10 rounded-2xl h-96 flex items-center justify-center">
               <div className="text-center text-gray-400">
                 <svg
                   className="w-24 h-24 mx-auto mb-4 opacity-50"
@@ -140,11 +140,14 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-8">
-                ¿Por qué elegir Turno Clave?
+                ¿Por qué elegir Turno{" "}
+                <span className="text-primary-orange">Clave</span>?
               </h2>
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">
-                  <span className="text-orange-500 text-2xl mt-1">✓</span>
+                  <span className="text-primary-orange font-bold text-2xl mt-1">
+                    ✓
+                  </span>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">
                       Ahorra Tiempo
@@ -156,7 +159,9 @@ export default function Home() {
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <span className="text-orange-500 text-2xl mt-1">✓</span>
+                  <span className="text-primary-orange font-bold text-2xl mt-1">
+                    ✓
+                  </span>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">
                       Reduce Ausencias
@@ -168,7 +173,9 @@ export default function Home() {
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <span className="text-orange-500 text-2xl mt-1">✓</span>
+                  <span className="text-primary-orange font-bold text-2xl mt-1">
+                    ✓
+                  </span>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">
                       Integración Perfecta
@@ -180,7 +187,9 @@ export default function Home() {
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <span className="text-orange-500 text-2xl mt-1">✓</span>
+                  <span className="text-primary-orange font-bold text-2xl mt-1">
+                    ✓
+                  </span>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">
                       Soporte 24/7
@@ -198,7 +207,9 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-orange-500 to-orange-600">
+      {/*a section se le puede agregar bg-gradient-to-r from-primary-orange to-primary-orange/80 para que tenga gradiente, pero se ve un poco raro*/}
+
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-primary-orange">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             ¿Listo para transformar la gestión de tus turnos?
@@ -207,7 +218,7 @@ export default function Home() {
             Sumate a cientos de negocios que ya están optimizando su tiempo con
             Turno Clave.
           </p>
-          <button className="bg-white text-orange-500 hover:bg-gray-50 font-bold px-10 py-4 rounded-lg transition text-lg">
+          <button className="bg-white text-primary-orange hover:bg-gray-50 font-bold px-10 py-4 rounded-lg transition text-lg">
             Empezá tu prueba gratuita de 14 días
           </button>
         </div>

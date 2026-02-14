@@ -1,7 +1,6 @@
-import { ClockIcon } from "@heroicons/react/24/outline"
 import { Lexend_Deca } from "next/font/google"
+import Image from "next/image"
 import Link from "next/link"
-import React from "react"
 
 const lexendDeca = Lexend_Deca({
   weight: ["400"],
@@ -15,16 +14,21 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
-            className={`${lexendDeca.className} flex items-center text-2xl font-bold text-gray-900"`}
+            className="flex items-center text-2xl font-bold text-gray-900"
           >
-            <ClockIcon className="w-7 h-7 text-orange-500" />
-            Turno <span className="text-orange-500">Clave</span>
+            <Image
+              src="/header-logo-300x100.png"
+              alt="Turno Clave Logo"
+              width={150}
+              height={150}
+              className="mr-2"
+            />
           </Link>
 
           <div className="hidden md:flex gap-8">
             <a
               href="#features"
-              className="text-gray-700 hover:text-orange-500 transition"
+              className="text-gray-700 hover:text-primary-orange transition"
             >
               Funcionalidades
             </a>
@@ -37,7 +41,7 @@ export default function Header() {
           </div>
           <button
             type="button"
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition"
+            className="bg-primary-orange hover:bg-primary-orange/80 text-white px-6 py-2 rounded-lg transition"
           >
             Empezar
           </button>
