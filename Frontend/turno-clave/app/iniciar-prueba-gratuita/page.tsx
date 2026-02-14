@@ -14,12 +14,14 @@ export default function IniciarPruebaGratuita() {
             de crédito.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-12">
-          <div>
+        <div className="grid md:grid-cols-2 max-w-7xl mx-auto gap-12 items-start">
+          <div className="flex items-center">
             <Image
+              width={600}
+              height={600}
               src="/demo-screenshot.png"
               alt="Demo Screenshot"
-              className="rounded-lg shadow-lg"
+              className="w-full mt-1 h-auto rounded-lg "
             />
           </div>
           <div>

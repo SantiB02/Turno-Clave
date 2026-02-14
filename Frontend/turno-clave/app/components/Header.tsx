@@ -1,19 +1,26 @@
+import { ClockIcon } from "@heroicons/react/24/outline"
+import { Lexend_Deca } from "next/font/google"
 import Link from "next/link"
 import React from "react"
+
+const lexendDeca = Lexend_Deca({
+  weight: ["400"],
+  subsets: ["latin"],
+})
 
 export default function Header() {
   return (
     <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">T</span>
-            </div>
-            <Link href="/" className="text-2xl font-bold text-gray-900">
-              Turno Clave
-            </Link>
-          </div>
+          <Link
+            href="/"
+            className={`${lexendDeca.className} flex items-center text-2xl font-bold text-gray-900"`}
+          >
+            <ClockIcon className="w-7 h-7 text-orange-500" />
+            Turno <span className="text-orange-500">Clave</span>
+          </Link>
+
           <div className="hidden md:flex gap-8">
             <a
               href="#features"

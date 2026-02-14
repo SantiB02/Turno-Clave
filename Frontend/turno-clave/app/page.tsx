@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Home() {
   return (
     <div className="pt-32">
@@ -15,9 +17,12 @@ export default function Home() {
                 negocios. Agenda, organiza y optimiza tus reservas sin esfuerzo.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg transition text-lg">
+                <Link
+                  href="/iniciar-prueba-gratuita"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-lg transition text-lg"
+                >
                   Iniciar Prueba Gratuita
-                </button>
+                </Link>
                 <button className="border-2 border-orange-500 text-orange-500 hover:bg-orange-50 font-semibold px-8 py-3 rounded-lg transition text-lg">
                   Ver Demo
                 </button>
