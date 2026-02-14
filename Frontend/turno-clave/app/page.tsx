@@ -23,19 +23,24 @@ export default function Home() {
                 >
                   Iniciar Prueba Gratuita
                 </Link>
-                <button className="border-2 border-primary-orange text-primary-orange hover:bg-primary-orange/10 font-semibold px-8 py-3 rounded-lg transition text-lg">
+                <Link
+                  href="/demo"
+                  className="border-2 border-primary-orange text-primary-orange hover:bg-primary-orange/10 font-semibold px-8 py-3 rounded-lg transition text-lg"
+                >
                   Ver Demo
-                </button>
+                </Link>
               </div>
             </div>
             <div className="bg-blue-50 rounded-2xl h-96 flex items-center justify-center">
               <div className="text-center text-gray-400">
                 <svg
+                  type="image"
                   className="w-24 h-24 mx-auto mb-4 opacity-50"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
+                  <title>Calendario de turnos visual</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -65,44 +70,50 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
+                id: 1,
                 icon: "📅",
                 title: "Agendamiento Inteligente",
                 description:
                   "Interfaz intuitiva para programar, reprogramar y cancelar turnos fácilmente",
               },
               {
+                id: 2,
                 icon: "🔔",
                 title: "Recordatorios Automáticos",
                 description:
                   "Notificaciones automáticas para reducir ausencias y mantener a tus clientes informados",
               },
               {
+                id: 3,
                 icon: "👥",
                 title: "Soporte Multiusuario",
                 description:
                   "Colaboración en equipo con roles y permisos personalizados",
               },
               {
+                id: 4,
                 icon: "📱",
                 title: "Compatibilidad Móvil",
                 description:
                   "Administra tus turnos desde cualquier lugar con nuestra interfaz móvil optimizada",
               },
               {
+                id: 5,
                 icon: "⚙️",
                 title: "Ajustes Personalizables",
                 description:
                   "Configura tus preferencias de negocio para adaptarse a tus necesidades específicas",
               },
               {
+                id: 6,
                 icon: "📊",
                 title: "Reportes y Análisis",
                 description:
                   "Rastrea el rendimiento de tu negocio con reportes detallados y análisis de datos",
               },
-            ].map((feature, idx) => (
+            ].map((feature) => (
               <div
-                key={idx}
+                key={feature.id}
                 className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition"
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
@@ -128,6 +139,7 @@ export default function Home() {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
+                  <title>Potenciar Eficiencia</title>
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -218,9 +230,12 @@ export default function Home() {
             Sumate a cientos de negocios que ya están optimizando su tiempo con
             Turno Clave.
           </p>
-          <button className="bg-white text-primary-orange hover:bg-gray-50 font-bold px-10 py-4 rounded-lg transition text-lg">
+          <Link
+            href="/iniciar-prueba-gratuita"
+            className="bg-white text-primary-orange hover:bg-gray-50 font-bold px-10 py-4 rounded-lg transition text-lg"
+          >
             Empezá tu prueba gratuita de 14 días
-          </button>
+          </Link>
         </div>
       </section>
     </div>

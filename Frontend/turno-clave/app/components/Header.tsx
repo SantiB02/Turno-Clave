@@ -1,11 +1,5 @@
-import { Lexend_Deca } from "next/font/google"
 import Image from "next/image"
 import Link from "next/link"
-
-const lexendDeca = Lexend_Deca({
-  weight: ["400"],
-  subsets: ["latin"],
-})
 
 export default function Header() {
   return (

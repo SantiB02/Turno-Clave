@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-import React from "react"
 
 export default function Footer() {
   return (
@@ -30,17 +29,17 @@ export default function Footer() {
             <h4 className="font-bold mb-4">Producto</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Funcionalidades
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Precios
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Demo
                 </a>
               </li>
@@ -50,17 +49,17 @@ export default function Footer() {
             <h4 className="font-bold mb-4">Nosotros</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Acerca de
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Blog
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Contacto
                 </a>
               </li>
@@ -70,17 +69,17 @@ export default function Footer() {
             <h4 className="font-bold mb-4">Legal</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Privacidad
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Términos de Servicio
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-secondary-orange transition">
+                <a href="/" className="hover:text-secondary-orange transition">
                   Seguridad
                 </a>
               </li>

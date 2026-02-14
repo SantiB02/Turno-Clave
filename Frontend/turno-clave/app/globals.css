@@ -3,11 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a1a;
-  --primary-orange: #FD6100;
-  --secondary-orange: #FF8D00;
-  --dark-blue: #1A202C;
-  --light-blue: #E3F2FD;
-  --blue-accent: #0D9FFF;
+  --primary-orange: #fd6100;
+  --secondary-orange: #ff8d00;
+  --dark-blue: #1a202c;
+  --light-blue: #e3f2fd;
+  --blue-accent: #0d9fff;
 }
 
 @theme {
