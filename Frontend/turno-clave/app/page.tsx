@@ -25,7 +25,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="/demo"
-                  className="border-2 border-primary-orange text-primary-orange hover:bg-primary-orange/10 font-semibold px-8 py-3 rounded-lg transition text-lg"
+                  className="border-2 border-primary-orange text-primary-orange text-center hover:bg-primary-orange/10 font-semibold px-8 py-3 rounded-lg transition text-lg"
                 >
                   Ver Demo
                 </Link>
