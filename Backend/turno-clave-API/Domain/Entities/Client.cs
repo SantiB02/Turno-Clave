@@ -13,6 +13,8 @@
         public string? Notes { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
-        // Navigation properties
+
+        // Navigation
+        public ICollection<Appointment> Appointments { get; set; } = [];
     }
 }

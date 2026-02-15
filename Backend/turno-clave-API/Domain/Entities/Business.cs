@@ -17,7 +17,12 @@
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-        // Navigation properties
-
+        // Navigation
+        public ICollection<User> Users { get; set; } = [];
+        public ICollection<Service> Services { get; set; } = [];
+        public ICollection<Client> Clients { get; set; } = [];
+        public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<Availability> Availabilities { get; set; } = [];
+         public ICollection<AvailabilityException> AvailabilityExceptions { get; set; } = [];
     }
 }
