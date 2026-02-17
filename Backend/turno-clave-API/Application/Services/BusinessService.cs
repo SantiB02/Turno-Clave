@@ -2,6 +2,7 @@
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace turno_clave_API.Application.Services
 {
@@ -30,6 +31,12 @@ namespace turno_clave_API.Application.Services
             _context.Businesses.Add(business);
             await _context.SaveChangesAsync();
 
+            return business;
+        }
+
+        public async Task<Business?> GetByExternalId(Guid externalId)
+        {
+            Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
             return business;
         }
     }
