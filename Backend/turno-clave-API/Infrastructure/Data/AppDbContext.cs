@@ -19,6 +19,7 @@ namespace turno_clave_API.Infrastructure.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<AvailabilityException> AvailabilityExceptions { get; set; }
+        public DbSet<Professional> Professionals { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

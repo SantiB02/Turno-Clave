@@ -9,5 +9,7 @@
 
         public required string Name { get; set; }
         public bool IsActive { get; set; } = true;
+
+        public ICollection<Appointment> Appointments { get; set; } = [];
     }
 }
