@@ -58,5 +58,16 @@ namespace turno_clave_API.Application.Services
             await _context.SaveChangesAsync();
             return business;
         }
+
+        public async Task<Business?> DeleteAsync(Guid externalId)
+        {
+            Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
+            if (business != null)
+            {
+                business.IsActive = false;
+                await _context.SaveChangesAsync();
+            }
+            return business;
+        }
     }
 }

@@ -67,6 +67,26 @@ namespace turno_clave_API.Controllers
             return Ok(updatedBusiness);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> Delete(string externalId)
+        {
+            if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
+
+            Business? business = await _businessService.DeleteAsync(parsedExternalId);
+
+            if (business == null)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Business Not Found",
+                    detail: $"Business with ExternalId {externalId} not found.",
+                    type: $"/errors/BusinessNotFound",
+                    instance: HttpContext.Request.Path
+                );
+            }
+            return Ok(business);
+        }
+
         private bool TryParseExternalId(string externalId, out Guid parsed, [NotNullWhen(false)] out IActionResult? error)
         {
             if (!Guid.TryParse(externalId, out parsed))

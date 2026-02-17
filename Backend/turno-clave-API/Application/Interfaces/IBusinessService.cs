@@ -8,5 +8,6 @@ namespace turno_clave_API.Application.Interfaces
         Task<Business> CreateAsync(CreateBusinessDto dto);
         Task<Business?> GetByExternalId(Guid externalId);
         Task<Business?> UpdateAsync(Guid externalId, UpdateBusinessDto dto);
+        Task<Business?> DeleteAsync(Guid externalId);
     }
 }
