@@ -70,7 +70,7 @@ namespace turno_clave_API.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(string externalId)
         {
-            if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
+            if (!TryParseExternalId(externalId, out Guid parsedExternalId, out var problem)) return problem;
 
             Business? business = await _businessService.DeleteAsync(parsedExternalId);
 

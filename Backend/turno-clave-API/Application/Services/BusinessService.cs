@@ -17,9 +17,12 @@ namespace turno_clave_API.Application.Services
 
         public async Task<Business> CreateAsync(CreateBusinessDto dto)
         {
+            string slug = GenerateSlug(dto.Name);
+
             Business business = new()
             {
                 Name = dto.Name,
+                Slug = slug,
                 Description = dto.Description,
                 Email = dto.Email,
                 Phone = dto.Phone,
@@ -68,6 +71,39 @@ namespace turno_clave_API.Application.Services
                 await _context.SaveChangesAsync();
             }
             return business;
+        }
+
+        private static string GenerateSlug(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return string.Empty;
+
+            // Normalize and remove diacritics (NFD -> remove NonSpacingMark -> NFC)
+            var normalized = name.Normalize(System.Text.NormalizationForm.FormD);
+            var sb = new System.Text.StringBuilder();
+            foreach (var ch in normalized)
+            {
+                var cat = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (cat != System.Globalization.UnicodeCategory.NonSpacingMark)
+                    sb.Append(ch);
+            }
+            var noDiacritics = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+
+            // Lowercase, replace whitespace with hyphens, remove invalid chars, collapse hyphens, trim
+            string slug = noDiacritics.ToLowerInvariant().Trim();
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-");
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"[^a-z0-9\-]", "");
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"-+", "-").Trim('-');
+
+            // Limit length to 80 characters
+            if (slug.Length > 80)
+                slug = slug.Substring(0, 80);
+
+            // Fallback to a short random identifier if slug becomes empty
+            if (string.IsNullOrEmpty(slug))
+                slug = Guid.NewGuid().ToString("n").Substring(0, 8);
+
+            return slug;
         }
     }
 }

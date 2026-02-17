@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public Guid ExternalId { get; set; } = Guid.NewGuid();
         public required string Name { get; set; }
+        public required string Slug { get; set; } // URL-friendly identifier, e.g., "my-business-name"
         public string? Description { get; set; }
         public required string Email { get; set; }
         public required string Phone { get; set; }
