@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Application.Services;
+using turno_clave_API.Infrastructure.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +12,12 @@ builder.Services.AddControllers();
 // Add Swagger/OpenAPI for UI exploration (classic Swagger UI)
 // Use the project's OpenAPI helper
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IBusinessService, BusinessService>();
+
+// Register AppDbContext using PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 

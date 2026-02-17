@@ -10,9 +10,9 @@
         public required string Address { get; set; }
         public required string City { get; set; }
         public required string Country { get; set; }
-        public required string TimeZone { get; set; }
+        public string TimeZone { get; set; } = TimeZoneInfo.Local.Id; // Default to local time zone
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
