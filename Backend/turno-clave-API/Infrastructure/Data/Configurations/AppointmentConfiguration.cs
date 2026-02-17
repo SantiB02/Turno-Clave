@@ -14,17 +14,17 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.Property(x => x.Status).HasConversion<string>().IsRequired();
 
             builder.HasOne(x => x.Business)
-                   .WithMany()
+                   .WithMany(b => b.Appointments)
                    .HasForeignKey(x => x.BusinessId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Client)
-                   .WithMany()
+                   .WithMany(cl => cl.Appointments)
                    .HasForeignKey(x => x.ClientId)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Service)
-                   .WithMany()
+                   .WithMany(s => s.Appointments)
                    .HasForeignKey(x => x.ServiceId)
                    .OnDelete(DeleteBehavior.Restrict);
         }

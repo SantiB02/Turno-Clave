@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using turno_clave_API.Infrastructure.Data;
@@ -11,9 +12,11 @@ using turno_clave_API.Infrastructure.Data;
 namespace turno_clave_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260217184227_add_professional_table_and_relationship")]
+    partial class add_professional_table_and_relationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,9 +38,17 @@ namespace turno_clave_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("business_id");
 
+                    b.Property<int?>("BusinessId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id1");
+
                     b.Property<int>("ClientId")
                         .HasColumnType("integer")
                         .HasColumnName("client_id");
+
+                    b.Property<int?>("ClientId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("client_id1");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -59,6 +70,10 @@ namespace turno_clave_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("service_id");
 
+                    b.Property<int?>("ServiceId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("service_id1");
+
                     b.Property<DateTimeOffset>("StartDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("start_date_time");
@@ -78,11 +93,20 @@ namespace turno_clave_API.Migrations
                     b.HasIndex("BusinessId")
                         .HasDatabaseName("i_x_appointments_business_id");
 
+                    b.HasIndex("BusinessId1")
+                        .HasDatabaseName("i_x_appointments_business_id1");
+
                     b.HasIndex("ClientId")
                         .HasDatabaseName("i_x_appointments_client_id");
 
+                    b.HasIndex("ClientId1")
+                        .HasDatabaseName("i_x_appointments_client_id1");
+
                     b.HasIndex("ServiceId")
                         .HasDatabaseName("i_x_appointments_service_id");
+
+                    b.HasIndex("ServiceId1")
+                        .HasDatabaseName("i_x_appointments_service_id1");
 
                     b.ToTable("appointments");
                 });
@@ -99,6 +123,10 @@ namespace turno_clave_API.Migrations
                     b.Property<int>("BusinessId")
                         .HasColumnType("integer")
                         .HasColumnName("business_id");
+
+                    b.Property<int?>("BusinessId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id1");
 
                     b.Property<int>("DayOfWeek")
                         .HasColumnType("integer")
@@ -122,6 +150,9 @@ namespace turno_clave_API.Migrations
                     b.HasIndex("BusinessId")
                         .HasDatabaseName("i_x_availabilities_business_id");
 
+                    b.HasIndex("BusinessId1")
+                        .HasDatabaseName("i_x_availabilities_business_id1");
+
                     b.ToTable("availabilities");
                 });
 
@@ -137,6 +168,10 @@ namespace turno_clave_API.Migrations
                     b.Property<int>("BusinessId")
                         .HasColumnType("integer")
                         .HasColumnName("business_id");
+
+                    b.Property<int?>("BusinessId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id1");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -164,6 +199,9 @@ namespace turno_clave_API.Migrations
 
                     b.HasIndex("BusinessId")
                         .HasDatabaseName("i_x_availability_exceptions_business_id");
+
+                    b.HasIndex("BusinessId1")
+                        .HasDatabaseName("i_x_availability_exceptions_business_id1");
 
                     b.ToTable("availability_exceptions");
                 });
@@ -256,6 +294,10 @@ namespace turno_clave_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("business_id");
 
+                    b.Property<int?>("BusinessId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id1");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -285,6 +327,9 @@ namespace turno_clave_API.Migrations
 
                     b.HasKey("Id")
                         .HasName("p_k_clients");
+
+                    b.HasIndex("BusinessId1")
+                        .HasDatabaseName("i_x_clients_business_id1");
 
                     b.HasIndex("BusinessId", "Email")
                         .HasDatabaseName("i_x_clients_business_id_email");
@@ -336,6 +381,10 @@ namespace turno_clave_API.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("business_id");
 
+                    b.Property<int?>("BusinessId1")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id1");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -367,6 +416,9 @@ namespace turno_clave_API.Migrations
 
                     b.HasKey("Id")
                         .HasName("p_k_services");
+
+                    b.HasIndex("BusinessId1")
+                        .HasDatabaseName("i_x_services_business_id1");
 
                     b.HasIndex("BusinessId", "Name")
                         .HasDatabaseName("i_x_services_business_id_name");
@@ -439,25 +491,40 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
-                        .WithMany("Appointments")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_appointments__businesses_business_id");
 
-                    b.HasOne("turno_clave_API.Domain.Entities.Client", "Client")
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
                         .WithMany("Appointments")
+                        .HasForeignKey("BusinessId1")
+                        .HasConstraintName("f_k_appointments__businesses_business_id1");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Client", "Client")
+                        .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_appointments__clients_client_id");
 
-                    b.HasOne("turno_clave_API.Domain.Entities.Service", "Service")
+                    b.HasOne("turno_clave_API.Domain.Entities.Client", null)
                         .WithMany("Appointments")
+                        .HasForeignKey("ClientId1")
+                        .HasConstraintName("f_k_appointments__clients_client_id1");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Service", "Service")
+                        .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("f_k_appointments__services_service_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Service", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("ServiceId1")
+                        .HasConstraintName("f_k_appointments__services_service_id1");
 
                     b.Navigation("Business");
 
@@ -469,11 +536,16 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Availability", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
-                        .WithMany("Availabilities")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_availabilities__businesses_business_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
+                        .WithMany("Availabilities")
+                        .HasForeignKey("BusinessId1")
+                        .HasConstraintName("f_k_availabilities__businesses_business_id1");
 
                     b.Navigation("Business");
                 });
@@ -481,11 +553,16 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.AvailabilityException", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
-                        .WithMany("AvailabilityExceptions")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_availability_exceptions__businesses_business_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
+                        .WithMany("AvailabilityExceptions")
+                        .HasForeignKey("BusinessId1")
+                        .HasConstraintName("f_k_availability_exceptions__businesses_business_id1");
 
                     b.Navigation("Business");
                 });
@@ -493,11 +570,16 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Client", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
-                        .WithMany("Clients")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_clients_businesses_business_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
+                        .WithMany("Clients")
+                        .HasForeignKey("BusinessId1")
+                        .HasConstraintName("f_k_clients_businesses_business_id1");
 
                     b.Navigation("Business");
                 });
@@ -517,11 +599,16 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Service", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
-                        .WithMany("Services")
+                        .WithMany()
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("f_k_services_businesses_business_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
+                        .WithMany("Services")
+                        .HasForeignKey("BusinessId1")
+                        .HasConstraintName("f_k_services_businesses_business_id1");
 
                     b.Navigation("Business");
                 });

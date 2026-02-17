@@ -25,7 +25,7 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .IsRequired();
 
             builder.HasOne(x => x.Business)
-                   .WithMany()
+                   .WithMany(b => b.Availabilities)
                    .HasForeignKey(x => x.BusinessId)
                    .OnDelete(DeleteBehavior.Cascade);
         }
