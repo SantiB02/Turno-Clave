@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Application.Services;
 using turno_clave_API.Infrastructure.Data;
@@ -20,6 +22,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+app.UseExceptionHandler("/error");
+app.Map("/error", async (HttpContext httpContext) =>
+{
+    var problemDetails = new ProblemDetails
+    {
+        Type = "/errors/UnknownError", // Custom error type
+        Title = "An unexpected error occurred.",
+        Status = (int)HttpStatusCode.InternalServerError,
+        Detail = "Something went wrong. Please try again later.",
+        Instance = httpContext.Request.Path // Identifies where the error occurred
+    };
+
+    httpContext.Response.ContentType = "application/json";
+    httpContext.Response.StatusCode = problemDetails.Status.Value;
+    await httpContext.Response.WriteAsJsonAsync(problemDetails);
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
