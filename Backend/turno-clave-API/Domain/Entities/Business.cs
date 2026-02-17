@@ -3,6 +3,7 @@
     public class Business
     {
         public int Id { get; set; }
+        public Guid ExternalId { get; set; } = Guid.NewGuid();
         public required string Name { get; set; }
         public string? Description { get; set; }
         public required string Email { get; set; }

@@ -5,6 +5,7 @@ namespace turno_clave_API.Domain.Entities
     public class User
     {
         public int Id { get; set; }
+        public Guid ExternalId { get; set; } = Guid.NewGuid();
 
         public required string Name { get; set; }
         public required string Email { get; set; }
