@@ -10,6 +10,9 @@ namespace turno_clave_API.Domain.Entities
         public int BusinessId { get; set; }
         public required Business Business { get; set; }
 
+        public int ProfessionalId { get; set; }
+        public required Professional Professional { get; set; }
+
         public int ClientId { get; set; }
         public required Client Client { get; set; }
 

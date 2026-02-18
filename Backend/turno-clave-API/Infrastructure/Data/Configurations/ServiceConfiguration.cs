@@ -9,6 +9,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Service> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => new { x.BusinessId, x.Name });
+
             builder.Property(x => x.Name).IsRequired();
 
             builder.HasOne(x => x.Business)

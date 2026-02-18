@@ -9,6 +9,9 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => x.ExternalId).IsUnique();
+            builder.HasIndex(x => new { x.ProfessionalId, x.StartDateTime });
+
             builder.Property(x => x.StartDateTime).IsRequired();
             builder.Property(x => x.EndDateTime).IsRequired();
             builder.Property(x => x.Status).HasConversion<string>().IsRequired();
