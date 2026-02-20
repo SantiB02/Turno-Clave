@@ -1,4 +1,7 @@
-﻿using turno_clave_API.Application.Interfaces;
+﻿using System;
+using System.Linq;
+using turno_clave_API.Infrastructure.Time;
+using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +22,9 @@ namespace turno_clave_API.Application.Services
         {
             string slug = GenerateSlug(dto.Name);
 
+            // Validate/normalize timezone identifier
+            string timezoneId = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
+
             Business business = new()
             {
                 Name = dto.Name,
@@ -29,6 +35,7 @@ namespace turno_clave_API.Application.Services
                 Address = dto.Address,
                 City = dto.City,
                 Country = dto.Country,
+                TimeZone = timezoneId,
             };
 
             _context.Businesses.Add(business);
@@ -36,6 +43,8 @@ namespace turno_clave_API.Application.Services
 
             return business;
         }
+
+        
 
         public async Task<Business?> GetByExternalId(Guid externalId)
         {

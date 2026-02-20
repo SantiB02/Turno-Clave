@@ -9,5 +9,7 @@
         public required string Address { get; set; }
         public required string City { get; set; }
         public required string Country { get; set; }
+        // Time zone identifier for the business (IANA or Windows). Example: "America/Argentina/Buenos_Aires" or "UTC"
+        public required string TimeZone { get; set; }
     }
 }

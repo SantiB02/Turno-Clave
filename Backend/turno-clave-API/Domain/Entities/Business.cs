@@ -12,7 +12,8 @@
         public required string Address { get; set; }
         public required string City { get; set; }
         public required string Country { get; set; }
-        public string TimeZone { get; set; } = TimeZoneInfo.Local.Id; // Default to local time zone
+        // Store IANA/Windows compatible timezone id. Default to UTC to avoid server-local timezone leaks.
+        public string TimeZone { get; set; } = TimeZoneInfo.Utc.Id; // Default to UTC
 
         public bool IsActive { get; set; } = true;
 

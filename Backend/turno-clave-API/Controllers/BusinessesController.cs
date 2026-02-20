@@ -21,8 +21,21 @@ namespace turno_clave_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBusinessDto dto)
         {
-            Business business = await _businessService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business);
+            try
+            {
+                Business business = await _businessService.CreateAsync(dto);
+                return CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business);
+            }
+            catch (ArgumentException ex)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Invalid TimeZone",
+                    detail: ex.Message,
+                    type: "/errors/InvalidTimeZone",
+                    instance: HttpContext.Request.Path
+                );
+            }
         }
 
         [HttpGet]
