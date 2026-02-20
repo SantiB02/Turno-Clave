@@ -1,6 +1,6 @@
 ﻿namespace turno_clave_API.Application.DTOs.Business
 {
-    public class CreateBusinessDto
+    public class CreateBusinessDTO
     {
         public required string Name { get; set; }
         public required string Description { get; set; }

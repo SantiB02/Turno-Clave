@@ -3,6 +3,7 @@
     public class Professional
     {
         public int Id { get; set; }
+        public Guid ExternalId { get; set; } = Guid.NewGuid();
 
         public int BusinessId { get; set; }
         public required Business Business { get; set; }

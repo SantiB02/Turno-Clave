@@ -3,6 +3,7 @@
     public class Availability
     {
         public int Id { get; set; }
+        public Guid ExternalId { get; set; } = Guid.NewGuid();
 
         public int ProfessionalId { get; set; }
         public required Professional Professional { get; set; }

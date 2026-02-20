@@ -18,7 +18,7 @@ namespace turno_clave_API.Application.Services
             _context = context;
         }
 
-        public async Task<Business> CreateAsync(CreateBusinessDto dto)
+        public async Task<Business> CreateAsync(CreateBusinessDTO dto)
         {
             string slug = GenerateSlug(dto.Name);
 
@@ -52,7 +52,7 @@ namespace turno_clave_API.Application.Services
             return business;
         }
 
-        public async Task<Business?> UpdateAsync(Guid externalId, UpdateBusinessDto dto)
+        public async Task<Business?> UpdateAsync(Guid externalId, UpdateBusinessDTO dto)
         {
             Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
             if (business == null)

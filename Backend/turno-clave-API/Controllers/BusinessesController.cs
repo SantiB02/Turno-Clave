@@ -19,7 +19,7 @@ namespace turno_clave_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateBusinessDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateBusinessDTO dto)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace turno_clave_API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(string externalId, [FromBody] UpdateBusinessDto dto)
+        public async Task<IActionResult> Update(string externalId, [FromBody] UpdateBusinessDTO dto)
         {
             if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
 
