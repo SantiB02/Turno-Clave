@@ -24,9 +24,9 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .HasColumnType("time")
                    .IsRequired();
 
-            builder.HasOne(x => x.Business)
-                   .WithMany(b => b.Availabilities)
-                   .HasForeignKey(x => x.BusinessId)
+            builder.HasOne(x => x.Professional)
+                   .WithMany(p => p.Availabilities)
+                   .HasForeignKey(x => x.ProfessionalId)
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -11,5 +11,6 @@
         public bool IsActive { get; set; } = true;
 
         public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<Availability> Availabilities { get; set; } = [];
     }
 }

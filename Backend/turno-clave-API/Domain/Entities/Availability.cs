@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
 
-        public int BusinessId { get; set; }
-        public required Business Business { get; set; }
+        public int ProfessionalId { get; set; }
+        public required Professional Professional { get; set; }
 
         public DayOfWeek DayOfWeek { get; set; }
         public TimeOnly StartTime { get; set; }

@@ -24,7 +24,6 @@
         public ICollection<Service> Services { get; set; } = [];
         public ICollection<Client> Clients { get; set; } = [];
         public ICollection<Appointment> Appointments { get; set; } = [];
-        public ICollection<Availability> Availabilities { get; set; } = [];
         public ICollection<AvailabilityException> AvailabilityExceptions { get; set; } = [];
         public ICollection<Professional> Professionals { get; set; } = [];
     }
