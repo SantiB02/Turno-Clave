@@ -1,7 +1,11 @@
-﻿using turno_clave_API.Application.DTOs.Appointment;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using turno_clave_API.Application.DTOs.Appointment;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace turno_clave_API.Application.Services
 {
@@ -44,6 +48,12 @@ namespace turno_clave_API.Application.Services
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
 
+            return appointment;
+        }
+
+        public async Task<Appointment?> GetByExternalId(Guid externalId)
+        {
+            Appointment? appointment = await _context.Appointments.FirstOrDefaultAsync(a => a.ExternalId == externalId);
             return appointment;
         }
     }

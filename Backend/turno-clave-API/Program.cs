@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Net;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Application.Services;
@@ -15,7 +16,9 @@ builder.Services.AddControllers();
 // Use the project's OpenAPI helper
 builder.Services.AddOpenApi();
 
+// Services
 builder.Services.AddScoped<IBusinessService, BusinessService>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 // Register AppDbContext using PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -57,5 +60,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+DateTimeOffset exampleDateTimeOffset = new(2026, 3, 1, 18, 0, 0, TimeSpan.FromHours(-3)); // March 1, 2026, at 18:00:00 with a -3 hours offset (e.g., Buenos Aires time)
+Debug.WriteLine(exampleDateTimeOffset); // OUTPUT: 1/3/2026 18:00:00 -03:00
 
 app.Run();
