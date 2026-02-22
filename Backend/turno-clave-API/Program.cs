@@ -5,6 +5,8 @@ using System.Net;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Application.Services;
 using turno_clave_API.Infrastructure.Data;
+using turno_clave_API.Infrastructure.Repositories;
+using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,8 @@ builder.Services.AddOpenApi();
 
 // Services
 builder.Services.AddScoped<IBusinessService, BusinessService>();
+builder.Services.AddScoped<IBusinessRepository, BusinessRepository>();
+
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 // Register AppDbContext using PostgreSQL
