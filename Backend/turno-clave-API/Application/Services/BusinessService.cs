@@ -6,16 +6,19 @@ using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
 namespace turno_clave_API.Application.Services
 {
     public class BusinessService : IBusinessService
     {
-        private readonly AppDbContext _context;
+        private readonly ILogger<BusinessService> _logger;
+        private readonly IBusinessRepository _businessRepository;
 
-        public BusinessService(AppDbContext context)
+        public BusinessService(ILogger<BusinessService> logger, IBusinessRepository businessRepository)
         {
-            _context = context;
+            _logger = logger;
+            _businessRepository = businessRepository;
         }
 
         public async Task<Business> CreateAsync(CreateBusinessDTO dto)
@@ -38,8 +41,8 @@ namespace turno_clave_API.Application.Services
                 TimeZone = timezoneId,
             };
 
-            _context.Businesses.Add(business);
-            await _context.SaveChangesAsync();
+            await _businessRepository.AddBusinessAsync(business);
+            await _businessRepository.SaveAsync();
 
             return business;
         }
@@ -48,13 +51,13 @@ namespace turno_clave_API.Application.Services
 
         public async Task<Business?> GetByExternalId(Guid externalId)
         {
-            Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             return business;
         }
 
         public async Task<Business?> UpdateAsync(Guid externalId, UpdateBusinessDTO dto)
         {
-            Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             if (business == null)
             {
                 return null;
@@ -67,17 +70,17 @@ namespace turno_clave_API.Application.Services
             business.City = dto.City;
             business.Country = dto.Country;
 
-            await _context.SaveChangesAsync();
+            await _businessRepository.SaveAsync();
             return business;
         }
 
         public async Task<Business?> DeleteAsync(Guid externalId)
         {
-            Business? business = await _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             if (business != null)
             {
                 business.IsActive = false;
-                await _context.SaveChangesAsync();
+                await _businessRepository.SaveAsync();
             }
             return business;
         }

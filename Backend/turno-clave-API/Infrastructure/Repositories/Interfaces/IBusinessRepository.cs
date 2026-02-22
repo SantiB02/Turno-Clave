@@ -4,7 +4,7 @@ namespace turno_clave_API.Infrastructure.Repositories.Interfaces
 {
     public interface IBusinessRepository
     {
-        public Task<IReadOnlyList<Business>> GetBusinessesAsync();
+        public Task<List<Business>> GetBusinessesAsync();
         public Task<Business?> GetBusinessByExternalIdAsync(Guid externalId);
         public Task AddBusinessAsync(Business business);
         public Task UpdateBusinessAsync(Business business);
