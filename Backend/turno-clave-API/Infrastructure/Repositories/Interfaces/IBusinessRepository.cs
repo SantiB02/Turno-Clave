@@ -2,14 +2,13 @@
 
 namespace turno_clave_API.Infrastructure.Repositories.Interfaces
 {
-    public interface IBusinessRepository : IDisposable
+    public interface IBusinessRepository
     {
-        IEnumerable<Business> GetBusinesses();
-        Business? GetBusinessByExternalId(Guid externalId);
-        Business? GetBusinessByExternalId(string externalId);
-        void AddBusiness(Business business);
-        void UpdateBusiness(Business business);
-        void DeleteBusiness(Business business);
-        void Save();
+        public Task<IReadOnlyList<Business>> GetBusinessesAsync();
+        public Task<Business?> GetBusinessByExternalIdAsync(Guid externalId);
+        public Task AddBusinessAsync(Business business);
+        public Task UpdateBusinessAsync(Business business);
+        public Task DeleteBusinessAsync(Business business);
+        public Task SaveAsync();
     }
 }
