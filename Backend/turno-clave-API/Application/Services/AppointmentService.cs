@@ -9,9 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace turno_clave_API.Application.Services
 {
-    public class AppointmentService(AppDbContext context) : IAppointmentService
+    public class AppointmentService : IAppointmentService
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+
+        public AppointmentService(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<Appointment?> CreateAsync(CreateAppointmentDTO dto)
         {

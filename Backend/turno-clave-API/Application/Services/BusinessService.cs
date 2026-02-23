@@ -41,7 +41,7 @@ namespace turno_clave_API.Application.Services
                 TimeZone = timezoneId,
             };
 
-            await _businessRepository.AddBusinessAsync(business);
+            _businessRepository.AddBusiness(business);
             await _businessRepository.SaveAsync();
 
             return business;

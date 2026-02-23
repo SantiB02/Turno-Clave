@@ -24,27 +24,25 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
         }
 
-        public Task AddBusinessAsync(Business business)
+        public void AddBusiness(Business business)
         {
             _context.Businesses.Add(business);
-            return Task.CompletedTask;
         }
 
-        public Task UpdateBusinessAsync(Business business)
+        public void UpdateBusiness(Business business)
         {
             _context.Businesses.Update(business);
-            return Task.CompletedTask;
         }
 
-        public Task DeleteBusinessAsync(Business business)
+        public async Task DeleteBusinessAsync(Guid externalId)
         {
+            Business? business = await GetBusinessByExternalIdAsync(externalId) ?? throw new KeyNotFoundException($"Business with ExternalId {externalId} not found.");
             _context.Businesses.Remove(business);
-            return Task.CompletedTask;
         }
 
-        public Task SaveAsync()
+        public async Task SaveAsync()
         {
-            return _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 }
 }
