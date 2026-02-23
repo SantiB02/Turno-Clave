@@ -64,7 +64,7 @@ namespace turno_clave_API.Application.Services
                 await _professionalRepository.SaveAsync();
             } else
             {
-                throw new KeyNotFoundException("Professional with ExternalId {externalId} not found.");
+                throw new KeyNotFoundException($"Professional with ExternalId {externalId} not found.");
             }
 
             return professional;
