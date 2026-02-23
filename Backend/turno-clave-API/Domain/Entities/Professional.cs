@@ -1,4 +1,6 @@
-﻿namespace turno_clave_API.Domain.Entities
+﻿using turno_clave_API.Application.DTOs.Professional;
+
+namespace turno_clave_API.Domain.Entities
 {
     public class Professional
     {
@@ -13,5 +15,18 @@
 
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<Availability> Availabilities { get; set; } = [];
+
+        public static ProfessionalDTO ToDto(Professional p)
+        {
+            return new ProfessionalDTO
+            {
+                Id = p.Id,
+                ExternalId = p.ExternalId,
+                BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
+                BusinessName = p.Business?.Name ?? string.Empty,
+                Name = p.Name,
+                IsActive = p.IsActive
+            };
+        }
     }
 }
