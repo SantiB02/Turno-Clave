@@ -23,7 +23,8 @@ namespace turno_clave_API.Controllers
             try
             {
                 Professional professional = await _professionalService.CreateAsync(createProfessionalDTO);
-                return CreatedAtAction(nameof(GetByExternalId), new { externalId = professional.ExternalId }, professional); // missing method
+                var dto = ToDto(professional);
+                return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
             }
             catch (KeyNotFoundException ex)
             {
@@ -37,7 +38,7 @@ namespace turno_clave_API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("{externalId:guid}")]
         public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
             Professional? professional = await _professionalService.GetByExternalIdAsync(externalId);
@@ -51,7 +52,7 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
-            return Ok(professional);
+            return Ok(ToDto(professional));
         }
 
         [HttpPut]
@@ -60,7 +61,9 @@ namespace turno_clave_API.Controllers
             try
             {
                 Professional? professional = await _professionalService.UpdateAsync(updateProfessionalDTO);
-                return Ok(professional);
+                if (professional == null)
+                    return NotFound();
+                return Ok(ToDto(professional));
             }
             catch (KeyNotFoundException ex)
             {
@@ -74,13 +77,15 @@ namespace turno_clave_API.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {
             try
             {
                 Professional? professional = await _professionalService.DeleteAsync(externalId);
-                return Ok(professional);
+                if (professional == null)
+                    return NotFound();
+                return Ok(ToDto(professional));
             }
             catch (KeyNotFoundException ex)
             {
@@ -92,6 +97,19 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
+        }
+
+        private static ProfessionalDTO ToDto(Professional p)
+        {
+            return new ProfessionalDTO
+            {
+                Id = p.Id,
+                ExternalId = p.ExternalId,
+                BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
+                BusinessName = p.Business?.Name ?? string.Empty,
+                Name = p.Name,
+                IsActive = p.IsActive
+            };
         }
     }
 }
