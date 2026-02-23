@@ -38,7 +38,7 @@ namespace turno_clave_API.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("{externalId:guid}")]
         public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
             Business? business = await _businessService.GetByExternalIdAsync(externalId);
@@ -76,7 +76,7 @@ namespace turno_clave_API.Controllers
             return Ok(updatedBusiness);
         }
 
-        [HttpDelete]
+        [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {
             Business? business = await _businessService.DeleteAsync(externalId);

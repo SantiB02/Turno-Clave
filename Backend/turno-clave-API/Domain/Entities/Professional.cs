@@ -20,7 +20,6 @@ namespace turno_clave_API.Domain.Entities
         {
             return new ProfessionalDTO
             {
-                Id = p.Id,
                 ExternalId = p.ExternalId,
                 BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
                 BusinessName = p.Business?.Name ?? string.Empty,

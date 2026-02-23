@@ -23,7 +23,7 @@ namespace turno_clave_API.Controllers
             try
             {
                 Professional professional = await _professionalService.CreateAsync(createProfessionalDTO);
-                var dto = Professional.ToDto(professional);
+                ProfessionalDTO dto = Professional.ToDto(professional);
                 return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
             }
             catch (KeyNotFoundException ex)
@@ -84,7 +84,13 @@ namespace turno_clave_API.Controllers
             {
                 Professional? professional = await _professionalService.DeleteAsync(externalId);
                 if (professional == null)
-                    return NotFound();
+                    return Problem(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Professional not found",
+                    detail: $"Professional with ExternalId {externalId} not found.",
+                    type: "/errors/ProfessionalNotFound",
+                    instance: HttpContext.Request.Path
+                );
                 return Ok(Professional.ToDto(professional));
             }
             catch (KeyNotFoundException ex)

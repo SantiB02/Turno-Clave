@@ -1,4 +1,6 @@
-﻿namespace turno_clave_API.Domain.Entities
+﻿using turno_clave_API.Application.DTOs.Client;
+
+namespace turno_clave_API.Domain.Entities
 {
     public class Client
     {
@@ -17,5 +19,20 @@
 
         // Navigation
         public ICollection<Appointment> Appointments { get; set; } = [];
+
+        // We don't need to show the whole Business. Only its main identifying data
+        public static ClientDTO ToDto (Client client)
+        {
+            return new ClientDTO
+            {
+                ExternalId = client.ExternalId,
+                BusinessExternalId = client.Business.ExternalId,
+                BusinessName = client.Business.Name,
+                Name = client.Name,
+                Email = client.Email,
+                Phone = client.Phone,
+                Notes = client.Notes
+            };
+        }
     }
 }
