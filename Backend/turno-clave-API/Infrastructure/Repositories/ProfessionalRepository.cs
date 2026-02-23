@@ -16,12 +16,12 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public Task<List<Professional>> GetProfessionalsAsync()
         {
-            return _context.Professionals.ToListAsync();
+            return _context.Professionals.Include(p => p.Business).ToListAsync();
         }
 
         public Task<Professional?> GetProfessionalByExternalIdAsync(Guid externalId)
         {
-            return _context.Professionals.FirstOrDefaultAsync(p => p.ExternalId == externalId);
+            return _context.Professionals.Include(p => p.Business).FirstOrDefaultAsync(p => p.ExternalId == externalId);
         }
 
         public void AddProfessional(Professional professional)
