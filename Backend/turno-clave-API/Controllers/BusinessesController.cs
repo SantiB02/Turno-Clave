@@ -39,11 +39,9 @@ namespace turno_clave_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByExternalId(string externalId)
+        public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
-            if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
-
-            Business? business = await _businessService.GetByExternalId(parsedExternalId);
+            Business? business = await _businessService.GetByExternalIdAsync(externalId);
 
             if (business == null)
             {
@@ -60,18 +58,16 @@ namespace turno_clave_API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(string externalId, [FromBody] UpdateBusinessDTO dto)
+        public async Task<IActionResult> Update([FromBody] UpdateBusinessDTO dto)
         {
-            if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
-
-            Business? updatedBusiness = await _businessService.UpdateAsync(parsedExternalId, dto);
+            Business? updatedBusiness = await _businessService.UpdateAsync(dto);
 
             if (updatedBusiness == null)
             {
                 return Problem(
                     statusCode: StatusCodes.Status404NotFound,
                     title: "Business Not Found",
-                    detail: $"Business with ExternalId {externalId} not found.",
+                    detail: $"Business with ExternalId {dto.ExternalId} not found.",
                     type: $"/errors/BusinessNotFound",
                     instance: HttpContext.Request.Path
                 );
@@ -81,11 +77,9 @@ namespace turno_clave_API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(string externalId)
+        public async Task<IActionResult> Delete(Guid externalId)
         {
-            if (!TryParseExternalId(externalId, out Guid parsedExternalId, out var problem)) return problem;
-
-            Business? business = await _businessService.DeleteAsync(parsedExternalId);
+            Business? business = await _businessService.DeleteAsync(externalId);
 
             if (business == null)
             {
@@ -98,23 +92,6 @@ namespace turno_clave_API.Controllers
                 );
             }
             return Ok(business);
-        }
-
-        private bool TryParseExternalId(string externalId, out Guid parsed, [NotNullWhen(false)] out IActionResult? error)
-        {
-            if (!Guid.TryParse(externalId, out parsed))
-            {
-                error = Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Invalid ExternalId",
-                    detail: $"The provided ExternalId '{externalId}' is not a valid GUID.",
-                    type: "/errors/InvalidExternalId",
-                    instance: HttpContext.Request.Path
-                );
-                return false;
-            }
-            error = null;
-            return true;
         }
     }
 }

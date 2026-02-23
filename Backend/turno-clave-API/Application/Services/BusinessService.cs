@@ -49,15 +49,15 @@ namespace turno_clave_API.Application.Services
 
         
 
-        public async Task<Business?> GetByExternalId(Guid externalId)
+        public async Task<Business?> GetByExternalIdAsync(Guid externalId)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             return business;
         }
 
-        public async Task<Business?> UpdateAsync(Guid externalId, UpdateBusinessDTO dto)
+        public async Task<Business?> UpdateAsync(UpdateBusinessDTO dto)
         {
-            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.ExternalId);
             if (business == null)
             {
                 return null;

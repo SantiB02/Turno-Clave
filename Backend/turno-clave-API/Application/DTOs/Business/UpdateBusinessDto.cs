@@ -2,6 +2,7 @@
 {
     public class UpdateBusinessDTO
     {
+        public required Guid ExternalId { get; set; }
         public required string Name { get; set; }
         public required string Description { get; set; }
         public required string Phone { get; set; }
