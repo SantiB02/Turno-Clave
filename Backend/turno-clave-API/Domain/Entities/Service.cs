@@ -1,4 +1,6 @@
-﻿namespace turno_clave_API.Domain.Entities
+﻿using turno_clave_API.Application.DTOs.Service;
+
+namespace turno_clave_API.Domain.Entities
 {
     public class Service
     {
@@ -18,5 +20,19 @@
 
         // Navigation
         public ICollection<Appointment> Appointments { get; set; } = [];
+
+        public static ServiceDTO ToDto(Service s)
+        {
+            return new ServiceDTO
+            {
+                ExternalId = s.ExternalId,
+                BusinessExternalId = s.Business?.ExternalId ?? Guid.Empty,
+                BusinessName = s.Business?.Name ?? string.Empty,
+                Name = s.Name,
+                Description = s.Description,
+                Price = s.Price,
+                DurationMinutes = s.DurationMinutes
+            };
+        } 
     }
 }
