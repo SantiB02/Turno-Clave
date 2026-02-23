@@ -23,7 +23,7 @@ namespace turno_clave_API.Controllers
             try
             {
                 Professional professional = await _professionalService.CreateAsync(createProfessionalDTO);
-                var dto = ToDto(professional);
+                var dto = _professionalService.ToDto(professional);
                 return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
             }
             catch (KeyNotFoundException ex)
@@ -52,7 +52,7 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
-            return Ok(ToDto(professional));
+            return Ok(_professionalService.ToDto(professional));
         }
 
         [HttpPut]
@@ -63,7 +63,7 @@ namespace turno_clave_API.Controllers
                 Professional? professional = await _professionalService.UpdateAsync(updateProfessionalDTO);
                 if (professional == null)
                     return NotFound();
-                return Ok(ToDto(professional));
+                return Ok(_professionalService.ToDto(professional));
             }
             catch (KeyNotFoundException ex)
             {
@@ -85,7 +85,7 @@ namespace turno_clave_API.Controllers
                 Professional? professional = await _professionalService.DeleteAsync(externalId);
                 if (professional == null)
                     return NotFound();
-                return Ok(ToDto(professional));
+                return Ok(_professionalService.ToDto(professional));
             }
             catch (KeyNotFoundException ex)
             {
@@ -97,19 +97,6 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
-        }
-
-        private static ProfessionalDTO ToDto(Professional p)
-        {
-            return new ProfessionalDTO
-            {
-                Id = p.Id,
-                ExternalId = p.ExternalId,
-                BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
-                BusinessName = p.Business?.Name ?? string.Empty,
-                Name = p.Name,
-                IsActive = p.IsActive
-            };
         }
     }
 }

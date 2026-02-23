@@ -65,5 +65,18 @@ namespace turno_clave_API.Application.Services
             }
             return professional;
         }
+
+        public static ProfessionalDTO ToDto(Professional p)
+        {
+            return new ProfessionalDTO
+            {
+                Id = p.Id,
+                ExternalId = p.ExternalId,
+                BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
+                BusinessName = p.Business?.Name ?? string.Empty,
+                Name = p.Name,
+                IsActive = p.IsActive
+            };
+        }
     }
 }

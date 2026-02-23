@@ -18,7 +18,7 @@ builder.Services.AddControllers();
 // Use the project's OpenAPI helper
 builder.Services.AddOpenApi();
 
-// Services
+// Services and Repositories
 builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IBusinessRepository, BusinessRepository>();
 
