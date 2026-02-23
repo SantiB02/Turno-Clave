@@ -12,8 +12,8 @@
         public required string Email { get; set; }
         public required string Phone { get; set; }
         public string? Notes { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset UpdatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
         public ICollection<Appointment> Appointments { get; set; } = [];
