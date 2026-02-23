@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
+using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
 namespace turno_clave_API.Infrastructure.Repositories
 {
-    public class ProfessionalRepository
+    public class ProfessionalRepository : IProfessionalRepository
     {
         private readonly AppDbContext _context;
 
