@@ -31,6 +31,7 @@ namespace turno_clave_API.Application.Services
             {
                 ProfessionalId = professional.Id,
                 Professional = professional,
+                DayOfWeek = dto.DayOfWeek,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime
             };
