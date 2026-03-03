@@ -1,5 +1,6 @@
 ﻿using turno_clave_API.Application.DTOs.Availability;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
@@ -19,13 +20,16 @@ namespace turno_clave_API.Application.Services
             _professionalService = professionalService;
         }
 
-        public async Task<Availability> CreateAsync(CreateAvailabilityDTO dto)
+        public async Task<Result<Availability>> CreateAsync(CreateAvailabilityDTO dto)
         {
             Professional? professional = await _professionalService.GetByExternalIdAsync(dto.ProfessionalExternalId);
             if (professional == null)
-                throw new KeyNotFoundException($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
+                return Result<Availability>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
 
-            // TODO: Validate that the new availability does not overlap with existing availabilities for the same professional.
+            // Validate that the new availability does not overlap with existing availabilities for the same professional.
+            bool isTaken = await _availabilityRepository.IsAvailabilityTaken(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
+            if (isTaken)
+                return Result<Availability>.Failure("Time slot already taken");
 
             Availability availability = new()
             {
@@ -37,7 +41,7 @@ namespace turno_clave_API.Application.Services
             };
             _availabilityRepository.AddAvailability(availability);
             await _availabilityRepository.SaveAsync();
-            return availability;
+            return Result<Availability>.Success(availability);
         }
 
         public async Task<Availability?> GetByExternalIdAsync(Guid externalId)
@@ -46,11 +50,11 @@ namespace turno_clave_API.Application.Services
             return availability;
         }
 
-        public async Task<Availability?> UpdateAsync(UpdateAvailabilityDTO dto)
+        public async Task<Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto)
         {
             Availability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(dto.ExternalId);
             if (availability == null)
-                throw new KeyNotFoundException($"Availability with ExternalId {dto.ExternalId} not found.");
+                return Result<Availability>.Failure($"Availability with ExternalId {dto.ExternalId} not found.");
 
             availability.DayOfWeek = dto.DayOfWeek;
             availability.StartTime = dto.StartTime;
@@ -58,22 +62,25 @@ namespace turno_clave_API.Application.Services
 
             _availabilityRepository.UpdateAvailability(availability);
             await _availabilityRepository.SaveAsync();
-            return availability;
+            return Result<Availability>.Success(availability);
         }
 
-        public async Task<Availability?> DeleteAsync(Guid externalId)
+        public async Task<Result<Availability>> DeleteAsync(Guid externalId)
         {
             Availability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
-            if (availability != null)
+            if (availability == null)
             {
-                availability.IsActive = false;
-                await _availabilityRepository.SaveAsync();
-            } else
-            {
-                throw new KeyNotFoundException($"Availability with ExternalId {externalId} not found.");
+                return Result<Availability>.Failure($"Availability with ExternalId {externalId} not found.");
             }
 
-            return availability;
+            availability.IsActive = false;
+            await _availabilityRepository.SaveAsync();
+            return Result<Availability>.Success(availability);
+        }
+
+        public async Task<bool> CheckIfAvailabilityIsTaken(Professional professional, CreateAvailabilityDTO dto)
+        {
+            return await _availabilityRepository.IsAvailabilityTaken(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
         }
     }
 }

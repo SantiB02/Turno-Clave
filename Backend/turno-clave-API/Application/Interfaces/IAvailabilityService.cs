@@ -5,9 +5,10 @@ namespace turno_clave_API.Application.Interfaces
 {
     public interface IAvailabilityService
     {
-        Task<Availability> CreateAsync(CreateAvailabilityDTO dto);
+        Task<turno_clave_API.Common.Result<Availability>> CreateAsync(CreateAvailabilityDTO dto);
         Task<Availability?> GetByExternalIdAsync(Guid externalId);
-        Task<Availability?> UpdateAsync(UpdateAvailabilityDTO dto);
-        Task<Availability?> DeleteAsync(Guid externalId);
+        Task<turno_clave_API.Common.Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
+        Task<turno_clave_API.Common.Result<Availability>> DeleteAsync(Guid externalId);
+        Task<bool> CheckIfAvailabilityIsTaken(Professional professional, CreateAvailabilityDTO dto);
     }
 }
