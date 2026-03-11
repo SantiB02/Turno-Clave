@@ -47,9 +47,8 @@ namespace turno_clave_API.Infrastructure.Repositories
                 .Where(av => av.ProfessionalId == professional.Id)
                 .AnyAsync(a =>
                     a.DayOfWeek == dayOfWeek &&
-                    ((startTime >= a.StartTime && startTime < a.EndTime) ||
-                    (endTime > a.StartTime && endTime <= a.EndTime) ||
-                    (startTime <= a.StartTime && endTime >= a.EndTime))
+                    startTime < a.EndTime &&
+                    endTime > a.StartTime
                 );
         }
 

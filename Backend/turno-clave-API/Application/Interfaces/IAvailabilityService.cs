@@ -9,6 +9,6 @@ namespace turno_clave_API.Application.Interfaces
         Task<Availability?> GetByExternalIdAsync(Guid externalId);
         Task<turno_clave_API.Common.Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
         Task<turno_clave_API.Common.Result<Availability>> DeleteAsync(Guid externalId);
-        Task<bool> CheckIfAvailabilityIsTaken(Professional professional, CreateAvailabilityDTO dto);
+        Task<bool> IsAvailabilityValid(Professional professional, CreateAvailabilityDTO dto);
     }
 }

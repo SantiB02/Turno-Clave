@@ -27,9 +27,9 @@ namespace turno_clave_API.Application.Services
                 return Result<Availability>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
 
             // Validate that the new availability does not overlap with existing availabilities for the same professional.
-            bool isTaken = await _availabilityRepository.IsAvailabilityTaken(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
-            if (isTaken)
-                return Result<Availability>.Failure("Time slot already taken");
+            bool isValid = await IsAvailabilityValid(professional, dto);
+            if (!isValid)
+                return Result<Availability>.Failure("Time slot already taken or invalid start and end time");
 
             Availability availability = new()
             {
@@ -78,8 +78,11 @@ namespace turno_clave_API.Application.Services
             return Result<Availability>.Success(availability);
         }
 
-        public async Task<bool> CheckIfAvailabilityIsTaken(Professional professional, CreateAvailabilityDTO dto)
+        public async Task<bool> IsAvailabilityValid(Professional professional, CreateAvailabilityDTO dto)
         {
+            if (dto.StartTime < dto.EndTime)
+                return true;
+             
             return await _availabilityRepository.IsAvailabilityTaken(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
         }
     }
