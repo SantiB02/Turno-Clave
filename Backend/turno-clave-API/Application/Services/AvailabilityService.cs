@@ -29,7 +29,7 @@ namespace turno_clave_API.Application.Services
             // Validate that the new availability does not overlap with existing availabilities for the same professional.
             bool isValid = await IsAvailabilityValid(professional, dto);
             if (!isValid)
-                return Result<Availability>.Failure("Time slot already taken or invalid start and end time");
+                return Result<Availability>.Failure("Time slot already taken or invalid start and end time"); // TODO: Improve error message
 
             Availability availability = new()
             {

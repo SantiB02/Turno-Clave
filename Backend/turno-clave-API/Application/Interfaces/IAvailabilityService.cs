@@ -1,14 +1,15 @@
 ﻿using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Application.Interfaces
 {
     public interface IAvailabilityService
     {
-        Task<turno_clave_API.Common.Result<Availability>> CreateAsync(CreateAvailabilityDTO dto);
+        Task<Result<Availability>> CreateAsync(CreateAvailabilityDTO dto);
         Task<Availability?> GetByExternalIdAsync(Guid externalId);
-        Task<turno_clave_API.Common.Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
-        Task<turno_clave_API.Common.Result<Availability>> DeleteAsync(Guid externalId);
+        Task<Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
+        Task<Result<Availability>> DeleteAsync(Guid externalId);
         Task<bool> IsAvailabilityValid(Professional professional, CreateAvailabilityDTO dto);
     }
 }
