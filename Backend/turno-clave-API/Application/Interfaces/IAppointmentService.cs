@@ -1,11 +1,14 @@
 ﻿using turno_clave_API.Application.DTOs.Appointment;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Application.Interfaces
 {
     public interface IAppointmentService
     {
-        public Task<Appointment?> CreateAsync(CreateAppointmentDTO dto);
-        public Task<Appointment?> GetByExternalId (Guid externalId);
+        Task<Result<Appointment>> CreateAsync(CreateAppointmentDTO dto);
+        Task<Appointment?> GetByExternalIdAsync(Guid externalId);
+        // Task<Result<Appointment>> UpdateAsync(UpdateAppointmentDTO dto); // too complex for MVP (?)
+        Task<Result<Appointment>> DeleteAsync(Guid externalId);
     }
 }

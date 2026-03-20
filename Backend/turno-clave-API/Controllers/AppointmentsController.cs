@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using turno_clave_API.Application.DTOs.Appointment;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Controllers
@@ -21,27 +22,19 @@ namespace turno_clave_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDTO dto)
         {
-            Appointment? appointment = await _appointmentService.CreateAsync(dto);
+            Result<Appointment>? result = await _appointmentService.CreateAsync(dto);
 
-            if (appointment == null)
+            return result.ToActionResult(this, appointment =>
             {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Appointment Creation Failed",
-                    detail: "The appointment could not be created. Please check the provided data and try again.",
-                    type: "/errors/AppointmentCreationFailed",
-                    instance: HttpContext.Request.Path
-                );
-            }
-
-            return CreatedAtAction(nameof(GetByExternalId), new { id = appointment.ExternalId }, appointment);
+                AppointmentDTO dto = Appointment.ToDto(appointment);
+                return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
+            });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByExternalId(string externalId)
+        [HttpGet("{externalId:guid}")]
+        public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
-            if (!TryParseExternalId(externalId, out var parsedExternalId, out var problem)) return problem;
-            Appointment? appointment = await _appointmentService.GetByExternalId(parsedExternalId);
+            Appointment? appointment = await _appointmentService.GetByExternalIdAsync(externalId);
             if (appointment == null)
             {
                 return Problem(
@@ -52,7 +45,21 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
-            return Ok(appointment);
+            return Ok(Appointment.ToDto(appointment));
+        }
+
+        //[HttpPut]
+        //public async Task<IActionResult> Update([FromBody] UpdateAppointmentDTO dto)
+        //{
+        //    Result<Appointment>? result = await _appointmentService.UpdateAsync(dto);
+        //    return result.ToActionResult(this, appointment => Ok(Appointment.ToDto(appointment)));
+        //}
+
+        [HttpDelete("{externalId:guid}")]
+        public async Task<IActionResult> Delete(Guid externalId)
+        {
+            Result<Appointment>? result = await _appointmentService.DeleteAsync(externalId);
+            return result.ToActionResult(this, _ => NoContent());
         }
 
         private bool TryParseExternalId(string externalId, out Guid parsed, [NotNullWhen(false)] out IActionResult? error)

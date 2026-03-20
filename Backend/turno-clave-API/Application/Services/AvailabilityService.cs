@@ -41,6 +41,7 @@ namespace turno_clave_API.Application.Services
             };
             _availabilityRepository.AddAvailability(availability);
             await _availabilityRepository.SaveAsync();
+
             return Result<Availability>.Success(availability);
         }
 
