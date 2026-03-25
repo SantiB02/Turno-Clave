@@ -81,9 +81,6 @@ namespace turno_clave_API.Application.Services
 
         public async Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
-            if (startTime < endTime)
-                return true;
-
             bool isStartTimeCorrect = startTime < endTime;
             bool isAvailabilityTaken = await _availabilityRepository.IsAvailabilityTakenAsync(professional, dayOfWeek, startTime, endTime);
 
