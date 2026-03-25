@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Didact_Gothic, Geist, Geist_Mono } from "next/font/google"
+import { Didact_Gothic, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import Footer from "./components/Footer"
 
