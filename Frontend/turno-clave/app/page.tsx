@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 export default function Home() {
@@ -31,24 +32,14 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="bg-blue-50 rounded-2xl h-96 flex items-center justify-center">
-              <div className="text-center text-gray-400">
-                <svg
-                  type="image"
-                  className="w-24 h-24 mx-auto mb-4 opacity-50"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <title>Calendario de turnos visual</title>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <p>Calendario de turnos visual</p>
+            <div className="flex justify-center">
+              <div className="relative bg-blue-50 rounded-2xl h-96 w-full max-w-xs md:w-120 md:max-w-none md:w-120 flex items-center justify-center overflow-hidden">
+                <Image
+                  src="/mis-turnos-screenshot.png"
+                  alt="Mis Turnos screenshot"
+                  fill
+                  className="object-contain w-full h-full p-4 rounded-lg"
+                />
               </div>
             </div>
           </div>

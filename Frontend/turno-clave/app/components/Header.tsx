@@ -35,9 +35,9 @@ export default function Header() {
           </div>
           <button
             type="button"
-            className="bg-primary-orange hover:bg-primary-orange/80 text-white px-6 py-2 rounded-lg transition"
+            className="bg-primary-orange cursor-pointer hover:bg-primary-orange/80 text-white px-6 py-2 rounded-lg transition"
           >
-            Empezar
+            Iniciar Sesión
           </button>
         </div>
       </div>
