@@ -33,12 +33,13 @@ export default function Header() {
               Beneficios
             </a>
           </div>
-          <button
-            type="button"
+
+          <Link
+            href="/dashboard"
             className="bg-primary-orange cursor-pointer hover:bg-primary-orange/80 text-white px-6 py-2 rounded-lg transition"
           >
             Iniciar Sesión
-          </button>
+          </Link>
         </div>
       </div>
     </nav>

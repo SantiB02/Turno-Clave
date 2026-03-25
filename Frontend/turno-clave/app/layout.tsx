@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Didact_Gothic, Geist, Geist_Mono } from "next/font/google"
 import "./globals.css"
 import Footer from "./components/Footer"
-import Header from "./components/Header"
 
 const didactGothic = Didact_Gothic({
   weight: ["400"],
