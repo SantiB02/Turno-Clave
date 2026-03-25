@@ -3,6 +3,7 @@ import { Didact_Gothic, Geist_Mono } from "next/font/google"
 import "../globals.css"
 import {
   BriefcaseIcon,
+  CalendarDaysIcon,
   ChartBarSquareIcon,
   Cog6ToothIcon,
   HomeIcon,
@@ -45,38 +46,45 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 <HomeIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
               <Link
+                title="Mis Turnos"
+                href="/dashboard/mis-turnos"
+                className="block mx-auto py-2 rounded hover:bg-orange-400"
+              >
+                <CalendarDaysIcon className="h-10 w-10 inline-block mr-2" />
+              </Link>
+              <Link
                 title="Mis Servicios"
-                href="/wrench"
+                href="/dashboard/mis-servicios"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <WrenchScrewdriverIcon className="h-10 w-10 inline-block" />
               </Link>
               <Link
                 title="Mi Negocio"
-                href="/briefcase"
+                href="/dashboard/mi-negocio"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <BriefcaseIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
               <Link
                 title="Mis Estadísticas"
-                href="/chart"
+                href="/dashboard/mis-estadisticas"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <ChartBarSquareIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
             </div>
-            <div>
+            <div className="flex flex-col justify-center gap-2">
               <Link
                 title="Mi Cuenta"
-                href="/user"
+                href="/dashboard/mi-cuenta"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <UserIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
               <Link
                 title="Configuración"
-                href="/settings"
+                href="/dashboard/configuracion"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <Cog6ToothIcon className="h-10 w-10 inline-block mr-2" />
