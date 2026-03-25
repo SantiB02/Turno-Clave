@@ -29,10 +29,7 @@ export default function RootLayout({
       <body
         className={`${didactGothic.className} ${geistMono.variable} antialiased`}
       >
-        <Header />
-
         <main className="min-h-screen bg-white">{children}</main>
-
         <Footer />
       </body>
     </html>
