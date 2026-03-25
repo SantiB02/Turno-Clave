@@ -10,6 +10,7 @@ namespace turno_clave_API.Application.Interfaces
         Task<Availability?> GetByExternalIdAsync(Guid externalId);
         Task<Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
         Task<Result<Availability>> DeleteAsync(Guid externalId);
-        Task<bool> IsAvailabilityValid(Professional professional, CreateAvailabilityDTO dto);
+        Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime);
+        Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek);
     }
 }

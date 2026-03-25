@@ -8,11 +8,11 @@ namespace turno_clave_API.Controllers
 {
     [Route("api/services")]
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class ServiceController : ControllerBase
     {
         private readonly IServiceService _serviceService;
 
-        public ServicesController(IServiceService serviceService)
+        public ServiceController(IServiceService serviceService)
         {
             _serviceService = serviceService;
         }

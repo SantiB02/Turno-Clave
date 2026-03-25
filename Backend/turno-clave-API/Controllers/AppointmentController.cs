@@ -10,11 +10,11 @@ namespace turno_clave_API.Controllers
 {
     [Route("api/appointments")]
     [ApiController]
-    public class AppointmentsController : ControllerBase
+    public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
 
-        public AppointmentsController(IAppointmentService appointmentService)
+        public AppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
         }
@@ -55,10 +55,10 @@ namespace turno_clave_API.Controllers
         //    return result.ToActionResult(this, appointment => Ok(Appointment.ToDto(appointment)));
         //}
 
-        [HttpDelete("{externalId:guid}")]
-        public async Task<IActionResult> Delete(Guid externalId)
+        [HttpPatch("{externalId:guid}")]
+        public async Task<IActionResult> Cancel(Guid externalId)
         {
-            Result<Appointment>? result = await _appointmentService.DeleteAsync(externalId);
+            Result<Appointment>? result = await _appointmentService.CancelAsync(externalId);
             return result.ToActionResult(this, _ => NoContent());
         }
 

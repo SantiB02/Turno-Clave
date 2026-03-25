@@ -27,7 +27,7 @@ namespace turno_clave_API.Application.Services
                 return Result<Availability>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
 
             // Validate that the new availability does not overlap with existing availabilities for the same professional.
-            bool isValid = await IsAvailabilityValid(professional, dto);
+            bool isValid = await IsAvailabilityValidAsync(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
             if (!isValid)
                 return Result<Availability>.Failure("Time slot already taken or invalid start and end time"); // TODO: Improve error message
 
@@ -74,17 +74,25 @@ namespace turno_clave_API.Application.Services
                 return Result<Availability>.Failure($"Availability with ExternalId {externalId} not found.");
             }
 
-            availability.IsActive = false;
+            await _availabilityRepository.DeleteAvailabilityAsync(availability.ExternalId);
             await _availabilityRepository.SaveAsync();
             return Result<Availability>.Success(availability);
         }
 
-        public async Task<bool> IsAvailabilityValid(Professional professional, CreateAvailabilityDTO dto)
+        public async Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
-            if (dto.StartTime < dto.EndTime)
+            if (startTime < endTime)
                 return true;
-             
-            return await _availabilityRepository.IsAvailabilityTaken(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
+
+            bool isStartTimeCorrect = startTime < endTime;
+            bool isAvailabilityTaken = await _availabilityRepository.IsAvailabilityTakenAsync(professional, dayOfWeek, startTime, endTime);
+
+            return isStartTimeCorrect && !isAvailabilityTaken;
+        }
+
+        public async Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek)
+        {
+            return await _availabilityRepository.IsDayWorkDayAsync(professional, dayOfWeek);
         }
     }
 }

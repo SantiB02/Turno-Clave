@@ -40,8 +40,12 @@ namespace turno_clave_API.Infrastructure.Repositories
             _context.Availabilities.Remove(availability);
         }
 
-        // TODO: fix this logic (end time should be greater than start time)
-        public async Task<bool> IsAvailabilityTaken(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
+        public async Task DeleteAvailabilityAsync(Availability availability)
+        {
+            _context.Availabilities.Remove(availability);
+        }
+
+        public async Task<bool> IsAvailabilityTakenAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
             return await _context.Availabilities
                 .Where(av => av.ProfessionalId == professional.Id)
@@ -50,6 +54,13 @@ namespace turno_clave_API.Infrastructure.Repositories
                     startTime < a.EndTime &&
                     endTime > a.StartTime
                 );
+        }
+
+        public async Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek)
+        {
+            return await _context.Availabilities
+                .Where(av => av.ProfessionalId == professional.Id)
+                .AnyAsync(a => a.DayOfWeek == dayOfWeek);
         }
 
         public async Task SaveAsync()

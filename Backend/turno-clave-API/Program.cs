@@ -23,6 +23,7 @@ builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IBusinessRepository, BusinessRepository>();
 
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
 builder.Services.AddScoped<IProfessionalService, ProfessionalService>();
 builder.Services.AddScoped<IProfessionalRepository, ProfessionalRepository>();

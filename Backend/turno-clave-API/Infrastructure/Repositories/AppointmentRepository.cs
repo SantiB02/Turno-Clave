@@ -40,6 +40,16 @@ namespace turno_clave_API.Infrastructure.Repositories
             _context.Appointments.Remove(appointment);
         }
 
+        public async Task<bool> IsAppointmentTakenAsync(int professionalId, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            return await _context.Appointments
+                .Where(a => a.ProfessionalId == professionalId)
+                .AnyAsync(a =>
+                    startTime < a.EndDateTime &&
+                    endTime > a.StartDateTime
+                );
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

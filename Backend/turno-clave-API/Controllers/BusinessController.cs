@@ -9,11 +9,11 @@ namespace turno_clave_API.Controllers
 {
     [Route("api/businesses")]
     [ApiController]
-    public class BusinessesController : ControllerBase
+    public class BusinessController : ControllerBase
     {
         private readonly IBusinessService _businessService;
 
-        public BusinessesController(IBusinessService businessService)
+        public BusinessController(IBusinessService businessService)
         {
             _businessService = businessService;
         }

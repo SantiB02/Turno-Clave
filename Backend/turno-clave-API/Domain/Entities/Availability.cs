@@ -13,7 +13,6 @@ namespace turno_clave_API.Domain.Entities
         public DayOfWeek DayOfWeek { get; set; } // 0-6 (Sunday to Saturday)
         public TimeOnly StartTime { get; set; } // 17:45, 18:00, 13:30:20, etc.
         public TimeOnly EndTime { get; set; }
-        public bool IsActive { get; set; }
 
         public static AvailabilityDTO ToDto(Availability av)
         {

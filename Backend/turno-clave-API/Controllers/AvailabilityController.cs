@@ -10,11 +10,11 @@ namespace turno_clave_API.Controllers
 {
     [Route("api/availabilities")]
     [ApiController]
-    public class AvailabilitiesController : ControllerBase
+    public class AvailabilityController : ControllerBase
     {
         private readonly IAvailabilityService _availabilityService;
 
-        public AvailabilitiesController(IAvailabilityService availabilityService)
+        public AvailabilityController(IAvailabilityService availabilityService)
         {
             _availabilityService = availabilityService;
         }

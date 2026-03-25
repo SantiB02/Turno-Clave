@@ -8,11 +8,11 @@ namespace turno_clave_API.Controllers
 {
     [Route("api/professionals")]
     [ApiController]
-    public class ProfessionalsController : ControllerBase
+    public class ProfessionalController : ControllerBase
     {
         private readonly IProfessionalService _professionalService;
 
-        public ProfessionalsController(IProfessionalService professionalService)
+        public ProfessionalController(IProfessionalService professionalService)
         {
             _professionalService = professionalService;
         }
