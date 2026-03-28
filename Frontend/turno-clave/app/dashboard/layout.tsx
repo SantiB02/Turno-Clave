@@ -7,6 +7,7 @@ import {
   ChartBarSquareIcon,
   Cog6ToothIcon,
   HomeIcon,
+  QuestionMarkCircleIcon,
   UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline"
@@ -57,7 +58,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 href="/dashboard/mis-servicios"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
-                <WrenchScrewdriverIcon className="h-10 w-10 inline-block" />
+                <WrenchScrewdriverIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
               <Link
                 title="Mi Negocio"
@@ -88,6 +89,13 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <Cog6ToothIcon className="h-10 w-10 inline-block mr-2" />
+              </Link>
+              <Link
+                title="Ayuda"
+                href="/dashboard/ayuda"
+                className="block mx-auto py-2 rounded hover:bg-orange-400"
+              >
+                <QuestionMarkCircleIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
             </div>
           </div>
