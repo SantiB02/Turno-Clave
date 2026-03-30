@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using turno_clave_API.Application.DTOs.Appointment;
@@ -8,6 +9,7 @@ using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Controllers
 {
+    [Authorize]
     [Route("api/appointments")]
     [ApiController]
     public class AppointmentController : ControllerBase
@@ -19,6 +21,7 @@ namespace turno_clave_API.Controllers
             _appointmentService = appointmentService;
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDTO dto)
         {

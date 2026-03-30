@@ -7,10 +7,9 @@ namespace turno_clave_API.Domain.Entities
         public int Id { get; set; }
         public Guid ExternalId { get; set; } = Guid.NewGuid();
 
+        public string GoogleId { get; set; } = string.Empty;
         public required string Name { get; set; }
         public required string Email { get; set; }
-        public required string PasswordHash { get; set; }
-        public UserRole Role { get; set; }
         public bool IsActive { get; set; } 
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
