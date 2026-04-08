@@ -4,6 +4,8 @@ using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Authorization;
+using turno_clave_API.Common;
 
 namespace turno_clave_API.Controllers
 {
@@ -18,24 +20,21 @@ namespace turno_clave_API.Controllers
             _businessService = businessService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBusinessDTO dto)
         {
-            try
+            string? userExternalIdString = User.FindFirst("userId")?.Value;
+
+            if (userExternalIdString == null)
             {
-                Business business = await _businessService.CreateAsync(dto);
-                return CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business);
+                return Unauthorized();
             }
-            catch (ArgumentException ex)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Invalid TimeZone",
-                    detail: ex.Message,
-                    type: "/errors/InvalidTimeZone",
-                    instance: HttpContext.Request.Path
-                );
-            }
+
+            Guid userExternalId = Guid.Parse(userExternalIdString);
+
+            Result<Business> result = await _businessService.CreateAsync(dto, userExternalId);
+            return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId, business }));
         }
 
         [HttpGet("{externalId:guid}")]

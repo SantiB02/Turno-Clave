@@ -25,7 +25,7 @@ namespace turno_clave_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDTO dto)
         {
-            Result<Appointment>? result = await _appointmentService.CreateAsync(dto);
+            Result<Appointment> result = await _appointmentService.CreateAsync(dto);
 
             return result.ToActionResult(this, appointment =>
             {

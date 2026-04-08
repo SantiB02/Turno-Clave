@@ -13,5 +13,7 @@ namespace turno_clave_API.Domain.Entities
         public bool IsActive { get; set; } 
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+
+        public ICollection<UserBusiness> UserBusinesses { get; set; } = [];
     }
 }

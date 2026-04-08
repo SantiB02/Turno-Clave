@@ -11,15 +11,20 @@ public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
+    private readonly IUserService _userService;
 
-    public AuthService(AppDbContext context, IConfiguration config)
+    public AuthService(AppDbContext context, IConfiguration config, IUserService userService)
     {
         _context = context;
         _config = config;
+        _userService = userService;
     }
 
     public async Task<string> LoginWithGoogle(string idToken)
     {
+        if (string.IsNullOrWhiteSpace(idToken))
+            throw new ArgumentException("idToken is required", nameof(idToken));
+
         var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
 
         var user = _context.Users
@@ -27,16 +32,13 @@ public class AuthService : IAuthService
 
         if (user == null)
         {
-            user = new User // TODO: Remove Business from User (fix relationship)
-            {
-                GoogleId = payload.Subject,
-                Email = payload.Email,
-                Name = payload.Name
-            };
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await _userService.CreateFromGooglePayloadAsync(payload);
+            // re-query the user after creation to ensure we have the instance
+            user = _context.Users.FirstOrDefault(u => u.GoogleId == payload.Subject);
         }
+
+        if (user == null)
+            throw new InvalidOperationException("User creation failed after validating Google id token.");
 
         return GenerateJwt(user);
     }

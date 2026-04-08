@@ -11,5 +11,7 @@ namespace turno_clave_API.Domain.Entities
         public required Business Business { get; set; }
 
         public UserRole Role { get; set; } = UserRole.Owner;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

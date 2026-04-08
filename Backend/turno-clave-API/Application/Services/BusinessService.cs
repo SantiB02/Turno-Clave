@@ -7,26 +7,36 @@ using turno_clave_API.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
+using turno_clave_API.Common;
 
 namespace turno_clave_API.Application.Services
 {
     public class BusinessService : IBusinessService
     {
+        private readonly AppDbContext _context;
         private readonly ILogger<BusinessService> _logger;
         private readonly IBusinessRepository _businessRepository;
+        private readonly IUserService _userService;
 
-        public BusinessService(ILogger<BusinessService> logger, IBusinessRepository businessRepository)
+
+        public BusinessService(AppDbContext context, ILogger<BusinessService> logger, IBusinessRepository businessRepository, IUserService userService)
         {
+            _context = context;
             _logger = logger;
             _businessRepository = businessRepository;
+            _userService = userService;
         }
 
-        public async Task<Business> CreateAsync(CreateBusinessDTO dto)
+        public async Task<Result<Business>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
         {
             string slug = GenerateSlug(dto.Name);
 
-            // Validate/normalize timezone identifier
-            string timezoneId = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
+            Result<string> timeZoneResult = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
+
+            if (!timeZoneResult.IsSuccess)
+            {
+                return Result<Business>.Failure($"Invalid time zone: {dto.TimeZone}");
+            }
 
             Business business = new()
             {
@@ -38,13 +48,26 @@ namespace turno_clave_API.Application.Services
                 Address = dto.Address,
                 City = dto.City,
                 Country = dto.Country,
-                TimeZone = timezoneId,
+                TimeZone = timeZoneResult.Value!, // null-forgiving because we know it's not null if IsSuccess is true
             };
 
-            _businessRepository.AddBusiness(business);
-            await _businessRepository.SaveAsync();
+            User? user = await _userService.GetByExternalIdAsync(userExternalId);
 
-            return business;
+            if (user == null)
+            {
+                return Result<Business>.Failure($"Unauthorized");
+            }
+
+            UserBusiness userBusiness = new()
+            {
+                User = user,
+                Business = business,
+            };
+
+            _context.Businesses.Add(business);
+            _context.UserBusinesses.Add(userBusiness);
+
+            return Result<Business>.Success(business);
         }
 
         

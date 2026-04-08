@@ -428,10 +428,6 @@ namespace turno_clave_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BusinessId")
-                        .HasColumnType("integer")
-                        .HasColumnName("business_id");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
@@ -466,14 +462,38 @@ namespace turno_clave_API.Migrations
                     b.HasKey("Id")
                         .HasName("p_k_users");
 
-                    b.HasIndex("BusinessId")
-                        .HasDatabaseName("i_x_users_business_id");
-
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasDatabaseName("i_x_users_email");
 
                     b.ToTable("users");
+                });
+
+            modelBuilder.Entity("turno_clave_API.Domain.Entities.UserBusiness", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("BusinessId")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer")
+                        .HasColumnName("role");
+
+                    b.HasKey("UserId", "BusinessId")
+                        .HasName("p_k_user_businesses");
+
+                    b.HasIndex("BusinessId")
+                        .HasDatabaseName("i_x_user_businesses_business_id");
+
+                    b.ToTable("user_businesses");
                 });
 
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Appointment", b =>
@@ -582,12 +602,25 @@ namespace turno_clave_API.Migrations
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("turno_clave_API.Domain.Entities.User", b =>
+            modelBuilder.Entity("turno_clave_API.Domain.Entities.UserBusiness", b =>
                 {
-                    b.HasOne("turno_clave_API.Domain.Entities.Business", null)
-                        .WithMany("Users")
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
+                        .WithMany("UserBusinesses")
                         .HasForeignKey("BusinessId")
-                        .HasConstraintName("f_k_users_businesses_business_id");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_user_businesses_businesses_business_id");
+
+                    b.HasOne("turno_clave_API.Domain.Entities.User", "User")
+                        .WithMany("UserBusinesses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_user_businesses_users_user_id");
+
+                    b.Navigation("Business");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Business", b =>
@@ -602,7 +635,7 @@ namespace turno_clave_API.Migrations
 
                     b.Navigation("Services");
 
-                    b.Navigation("Users");
+                    b.Navigation("UserBusinesses");
                 });
 
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Client", b =>
@@ -620,6 +653,11 @@ namespace turno_clave_API.Migrations
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Service", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("turno_clave_API.Domain.Entities.User", b =>
+                {
+                    b.Navigation("UserBusinesses");
                 });
 #pragma warning restore 612, 618
         }

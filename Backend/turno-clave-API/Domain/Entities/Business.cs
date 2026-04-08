@@ -21,11 +21,11 @@
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
-        public ICollection<User> Users { get; set; } = [];
         public ICollection<Service> Services { get; set; } = [];
         public ICollection<Client> Clients { get; set; } = [];
         public ICollection<Appointment> Appointments { get; set; } = [];
         public ICollection<AvailabilityException> AvailabilityExceptions { get; set; } = [];
         public ICollection<Professional> Professionals { get; set; } = [];
+        public ICollection<UserBusiness> UserBusinesses { get; set; } = [];
     }
 }

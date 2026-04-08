@@ -1,24 +1,22 @@
 using System;
 using System.Linq;
+using turno_clave_API.Common;
 
 namespace turno_clave_API.Infrastructure.Time
 {
-    /// <summary>
-    /// Helper utilities for timezone validation and conversions.
-    /// </summary>
     public static class TimeZoneHelper
     {
-        public static string NormalizeTimeZoneId(string timeZone)
+        public static Result<string> NormalizeTimeZoneId(string timeZone)
         {
             if (string.IsNullOrWhiteSpace(timeZone))
-                return TimeZoneInfo.Utc.Id;
+                return Result<string>.Success(TimeZoneInfo.Utc.Id);
 
             try
             {
                 var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZone);
-                return tz.Id;
+                return Result<string>.Success(tz.Id);
             }
-            catch
+            catch (TimeZoneNotFoundException)
             {
                 var match = TimeZoneInfo.GetSystemTimeZones()
                     .FirstOrDefault(t => string.Equals(t.Id, timeZone, StringComparison.OrdinalIgnoreCase)
@@ -26,20 +24,19 @@ namespace turno_clave_API.Infrastructure.Time
                         || (!string.IsNullOrEmpty(t.DisplayName) && t.DisplayName.IndexOf(timeZone, StringComparison.OrdinalIgnoreCase) >= 0));
 
                 if (match != null)
-                    return match.Id;
-
-                throw new ArgumentException($"Invalid time zone identifier: {timeZone}");
+                    return Result<string>.Success(match.Id);
+                else return Result<string>.Failure($"Invalid time zone identifier: {timeZone}");
             }
         }
 
-        public static DateTimeOffset ConvertDateAndTimeToDateTimeOffset(DateOnly date, TimeOnly time, string timeZoneId)
-        {
-            var tzId = NormalizeTimeZoneId(timeZoneId);
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
+        //public static DateTimeOffset ConvertDateAndTimeToDateTimeOffset(DateOnly date, TimeOnly time, string timeZoneId)
+        //{
+        //    var tzIdResult = NormalizeTimeZoneId(timeZoneId);
+        //    var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
 
-            var local = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, DateTimeKind.Unspecified);
-            var offset = tz.GetUtcOffset(local);
-            return new DateTimeOffset(local, offset);
-        }
+        //    var local = new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, DateTimeKind.Unspecified);
+        //    var offset = tz.GetUtcOffset(local);
+        //    return new DateTimeOffset(local, offset);
+        //}
     }
 }

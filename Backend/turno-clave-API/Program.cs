@@ -16,6 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+// Register Swagger/OpenAPI generator and enable JWT Bearer support in the UI
+builder.Services.AddEndpointsApiExplorer();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 // Add Swagger/OpenAPI for UI exploration (classic Swagger UI)
 // Use the project's OpenAPI helper
@@ -42,11 +44,20 @@ builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 // Register AppDbContext using PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var key = builder.Configuration["Jwt:Key"];
+
+// Validate JWT signing key length (HS256 requires at least 256 bits = 32 bytes)
+if (string.IsNullOrWhiteSpace(key) || Encoding.UTF8.GetBytes(key).Length < 32)
+{
+    throw new InvalidOperationException("The JWT signing key is not configured or is too short. Set 'Jwt:Key' to at least 32 bytes (256 bits) in configuration.");
+}
 
 builder.Services.AddAuthentication(options =>
 {
