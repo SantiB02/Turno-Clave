@@ -34,7 +34,7 @@ namespace turno_clave_API.Controllers
             Guid userExternalId = Guid.Parse(userExternalIdString);
 
             Result<Business> result = await _businessService.CreateAsync(dto, userExternalId);
-            return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId, business }));
+            return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business));
         }
 
         [HttpGet("{externalId:guid}")]

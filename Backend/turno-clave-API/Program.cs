@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using System.Net;
 using System.Text;
 using turno_clave_API.Application.Interfaces;
@@ -15,13 +17,38 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Prevent JSON serialization errors when EF navigation properties create cycles
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
+
+builder.Services.AddAuthorization();
+
 // Register Swagger/OpenAPI generator and enable JWT Bearer support in the UI
-builder.Services.AddEndpointsApiExplorer();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-// Add Swagger/OpenAPI for UI exploration (classic Swagger UI)
-// Use the project's OpenAPI helper
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Turno Clave API", Version = "v1" });
+
+    var securityScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+    };
+
+    options.AddSecurityDefinition("Bearer", securityScheme);
+
+    options.AddSecurityRequirement( document => 
+    new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
 
 // Services and Repositories
 builder.Services.AddScoped<IBusinessService, BusinessService>();
@@ -99,12 +126,11 @@ app.Map("/error", async (HttpContext httpContext) =>
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    // Map the project's OpenAPI endpoint(s)
-    app.MapOpenApi();
-
+    // Enable Swagger middleware and UI in development
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "Turno Clave API V1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Turno Clave API V1");
     });
 }
 

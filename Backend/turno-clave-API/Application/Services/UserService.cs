@@ -17,11 +17,16 @@ namespace turno_clave_API.Application.Services
 
         public async Task<Result<User>> CreateFromGooglePayloadAsync(GoogleJsonWebSignature.Payload payload)
         {
+            if (String.IsNullOrEmpty(payload.Subject) || String.IsNullOrEmpty(payload.Email) || String.IsNullOrEmpty(payload.Name))
+            {
+                return Result<User>.Failure("Invalid Google payload");
+            }
+
             User user = new()
             {
                 GoogleId = payload.Subject,
-                Email = "santibrasca02@gmail.com",
-                Name = "Santiago Brasca",
+                Email = payload.Email,
+                Name = payload.Name,
             };
 
             _userRepository.Add(user);

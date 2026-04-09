@@ -67,7 +67,9 @@ namespace turno_clave_API.Application.Services
             _context.Businesses.Add(business);
             _context.UserBusinesses.Add(userBusiness);
 
-            return Result<Business>.Success(business);
+            await _context.SaveChangesAsync();
+
+            return Result<Business>.Success(business); // TODO: Map to a DTO instead of returning the entity directly (to avoid cycles and sensitive data exposure)
         }
 
         
