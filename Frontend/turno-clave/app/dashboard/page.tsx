@@ -1,4 +1,8 @@
-export default function Dashboard() {
+import { auth } from "@/auth"
+
+export default async function Dashboard() {
+  const session = await auth()
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -11,7 +15,10 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <h1>Bienvenido!</h1>
+      <h1 className="text-2xl">
+        ¡Bienvenido/a,{" "}
+        <span className="text-primary-orange">{session?.user?.name}</span>!
+      </h1>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa modi
         magnam soluta aperiam optio, suscipit aliquid inventore deleniti esse

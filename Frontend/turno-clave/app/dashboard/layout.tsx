@@ -13,6 +13,7 @@ import {
 } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import type { ReactNode } from "react"
+import UserAvatar from "../components/UserAvatar"
 
 const didactGothic = Didact_Gothic({
   weight: ["400"],
@@ -81,7 +82,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
                 href="/dashboard/mi-cuenta"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
-                <UserIcon className="h-10 w-10 inline-block mr-2" />
+                <UserAvatar />
               </Link>
               <Link
                 title="Configuración"

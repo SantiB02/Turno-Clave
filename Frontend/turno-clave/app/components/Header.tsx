@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import SignInButton from "./SignInButton"
 
 export default function Header() {
   return (
@@ -34,12 +35,7 @@ export default function Header() {
             </a>
           </div>
 
-          <Link
-            href="/dashboard"
-            className="bg-primary-orange cursor-pointer hover:bg-primary-orange/80 text-white px-6 py-2 rounded-lg transition"
-          >
-            Iniciar Sesión
-          </Link>
+          <SignInButton />
         </div>
       </div>
     </nav>
