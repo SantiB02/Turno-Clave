@@ -228,7 +228,7 @@ export default function Home() {
               href="/iniciar-prueba-gratuita"
               className="bg-white text-primary-orange hover:bg-gray-50 font-bold px-10 py-4 rounded-lg transition text-lg"
             >
-              Empezá tu prueba gratuita de 14 días
+              Ver Planes
             </Link>
           </div>
         </section>

@@ -11,7 +11,9 @@ import {
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import type { ReactNode } from "react"
+import { auth } from "@/auth"
 import SignOutIcon from "../components/SignOutIcon"
 import UserAvatar from "../components/UserAvatar"
 
@@ -30,7 +32,17 @@ export const metadata: Metadata = {
   description: "Ordena tu tiempo, potencia tu negocio.",
 }
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
+  const session = await auth()
+
+  if (!session) {
+    redirect("/")
+  }
+
   return (
     <div
       className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
