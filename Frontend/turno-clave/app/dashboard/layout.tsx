@@ -8,11 +8,11 @@ import {
   Cog6ToothIcon,
   HomeIcon,
   QuestionMarkCircleIcon,
-  UserIcon,
   WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import type { ReactNode } from "react"
+import SignOutIcon from "../components/SignOutIcon"
 import UserAvatar from "../components/UserAvatar"
 
 const didactGothic = Didact_Gothic({
@@ -36,7 +36,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
     >
       <aside className="sticky top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col gap-5">
-        <h2 className="text-lg text-white font-bold">Turno Clave</h2>
+        <Link href="/" className="text-lg text-white font-bold">
+          Turno Clave
+        </Link>
         <nav className="h-full">
           <div className="flex flex-col h-full justify-between text-sm font-semibold text-white">
             <div className="flex flex-col justify-center gap-2">
@@ -98,6 +100,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               >
                 <QuestionMarkCircleIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
+              <SignOutIcon />
             </div>
           </div>
         </nav>

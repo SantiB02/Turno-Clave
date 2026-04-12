@@ -1,8 +1,12 @@
 import Image from "next/image"
 import Link from "next/link"
+import { auth } from "@/auth"
+import Button from "./Button"
 import SignInButton from "./SignInButton"
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth()
+
   return (
     <nav className="fixed top-0 w-full bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,7 +39,11 @@ export default function Header() {
             </a>
           </div>
 
-          <SignInButton />
+          {session?.user ? (
+            <Button label="Ir al Panel de Control" href="/dashboard" />
+          ) : (
+            <SignInButton />
+          )}
         </div>
       </div>
     </nav>
