@@ -26,7 +26,7 @@ export default function Home() {
                     href="/iniciar-prueba-gratuita"
                     className="bg-primary-orange hover:bg-primary-orange/80 text-white text-center font-semibold px-8 py-3 rounded-lg transition text-lg"
                   >
-                    Iniciar Prueba Gratuita
+                    Empieza Ahora
                   </Link>
                   <Link
                     href="/demo"

@@ -25,18 +25,24 @@ export default async function Header() {
           </Link>
 
           <div className="hidden md:flex gap-8">
-            <a
+            <Link
               href="#features"
               className="text-gray-700 hover:text-primary-orange transition"
             >
               Funcionalidades
-            </a>
-            <a
+            </Link>
+            <Link
               href="#benefits"
               className="text-gray-700 hover:text-orange-500 transition"
             >
               Beneficios
-            </a>
+            </Link>
+            <Link
+              href="#"
+              className="text-gray-700 hover:text-orange-500 transition"
+            >
+              Planes
+            </Link>
           </div>
 
           {session?.user ? (
