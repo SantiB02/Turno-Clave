@@ -167,4 +167,11 @@ app.MapControllers();
 DateTimeOffset exampleDateTimeOffset = new(2026, 3, 1, 18, 0, 0, TimeSpan.FromHours(-3)); // March 1, 2026, at 18:00:00 with a -3 hours offset (e.g., Buenos Aires time)
 Debug.WriteLine(exampleDateTimeOffset); // OUTPUT: 1/3/2026 18:00:00 -03:00
 
+// Apply any pending migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
 app.Run();
