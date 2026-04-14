@@ -74,9 +74,23 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
+string connectionString;
+
+if (builder.Environment.IsDevelopment())
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
+}
+else
+{
+    // In production, read the connection string from environment variable
+    connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") 
+        ?? throw new InvalidOperationException("Environment variable 'DATABASE_URL' is not set.");
+}
+
 // Register AppDbContext using PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 var key = builder.Configuration["Jwt:Key"];
 
