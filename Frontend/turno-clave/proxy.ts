@@ -7,5 +7,5 @@ export const proxy = auth((req) => {
 })
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*"], // To protect all routes under /dashboard
 }

@@ -2,6 +2,6 @@
 {
     public interface IAuthService
     {
-        Task<string> LoginWithGoogle(string idToken);
+        Task<string> ValidateGoogle(string idToken);
     }
 }

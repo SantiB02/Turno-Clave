@@ -5,7 +5,7 @@ using turno_clave_API.Application.Interfaces;
 
 namespace turno_clave_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -16,13 +16,13 @@ namespace turno_clave_API.Controllers
             _authService = authService;
         }
 
-        [HttpPost("google")]
-        public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleAuthDTO dto)
+        [HttpPost("validate-google")]
+        public async Task<IActionResult> ValidateGoogle([FromBody] GoogleAuthDTO dto)
         {
             try
             {
-                string token = await _authService.LoginWithGoogle(dto.IdToken);
-                return Ok(new { Token = token });
+                string token = await _authService.ValidateGoogle(dto.IdToken);
+                return Ok(new { token });
             }
             catch (Exception ex)
             {

@@ -21,7 +21,7 @@ public class AuthService : IAuthService
         _userService = userService;
     }
 
-    public async Task<string> LoginWithGoogle(string idToken)
+    public async Task<string> ValidateGoogle(string idToken)
     {
         if (string.IsNullOrWhiteSpace(idToken))
             throw new ArgumentException("idToken is required", nameof(idToken));
