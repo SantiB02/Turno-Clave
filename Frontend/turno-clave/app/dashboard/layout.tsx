@@ -47,7 +47,7 @@ export default async function DashboardLayout({
     <div
       className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
     >
-      <aside className="sticky top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col gap-5">
+      <aside className="sticky mr-6 top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col gap-5">
         <Link href="/" className="text-lg text-white font-bold">
           Turno Clave
         </Link>
@@ -96,7 +96,9 @@ export default async function DashboardLayout({
                 href="/dashboard/mi-cuenta"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
-                <UserAvatar />
+                <div className="rounded-full mr-2 h-10 w-10 bg-gray-300 flex items-center justify-center">
+                  <UserAvatar />
+                </div>
               </Link>
               <Link
                 title="Configuración"

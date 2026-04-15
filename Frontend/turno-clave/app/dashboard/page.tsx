@@ -8,8 +8,6 @@ export default async function Dashboard() {
     redirect("/")
   }
 
-  console.log("SESSION:", session)
-
   return (
     <div>
       <div className="flex items-center justify-between">
