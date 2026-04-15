@@ -24,12 +24,6 @@ export default async function Dashboard() {
         ¡Bienvenido/a,{" "}
         <span className="text-primary-orange">{session?.user?.name}</span>!
       </h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa modi
-        magnam soluta aperiam optio, suscipit aliquid inventore deleniti esse
-        minima tempore neque fugit. Eaque doloribus quaerat non quidem pariatur
-        eos.
-      </p>
     </div>
   )
 }
