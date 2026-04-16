@@ -32,6 +32,11 @@ namespace turno_clave_API.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<bool> SlugExistsAsync(string slug)
+        {
+            return await _context.Businesses.AnyAsync(b => b.Slug == slug);
+        }
+
         public void AddBusiness(Business business)
         {
             _context.Businesses.Add(business);

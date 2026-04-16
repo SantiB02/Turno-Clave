@@ -29,7 +29,16 @@ namespace turno_clave_API.Application.Services
 
         public async Task<Result<Business>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
         {
-            string slug = GenerateSlug(dto.Name);
+            string baseSlug = GenerateSlug(dto.Name);
+            string slug = baseSlug;
+            int counter = 2;
+
+            // Adds a number if the slug already exists, to ensure uniqueness (e.g. "my-business", "my-business-2", "my-business-3", etc.)
+            while (await _businessRepository.SlugExistsAsync(slug))
+            {
+                slug = $"{baseSlug}-{counter}";
+                counter++;
+            }
 
             Result<string> timeZoneResult = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
 

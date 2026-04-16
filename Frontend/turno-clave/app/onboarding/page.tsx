@@ -28,8 +28,8 @@ export default async function Onboarding() {
   return (
     <div className="ml-10 mt-6">
       <h1 className="text-3xl font-bold">
-        ¡Bienvenido/a a <span className="text-primary-orange">TurnoClave</span>,{" "}
-        {session.user?.name?.split(" ")[0]}!
+        ¡Bienvenido/a a Turno <span className="text-primary-orange">Clave</span>
+        , {session.user?.name?.split(" ")[0]}!
       </h1>
       <h2 className="text-xl mt-4 text-gray-600">
         Para comenzar, por favor agrega tu primer negocio.

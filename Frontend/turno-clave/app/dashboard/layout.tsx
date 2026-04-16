@@ -16,6 +16,7 @@ import type { ReactNode } from "react"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
+import HelpFloatingButton from "../components/HelpFloatingButton"
 import SignOutIcon from "../components/SignOutIcon"
 import UserAvatar from "../components/UserAvatar"
 
@@ -63,12 +64,13 @@ export default async function DashboardLayout({
     <div
       className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
     >
-      <aside className="sticky mr-6 top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col gap-5">
+      <HelpFloatingButton />
+      <aside className="sticky mr-6 top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-orange-400">
         <Link href="/" className="text-lg text-white font-bold">
           Turno Clave
         </Link>
         <nav className="h-full">
-          <div className="flex flex-col h-full justify-between text-sm font-semibold text-white">
+          <div className="flex flex-col h-full gap-4 text-sm font-semibold text-white">
             <div className="flex flex-col justify-center gap-2">
               <Link
                 title="Inicio"
@@ -106,7 +108,7 @@ export default async function DashboardLayout({
                 <ChartBarSquareIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
             </div>
-            <div className="flex flex-col justify-center gap-2">
+            <div className="flex flex-col gap-2 mt-auto">
               <Link
                 title="Mi Cuenta"
                 href="/dashboard/mi-cuenta"
@@ -123,13 +125,13 @@ export default async function DashboardLayout({
               >
                 <Cog6ToothIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
-              <Link
+              {/* <Link
                 title="Ayuda"
                 href="/dashboard/ayuda"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <QuestionMarkCircleIcon className="h-10 w-10 inline-block mr-2" />
-              </Link>
+              </Link> */}
               <SignOutIcon />
             </div>
           </div>
