@@ -6,6 +6,7 @@ namespace turno_clave_API.Infrastructure.Repositories.Interfaces
     {
         public Task<List<Business>> GetBusinessesAsync();
         public Task<Business?> GetBusinessByExternalIdAsync(Guid externalId);
+        public Task<IEnumerable<Business>> GetBusinessesByUserExternalIdAsync(Guid userExternalId);
         public void AddBusiness(Business business);
         public void UpdateBusiness(Business business);
         public Task DeleteBusinessAsync(Guid externalId);

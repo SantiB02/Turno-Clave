@@ -120,7 +120,7 @@ builder.Services.AddAuthentication(options =>
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 
-Console.WriteLine($"PORT ENV: {Environment.GetEnvironmentVariable("PORT")}");
+// Console.WriteLine($"PORT ENV: {Environment.GetEnvironmentVariable("PORT")}");
 
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 

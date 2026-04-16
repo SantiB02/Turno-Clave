@@ -24,6 +24,14 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
         }
 
+        public async Task<IEnumerable<Business>> GetBusinessesByUserExternalIdAsync(Guid userExternalId)
+        {
+            return await _context.UserBusinesses
+                .Where(ub => ub.User.ExternalId == userExternalId)
+                .Select(ub => ub.Business)
+                .ToListAsync();
+        }
+
         public void AddBusiness(Business business)
         {
             _context.Businesses.Add(business);

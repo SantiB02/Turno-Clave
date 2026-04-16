@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using turno_clave_API.Infrastructure.Data;
@@ -11,9 +12,11 @@ using turno_clave_API.Infrastructure.Data;
 namespace turno_clave_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415231254_add_logo_url_to_business")]
+    partial class add_logo_url_to_business
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,11 +262,6 @@ namespace turno_clave_API.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("slug");
-
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("state");
 
                     b.Property<string>("TimeZone")
                         .IsRequired()

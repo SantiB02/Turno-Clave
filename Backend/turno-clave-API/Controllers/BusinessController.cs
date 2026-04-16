@@ -56,6 +56,19 @@ namespace turno_clave_API.Controllers
             return Ok(business);
         }
 
+        [HttpGet("mine")]
+        public async Task<IActionResult> GetMine()
+        {
+            string? userExternalIdString = User.FindFirst("userId")?.Value;
+            if (userExternalIdString == null)
+            {
+                return Unauthorized();
+            }
+            Guid userExternalId = Guid.Parse(userExternalIdString);
+            IEnumerable<Business> businesses = await _businessService.GetByUserExternalIdAsync(userExternalId);
+            return Ok(businesses.Select(Business.ToDetailDto));
+        }
+
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateBusinessDTO dto)
         {

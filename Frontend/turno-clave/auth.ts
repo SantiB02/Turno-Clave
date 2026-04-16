@@ -9,7 +9,7 @@ interface ExtendedJWT extends JWT {
   userId?: string
 }
 
-interface ExtendedSession extends Session {
+export interface ExtendedSession extends Session {
   backendToken?: string
   userId?: string
 }

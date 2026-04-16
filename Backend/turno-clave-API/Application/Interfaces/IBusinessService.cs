@@ -8,6 +8,7 @@ namespace turno_clave_API.Application.Interfaces
     {
         Task<Result<Business>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId);
         Task<Business?> GetByExternalIdAsync(Guid externalId);
+        Task<IEnumerable<Business>> GetByUserExternalIdAsync(Guid userExternalId);
         Task<Business?> UpdateAsync(UpdateBusinessDTO dto);
         Task<Business?> DeleteAsync(Guid externalId);
     }

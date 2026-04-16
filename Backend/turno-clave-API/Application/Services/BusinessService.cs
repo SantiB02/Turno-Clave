@@ -42,11 +42,13 @@ namespace turno_clave_API.Application.Services
             {
                 Name = dto.Name,
                 Slug = slug,
-                Description = dto.Description,
+                Description = dto.Description ?? string.Empty,
+                LogoUrl = dto.LogoUrl ?? string.Empty,
                 Email = dto.Email,
                 Phone = dto.Phone,
                 Address = dto.Address,
                 City = dto.City,
+                State = dto.State,
                 Country = dto.Country,
                 TimeZone = timeZoneResult.Value!, // null-forgiving because we know it's not null if IsSuccess is true
             };
@@ -72,12 +74,16 @@ namespace turno_clave_API.Application.Services
             return Result<Business>.Success(business); // TODO: Map to a DTO instead of returning the entity directly (to avoid cycles and sensitive data exposure)
         }
 
-        
-
         public async Task<Business?> GetByExternalIdAsync(Guid externalId)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             return business;
+        }
+
+        public async Task<IEnumerable<Business>> GetByUserExternalIdAsync(Guid userExternalId)
+        {
+            IEnumerable<Business> businesses = await _businessRepository.GetBusinessesByUserExternalIdAsync(userExternalId);
+            return businesses;
         }
 
         public async Task<Business?> UpdateAsync(UpdateBusinessDTO dto)

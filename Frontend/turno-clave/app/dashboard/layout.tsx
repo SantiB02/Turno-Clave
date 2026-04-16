@@ -14,6 +14,8 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import type { ReactNode } from "react"
 import { auth } from "@/auth"
+import { getMyBusinesses } from "@/services/businessService"
+import type { BusinessDetail } from "@/types/business"
 import SignOutIcon from "../components/SignOutIcon"
 import UserAvatar from "../components/UserAvatar"
 
@@ -41,6 +43,20 @@ export default async function DashboardLayout({
 
   if (!session) {
     redirect("/")
+  }
+
+  let businesses: BusinessDetail[] = []
+  try {
+    businesses = await getMyBusinesses()
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      redirect("/api/auth/signout-redirect")
+    }
+    throw error
+  }
+
+  if (businesses.length === 0) {
+    redirect("/onboarding")
   }
 
   return (
