@@ -92,8 +92,8 @@ export default async function DashboardLayout({
                 <WrenchScrewdriverIcon className="h-10 w-10 inline-block mr-2" />
               </Link>
               <Link
-                title="Mi Negocio"
-                href="/dashboard/mi-negocio"
+                title="Mis Negocios"
+                href="/dashboard/mis-negocios"
                 className="block mx-auto py-2 rounded hover:bg-orange-400"
               >
                 <BriefcaseIcon className="h-10 w-10 inline-block mr-2" />

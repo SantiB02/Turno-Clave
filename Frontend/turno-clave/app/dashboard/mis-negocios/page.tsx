@@ -3,7 +3,7 @@ import BusinessCard from "@/app/components/BusinessCard"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 
-export default async function MiNegocio() {
+export default async function MisNegocios() {
   const session = await auth()
 
   if (!session) {
