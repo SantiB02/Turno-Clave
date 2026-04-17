@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
+import Button from "../components/Button"
 
 export default async function Dashboard() {
   const session = await auth()
@@ -12,12 +13,7 @@ export default async function Dashboard() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="font-bold text-4xl mb-9">Panel de Control</h1>
-        <button
-          type="button"
-          className="px-4 py-2 bg-primary-orange text-white rounded"
-        >
-          Nuevo turno
-        </button>
+        <Button label="Nuevo turno" href="/dashboard/mis-turnos" />
       </div>
 
       <h1 className="text-2xl">
