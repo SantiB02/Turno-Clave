@@ -5,13 +5,13 @@ import { handleSignOut } from "@/lib/actions/auth"
 
 export default function SignOutIcon() {
   return (
-    <form action={handleSignOut}>
+    <form action={handleSignOut} className="w-full">
       <button
         type="submit"
         title="Cerrar Sesión"
-        className="block cursor-pointer mx-auto py-2 rounded hover:bg-orange-400"
+        className="flex items-center cursor-pointer justify-center py-2 rounded hover:bg-orange-400 w-full text-white"
       >
-        <ArrowRightStartOnRectangleIcon className="h-10 w-10 inline-block mr-2" />
+        <ArrowRightStartOnRectangleIcon className="h-10 w-10" />
       </button>
     </form>
   )
