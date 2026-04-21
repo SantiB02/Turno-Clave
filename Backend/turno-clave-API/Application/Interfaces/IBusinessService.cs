@@ -11,5 +11,11 @@ namespace turno_clave_API.Application.Interfaces
         Task<IEnumerable<Business>> GetByUserExternalIdAsync(Guid userExternalId);
         Task<Business?> UpdateAsync(UpdateBusinessDTO dto);
         Task<Business?> DeleteAsync(Guid externalId);
+
+        // Business availability methods
+        Task<IEnumerable<BusinessAvailabilityDTO>> GetGlobalAvailabilityAsync(Guid businessExternalId);
+        Task<BusinessAvailabilityDTO> CreateGlobalAvailabilityAsync(Guid businessExternalId, CreateBusinessAvailabilityDTO dto);
+        Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(BusinessAvailabilityDTO dto);
+        Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId);
     }
 }

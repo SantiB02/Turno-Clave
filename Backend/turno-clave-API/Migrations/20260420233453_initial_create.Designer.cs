@@ -12,8 +12,8 @@ using turno_clave_API.Infrastructure.Data;
 namespace turno_clave_API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260415232627_add_state_to_business")]
-    partial class add_state_to_business
+    [Migration("20260420233453_initial_create")]
+    partial class initial_create
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -285,6 +285,56 @@ namespace turno_clave_API.Migrations
                         .HasDatabaseName("i_x_businesses_slug");
 
                     b.ToTable("businesses");
+                });
+
+            modelBuilder.Entity("turno_clave_API.Domain.Entities.BusinessAvailability", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BusinessId")
+                        .HasColumnType("integer")
+                        .HasColumnName("business_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("Day")
+                        .HasColumnType("integer")
+                        .HasColumnName("day");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("interval")
+                        .HasColumnName("end_time");
+
+                    b.Property<Guid>("ExternalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("external_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("interval")
+                        .HasColumnName("start_time");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("p_k_business_availabilities");
+
+                    b.HasIndex("BusinessId")
+                        .HasDatabaseName("i_x_business_availabilities_business_id");
+
+                    b.ToTable("business_availabilities", (string)null);
                 });
 
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Client", b =>
@@ -578,6 +628,18 @@ namespace turno_clave_API.Migrations
                     b.Navigation("Professional");
                 });
 
+            modelBuilder.Entity("turno_clave_API.Domain.Entities.BusinessAvailability", b =>
+                {
+                    b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
+                        .WithMany("BusinessAvailabilities")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_business_availabilities_businesses_business_id");
+
+                    b.Navigation("Business");
+                });
+
             modelBuilder.Entity("turno_clave_API.Domain.Entities.Client", b =>
                 {
                     b.HasOne("turno_clave_API.Domain.Entities.Business", "Business")
@@ -640,6 +702,8 @@ namespace turno_clave_API.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("AvailabilityExceptions");
+
+                    b.Navigation("BusinessAvailabilities");
 
                     b.Navigation("Clients");
 

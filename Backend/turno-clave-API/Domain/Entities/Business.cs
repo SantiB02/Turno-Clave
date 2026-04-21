@@ -21,16 +21,23 @@ namespace turno_clave_API.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
+        // TODO: Create global availability for business
+
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
-        public ICollection<Service> Services { get; set; } = [];
-        public ICollection<Client> Clients { get; set; } = [];
-        public ICollection<Appointment> Appointments { get; set; } = [];
-        public ICollection<AvailabilityException> AvailabilityExceptions { get; set; } = [];
-        public ICollection<Professional> Professionals { get; set; } = [];
-        public ICollection<UserBusiness> UserBusinesses { get; set; } = [];
+        public ICollection<Service> Services { get; set; } = new List<Service>();
+        public ICollection<Client> Clients { get; set; } = new List<Client>();
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public ICollection<AvailabilityException> AvailabilityExceptions { get; set; } = new List<AvailabilityException>();
+        public ICollection<Professional> Professionals { get; set; } = new List<Professional>();
+        public ICollection<UserBusiness> UserBusinesses { get; set; } = new List<UserBusiness>();
+
+        // Global weekly availability template for the business. This is a business-level schedule
+        // that the frontend can show during onboarding. Professionals can still have their own
+        // availability which will be applied/merged according to business rules (e.g. intersect or override).
+        public ICollection<BusinessAvailability> BusinessAvailabilities { get; set; } = new List<BusinessAvailability>();
 
         public static BusinessDTO ToDto(Business business)
         {

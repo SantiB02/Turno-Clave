@@ -17,14 +17,16 @@ namespace turno_clave_API.Application.Services
         private readonly ILogger<BusinessService> _logger;
         private readonly IBusinessRepository _businessRepository;
         private readonly IUserService _userService;
+        private readonly IBusinessAvailabilityRepository _businessAvailabilityRepository;
 
 
-        public BusinessService(AppDbContext context, ILogger<BusinessService> logger, IBusinessRepository businessRepository, IUserService userService)
+        public BusinessService(AppDbContext context, ILogger<BusinessService> logger, IBusinessRepository businessRepository, IUserService userService, IBusinessAvailabilityRepository businessAvailabilityRepository)
         {
             _context = context;
             _logger = logger;
             _businessRepository = businessRepository;
             _userService = userService;
+            _businessAvailabilityRepository = businessAvailabilityRepository;
         }
 
         public async Task<Result<Business>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
@@ -123,6 +125,95 @@ namespace turno_clave_API.Application.Services
                 await _businessRepository.SaveAsync();
             }
             return business;
+        }
+
+        // Business availability implementations
+        public async Task<IEnumerable<BusinessAvailabilityDTO>> GetGlobalAvailabilityAsync(Guid businessExternalId)
+        {
+            var list = await _businessAvailabilityRepository.GetByBusinessExternalIdAsync(businessExternalId);
+            return list.Select(b => new BusinessAvailabilityDTO
+            {
+                ExternalId = b.ExternalId,
+                Day = b.Day,
+                StartTime = b.StartTime,
+                EndTime = b.EndTime
+            });
+        }
+
+        public async Task<BusinessAvailabilityDTO> CreateGlobalAvailabilityAsync(Guid businessExternalId, CreateBusinessAvailabilityDTO dto)
+        {
+            // Find business
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(businessExternalId);
+            if (business == null) throw new KeyNotFoundException($"Business {businessExternalId} not found");
+            // Validate DTO (should have been validated by model binding, but double-check)
+            if (dto.StartTime >= dto.EndTime)
+                throw new ArgumentException("StartTime must be earlier than EndTime.");
+
+            // Check for overlapping availabilities for the same business/day
+            var existing = (await _businessAvailabilityRepository.GetByBusinessExternalIdAsync(businessExternalId))
+                .Where(x => x.Day == dto.Day && x.IsActive);
+
+            bool overlaps = existing.Any(e => !(dto.EndTime <= e.StartTime || dto.StartTime >= e.EndTime));
+            if (overlaps)
+                throw new InvalidOperationException("The provided availability overlaps an existing one.");
+
+            var entity = new BusinessAvailability
+            {
+                Business = business,
+                BusinessId = business.Id,
+                Day = dto.Day,
+                StartTime = dto.StartTime,
+                EndTime = dto.EndTime
+            };
+
+            _businessAvailabilityRepository.Add(entity);
+            await _businessAvailabilityRepository.SaveAsync();
+
+            return new BusinessAvailabilityDTO
+            {
+                ExternalId = entity.ExternalId,
+                Day = entity.Day,
+                StartTime = entity.StartTime,
+                EndTime = entity.EndTime
+            };
+        }
+
+        public async Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(BusinessAvailabilityDTO dto)
+        {
+            var entity = await _businessAvailabilityRepository.GetByExternalIdAsync(dto.ExternalId);
+            if (entity == null) return null;
+            if (dto.StartTime >= dto.EndTime)
+                throw new ArgumentException("StartTime must be earlier than EndTime.");
+
+            // Check overlap against other availabilities
+            var existing = (await _businessAvailabilityRepository.GetByBusinessExternalIdAsync(entity.Business.ExternalId))
+                .Where(x => x.Id != entity.Id && x.Day == dto.Day && x.IsActive);
+
+            bool overlaps = existing.Any(e => !(dto.EndTime <= e.StartTime || dto.StartTime >= e.EndTime));
+            if (overlaps)
+                throw new InvalidOperationException("The provided availability overlaps an existing one.");
+
+            entity.Day = dto.Day;
+            entity.StartTime = dto.StartTime;
+            entity.EndTime = dto.EndTime;
+
+            _businessAvailabilityRepository.Update(entity);
+            await _businessAvailabilityRepository.SaveAsync();
+
+            return new BusinessAvailabilityDTO
+            {
+                ExternalId = entity.ExternalId,
+                Day = entity.Day,
+                StartTime = entity.StartTime,
+                EndTime = entity.EndTime
+            };
+        }
+
+        public async Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId)
+        {
+            await _businessAvailabilityRepository.DeleteAsync(externalId);
+            await _businessAvailabilityRepository.SaveAsync();
+            return true;
         }
 
         private static string GenerateSlug(string name)

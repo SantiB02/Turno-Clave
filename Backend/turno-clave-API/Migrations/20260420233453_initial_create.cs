@@ -22,10 +22,12 @@ namespace turno_clave_API.Migrations
                     name = table.Column<string>(type: "text", nullable: false),
                     slug = table.Column<string>(type: "text", nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
+                    logo_url = table.Column<string>(type: "text", nullable: true),
                     email = table.Column<string>(type: "text", nullable: false),
                     phone = table.Column<string>(type: "text", nullable: false),
                     address = table.Column<string>(type: "text", nullable: false),
                     city = table.Column<string>(type: "text", nullable: false),
+                    state = table.Column<string>(type: "text", nullable: false),
                     country = table.Column<string>(type: "text", nullable: false),
                     time_zone = table.Column<string>(type: "text", nullable: false),
                     is_active = table.Column<bool>(type: "boolean", nullable: false),
@@ -54,6 +56,32 @@ namespace turno_clave_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("p_k_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "business_availabilities",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    external_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    business_id = table.Column<int>(type: "integer", nullable: false),
+                    day = table.Column<int>(type: "integer", nullable: false),
+                    start_time = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    end_time = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    is_active = table.Column<bool>(type: "boolean", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("p_k_business_availabilities", x => x.id);
+                    table.ForeignKey(
+                        name: "f_k_business_availabilities_businesses_business_id",
+                        column: x => x.business_id,
+                        principalTable: "businesses",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -132,7 +160,7 @@ namespace turno_clave_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users_businesses",
+                name: "user_businesses",
                 columns: table => new
                 {
                     user_id = table.Column<int>(type: "integer", nullable: false),
@@ -142,15 +170,15 @@ namespace turno_clave_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("p_k_users_businesses", x => new { x.user_id, x.business_id });
+                    table.PrimaryKey("p_k_user_businesses", x => new { x.user_id, x.business_id });
                     table.ForeignKey(
-                        name: "f_k_users_businesses_businesses_business_id",
+                        name: "f_k_user_businesses_businesses_business_id",
                         column: x => x.business_id,
                         principalTable: "businesses",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "f_k_users_businesses_users_user_id",
+                        name: "f_k_user_businesses_users_user_id",
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id",
@@ -301,6 +329,11 @@ namespace turno_clave_API.Migrations
                 column: "professional_id");
 
             migrationBuilder.CreateIndex(
+                name: "i_x_business_availabilities_business_id",
+                table: "business_availabilities",
+                column: "business_id");
+
+            migrationBuilder.CreateIndex(
                 name: "i_x_businesses_slug",
                 table: "businesses",
                 column: "slug",
@@ -322,15 +355,15 @@ namespace turno_clave_API.Migrations
                 columns: new[] { "business_id", "name" });
 
             migrationBuilder.CreateIndex(
+                name: "i_x_user_businesses_business_id",
+                table: "user_businesses",
+                column: "business_id");
+
+            migrationBuilder.CreateIndex(
                 name: "i_x_users_email",
                 table: "users",
                 column: "email",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "i_x_users_businesses_business_id",
-                table: "users_businesses",
-                column: "business_id");
         }
 
         /// <inheritdoc />
@@ -346,7 +379,10 @@ namespace turno_clave_API.Migrations
                 name: "availability_exceptions");
 
             migrationBuilder.DropTable(
-                name: "users_businesses");
+                name: "business_availabilities");
+
+            migrationBuilder.DropTable(
+                name: "user_businesses");
 
             migrationBuilder.DropTable(
                 name: "clients");
