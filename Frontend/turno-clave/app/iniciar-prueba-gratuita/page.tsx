@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Footer from "../components/Footer"
 import Header from "../components/Header"
 
 export default function IniciarPruebaGratuita() {
@@ -107,6 +108,7 @@ export default function IniciarPruebaGratuita() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

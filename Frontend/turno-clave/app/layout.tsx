@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Didact_Gothic, Geist_Mono } from "next/font/google"
 import "./globals.css"
-import Footer from "./components/Footer"
 
 const didactGothic = Didact_Gothic({
   weight: ["400"],
@@ -29,7 +28,6 @@ export default function RootLayout({
         className={`${didactGothic.className} ${geistMono.variable} antialiased`}
       >
         <main className="min-h-screen bg-white">{children}</main>
-        <Footer />
       </body>
     </html>
   )

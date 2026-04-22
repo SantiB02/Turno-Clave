@@ -2,7 +2,8 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
-import CreateBusinessForm from "../components/CreateBusinessForm"
+import NextStepButton from "../NextStepButton"
+import OnboardingBusinessForm from "./OnboardingBusinessForm"
 
 export default async function Onboarding() {
   const session = await auth()
@@ -26,17 +27,18 @@ export default async function Onboarding() {
   }
 
   return (
-    <div className="ml-10 mt-6">
+    <div className="flex flex-col justify-center items-center">
       <h1 className="text-3xl font-bold">
-        ¡Bienvenido/a a Turno <span className="text-primary-orange">Clave</span>
-        , {session.user?.name?.split(" ")[0]}!
+        ¡Te damos la bienvenida a Turno Clave,{" "}
+        <span className="text-primary-orange">
+          {session.user?.name?.split(" ")[0]}
+        </span>
+        !
       </h1>
-      <h2 className="text-xl mt-4 text-gray-600">
-        Para comenzar, por favor agrega tu primer negocio.
-      </h2>
-      <div className="mt-8 mb-16 max-w-lg">
-        <CreateBusinessForm />
+      <div className="mt-8 mb-6 max-w-lg">
+        <OnboardingBusinessForm />
       </div>
+      <NextStepButton href="/onboarding/ubicacion" />
     </div>
   )
 }

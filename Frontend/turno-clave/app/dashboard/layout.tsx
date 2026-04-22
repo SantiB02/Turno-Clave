@@ -7,6 +7,7 @@ import type { ReactNode } from "react"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
+import Footer from "../components/Footer"
 import HelpFloatingButton from "../components/HelpFloatingButton"
 import SidebarNav from "./SidebarNav"
 
@@ -47,7 +48,7 @@ export default async function DashboardLayout({
   }
 
   if (businesses.length === 0) {
-    redirect("/onboarding")
+    redirect("/onboarding/negocio")
   }
 
   return (
@@ -68,6 +69,7 @@ export default async function DashboardLayout({
       <section className="flex-1 p-6">
         <main className="">{children}</main>
       </section>
+      <Footer />
     </div>
   )
 }
