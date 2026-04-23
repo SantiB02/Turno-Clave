@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <main
-      className={`${didactGothic.className} ${geistMono.variable} antialiased min-h-screen pl-10 pt-20 relative`}
+      className={`${didactGothic.className} ${geistMono.variable} antialiased min-h-screen pl-10 pt-10 relative`}
     >
       {children}
       <div className="absolute bottom-0 left-0 w-full h-30 transform scale-y-[-1]">

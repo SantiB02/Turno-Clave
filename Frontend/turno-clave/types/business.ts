@@ -30,3 +30,14 @@ export type CreateBusinessDTO = {
   country: string
   timeZone: string
 }
+
+export type CreateBusinessFromOnboardingDTO = {
+  name: string
+  country: string
+  state: string
+  city: string
+  address: string
+  phone: string
+  email: string
+  timeZone: string
+}

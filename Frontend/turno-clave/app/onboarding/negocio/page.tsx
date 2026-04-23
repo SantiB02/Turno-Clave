@@ -2,7 +2,6 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
-import NextStepButton from "../NextStepButton"
 import OnboardingBusinessForm from "./OnboardingBusinessForm"
 
 export default async function Onboarding() {
@@ -38,7 +37,6 @@ export default async function Onboarding() {
       <div className="mt-8 mb-6 max-w-lg">
         <OnboardingBusinessForm />
       </div>
-      <NextStepButton href="/onboarding/ubicacion" />
     </div>
   )
 }

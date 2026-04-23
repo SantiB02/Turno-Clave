@@ -43,3 +43,119 @@ aside::-webkit-scrollbar-thumb {
 aside::-webkit-scrollbar-track {
   background: transparent;
 }
+
+.country-select .stsearch-box input {
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: none !important;
+}
+
+.country-select .stdropdown-container {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.country-select .stdropdown-menu {
+  border: none !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.country-select .stsearch-box {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.phonecode-container .stsearch-box input {
+  border-radius: initial !important; /* O el valor predeterminado de la librería */
+  border-left: initial !important;
+}
+
+.phonecode-container .stdropdown-container {
+  border: initial !important;
+  background-color: initial !important;
+}
+
+.phonecode-container .stdropdown-menu {
+  border: initial !important;
+  background-color: initial !important;
+  box-shadow: initial !important;
+}
+
+.phonecode-container .stsearch-box {
+  border: initial !important;
+  background-color: initial !important;
+}
+
+.state-select .stsearch-box input {
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: none !important;
+}
+
+.state-select .stdropdown-container {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.state-select .stdropdown-menu {
+  border: none !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.state-select .stsearch-box {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.city-select .stsearch-box input {
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: none !important;
+}
+
+.city-select .stdropdown-container {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.city-select .stdropdown-menu {
+  border: none !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.city-select .stsearch-box {
+  border: none !important;
+  background-color: transparent !important;
+}
+
+/* Estilos genéricos para todos los selectores */
+.country-select,
+.state-select,
+.city-select {
+  width: 100%;
+}
+
+.country-select input,
+.state-select input,
+.city-select input {
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.country-select .stsearch-box input,
+.state-select .stsearch-box input,
+.city-select .stsearch-box input {
+  border-radius: 0 1.5rem 1.5rem 0 !important;
+  border-left: none !important;
+}
+
+/* Asegurar que el dropdown sea visible y con los mismos estilos */
+.country-select .stselect,
+.state-select .stselect,
+.city-select .stselect {
+  border: none !important;
+  background-color: transparent !important;
+}

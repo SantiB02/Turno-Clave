@@ -6,6 +6,8 @@ type NextStepButtonProps = {
   disabled?: boolean
   label?: string
   href?: string
+  type?: "button" | "submit" | "reset"
+  classname?: string
 }
 
 export default function NextStepButton({
@@ -13,16 +15,20 @@ export default function NextStepButton({
   disabled = false,
   label = "Continuar",
   href,
+  type = "button",
+  classname,
 }: NextStepButtonProps) {
   if (href) {
     return (
       <Link href={href}>
         <button
-          type="button"
+          type={type}
           onClick={onClick}
           disabled={disabled}
-          className={`rounded-xl cursor-pointer hover:bg-primary-orange/80 hover:shadow-sm transition inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${
-            disabled ? "bg-gray-400 cursor-not-allowed" : "bg-primary-orange"
+          className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${classname || ""} ${
+            disabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"
           }`}
         >
           <ArrowRightIcon className="h-6 w-6 mr-2" />
@@ -33,11 +39,13 @@ export default function NextStepButton({
   } else {
     return (
       <button
-        type="button"
+        type={type}
         onClick={onClick}
         disabled={disabled}
-        className={`rounded-xl cursor-pointer hover:bg-primary-orange/80 hover:shadow-sm transition inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${
-          disabled ? "bg-gray-400 cursor-not-allowed" : "bg-primary-orange"
+        className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${classname || ""} ${
+          disabled
+            ? "bg-gray-400"
+            : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"
         }`}
       >
         <ArrowRightIcon className="h-6 w-6 mr-2" />
