@@ -17,5 +17,7 @@ namespace turno_clave_API.Application.DTOs.Business
         public required string Country { get; set; }
         // Time zone identifier for the business (IANA or Windows). Example: "America/Argentina/Buenos_Aires" or "UTC"
         public required string TimeZone { get; set; }
+        [MinLength(1, ErrorMessage = "At least one availability must be provided.")]
+        public required CreateBusinessAvailabilityDTO[] Availabilities { get; set; }
     }
 }

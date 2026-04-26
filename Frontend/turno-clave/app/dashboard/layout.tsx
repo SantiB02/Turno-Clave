@@ -56,7 +56,7 @@ export default async function DashboardLayout({
       className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
     >
       <HelpFloatingButton />
-      <aside className="sticky mr-6 top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-orange-400">
+      <aside className="sticky top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-orange-400">
         <Link
           href="/"
           className="text-lg text-center mb-4 text-white font-bold"
@@ -66,10 +66,12 @@ export default async function DashboardLayout({
         <SidebarNav user={session.user} />
       </aside>
 
-      <section className="flex-1 p-6">
-        <main className="">{children}</main>
-      </section>
-      <Footer />
+      <div className="flex flex-col flex-1">
+        <section className="flex-1 p-6 min-h-screen">
+          <main className="">{children}</main>
+        </section>
+        <Footer />
+      </div>
     </div>
   )
 }

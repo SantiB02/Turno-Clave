@@ -29,7 +29,10 @@ export default function Footer() {
             <h4 className="font-bold mb-4">Producto</h4>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="/" className="hover:text-secondary-orange transition">
+                <a
+                  href="/#features"
+                  className="hover:text-secondary-orange transition"
+                >
                   Funcionalidades
                 </a>
               </li>

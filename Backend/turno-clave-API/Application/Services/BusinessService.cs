@@ -62,6 +62,12 @@ namespace turno_clave_API.Application.Services
                 State = dto.State,
                 Country = dto.Country,
                 TimeZone = timeZoneResult.Value!, // null-forgiving because we know it's not null if IsSuccess is true
+                BusinessAvailabilities = dto.Availabilities?.Select(a => new BusinessAvailability
+                {
+                    Day = a.Day,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                }).ToList() ?? []
             };
 
             User? user = await _userService.GetByExternalIdAsync(userExternalId);
@@ -79,6 +85,7 @@ namespace turno_clave_API.Application.Services
 
             _context.Businesses.Add(business);
             _context.UserBusinesses.Add(userBusiness);
+
 
             await _context.SaveChangesAsync();
 

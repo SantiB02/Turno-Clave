@@ -18,6 +18,20 @@ export type BusinessDetail = {
   country: string
 }
 
+export type BusinessAvailability = {
+  dayOfWeek: number
+  startTime: string
+  endTime: string
+}
+
+export type WeekAvailability = {
+  [key: string]: {
+    enabled: boolean
+    start: string
+    end: string
+  }
+}
+
 export type CreateBusinessDTO = {
   name: string
   description?: string
@@ -29,15 +43,5 @@ export type CreateBusinessDTO = {
   state: string
   country: string
   timeZone: string
-}
-
-export type CreateBusinessFromOnboardingDTO = {
-  name: string
-  country: string
-  state: string
-  city: string
-  address: string
-  phone: string
-  email: string
-  timeZone: string
+  availabilities: BusinessAvailability[]
 }

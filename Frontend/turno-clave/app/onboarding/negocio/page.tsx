@@ -4,25 +4,11 @@ import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
 import OnboardingBusinessForm from "./OnboardingBusinessForm"
 
-export default async function Onboarding() {
+export default async function OnboardingBusiness() {
   const session = await auth()
 
   if (!session) {
     redirect("/")
-  }
-
-  let businesses: BusinessDetail[] = []
-  try {
-    businesses = await getMyBusinesses()
-  } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      redirect("/api/auth/signout-redirect")
-    }
-    throw error
-  }
-
-  if (businesses.length > 0) {
-    redirect("/dashboard")
   }
 
   return (

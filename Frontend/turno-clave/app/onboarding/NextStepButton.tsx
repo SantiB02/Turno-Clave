@@ -7,7 +7,7 @@ type NextStepButtonProps = {
   label?: string
   href?: string
   type?: "button" | "submit" | "reset"
-  classname?: string
+  className?: string
 }
 
 export default function NextStepButton({
@@ -16,7 +16,7 @@ export default function NextStepButton({
   label = "Continuar",
   href,
   type = "button",
-  classname,
+  className,
 }: NextStepButtonProps) {
   if (href) {
     return (
@@ -25,7 +25,7 @@ export default function NextStepButton({
           type={type}
           onClick={onClick}
           disabled={disabled}
-          className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${classname || ""} ${
+          className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${className || ""} ${
             disabled
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"
@@ -42,7 +42,7 @@ export default function NextStepButton({
         type={type}
         onClick={onClick}
         disabled={disabled}
-        className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${classname || ""} ${
+        className={`rounded-xl inline-flex items-center px-4 py-2 mt-4 border border-transparent text-md font-medium rounded-md shadow-sm text-white ${className || ""} ${
           disabled
             ? "bg-gray-400"
             : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"

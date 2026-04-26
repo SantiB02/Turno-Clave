@@ -1,4 +1,8 @@
 import { Didact_Gothic, Geist_Mono } from "next/font/google"
+import { redirect } from "next/navigation"
+import { auth } from "@/auth"
+import { getMyBusinesses } from "@/services/businessService"
+import type { BusinessDetail } from "@/types/business"
 
 const didactGothic = Didact_Gothic({
   weight: ["400"],
@@ -10,11 +14,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
+
+  if (!session) {
+    redirect("/")
+  }
+
+  let businesses: BusinessDetail[] = []
+  try {
+    businesses = await getMyBusinesses()
+  } catch (error) {
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      redirect("/api/auth/signout-redirect")
+    }
+    throw error
+  }
+
+  if (businesses.length > 0) {
+    redirect("/dashboard")
+  }
+
   return (
     <main
       className={`${didactGothic.className} ${geistMono.variable} antialiased min-h-screen pl-10 pt-10 relative`}

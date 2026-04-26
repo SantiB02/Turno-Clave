@@ -13,7 +13,7 @@ export async function authenticatedFetch(
 
   const res = await apiFetch(path, session.backendToken, options)
 
-  // Manejar 401 - Token expirado
+  // Expired or invalid token
   if (res.status === 401) {
     throw new Error("UNAUTHORIZED")
   }
