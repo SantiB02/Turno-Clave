@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { createBusiness } from "@/services/businessService"
 
+// This is an old form
 export default function CreateBusinessForm() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -15,7 +16,7 @@ export default function CreateBusinessForm() {
     try {
       const formData = new FormData(e.currentTarget)
 
-      await createBusiness({
+      /* await createBusiness({
         name: formData.get("name") as string,
         description: formData.get("description") as string,
         logoUrl: formData.get("logoUrl") as string,
@@ -26,7 +27,7 @@ export default function CreateBusinessForm() {
         state: formData.get("state") as string,
         country: formData.get("country") as string,
         timeZone: formData.get("timeZone") as string,
-      })
+      }) */
 
       // Success - opcional: hacer algo aquí
       window.location.href = "/dashboard"
