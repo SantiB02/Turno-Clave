@@ -8,6 +8,7 @@ type NextStepButtonProps = {
   href?: string
   type?: "button" | "submit" | "reset"
   className?: string
+  loading?: boolean
 }
 
 export default function NextStepButton({
@@ -17,6 +18,7 @@ export default function NextStepButton({
   href,
   type = "button",
   className,
+  loading,
 }: NextStepButtonProps) {
   if (href) {
     return (
@@ -29,10 +31,11 @@ export default function NextStepButton({
             disabled
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"
-          }`}
+          }
+          ${loading ? "cursor-wait bg-gray-400" : ""}`}
         >
           <ArrowRightIcon className="h-6 w-6 mr-2" />
-          {label}
+          {loading ? "Cargando..." : label}
         </button>
       </Link>
     )
@@ -46,10 +49,10 @@ export default function NextStepButton({
           disabled
             ? "bg-gray-400"
             : "bg-primary-orange hover:bg-primary-orange/80 hover:shadow-sm transition cursor-pointer"
-        }`}
+        } ${loading ? "cursor-wait bg-gray-400" : ""}`}
       >
         <ArrowRightIcon className="h-6 w-6 mr-2" />
-        {label}
+        {loading ? "Cargando..." : label}
       </button>
     )
   }

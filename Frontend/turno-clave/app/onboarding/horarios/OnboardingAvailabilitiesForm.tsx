@@ -13,6 +13,7 @@ import NextStepButton from "../NextStepButton"
 
 export default function OnboardingAvailabilitiesForm() {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
   const [availabilities, setAvailabilities] = useState<WeekAvailability>({
     monday: { enabled: false, start: "", end: "" },
     tuesday: { enabled: false, start: "", end: "" },
@@ -85,7 +86,7 @@ export default function OnboardingAvailabilitiesForm() {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
-
+    setLoading(true)
     const onboardingData: CreateBusinessDTO = JSON.parse(
       localStorage.getItem("onboardingData") || "{}",
     )
@@ -184,6 +185,7 @@ export default function OnboardingAvailabilitiesForm() {
               type="submit"
               className="mt-6"
               disabled={isSubmitDisabled}
+              loading={loading}
             />
           </div>
         </div>
