@@ -74,11 +74,12 @@ export default function OnboardingBusinessForm() {
   const isValidEmail = emailRegex.test(email)
   const isValidPhone = phoneRegex.test(phone)
 
+  // TODO: Considerar válido que no haya ciudad si el estado es "Ciudad Autónoma de Buenos Aires", ya que es una ciudad-estado y no tiene ciudades dentro de ella.
   const isSubmitDisabled =
     name.trim().length < 3 ||
     !country ||
     !state ||
-    !city ||
+    (!city && state.name !== "Ciudad Autónoma de Buenos Aires") ||
     address.trim().length < 5 ||
     phone.trim().length < 5 ||
     email.trim().length < 5 ||
@@ -101,13 +102,21 @@ export default function OnboardingBusinessForm() {
 
       localStorage.setItem("onboardingData", JSON.stringify({})) // Clear previous data to avoid confusion in case of errors
 
+      if (!city && state.name !== "Ciudad Autónoma de Buenos Aires") {
+        setError("Ciudad requerida")
+        return
+      }
+
       const onboardingData: CreateBusinessDTO = {
         name,
         email,
         phone: phoneWithCode,
         country: country.name,
         state: state.name,
-        city: city.name,
+        city:
+          state.name === "Ciudad Autónoma de Buenos Aires"
+            ? "Ciudad Autónoma de Buenos Aires"
+            : city!.name,
         address,
         timeZone: country.timezone,
         availabilities: [], // This will be filled in the next step of the onboarding process
@@ -184,7 +193,6 @@ export default function OnboardingBusinessForm() {
                     (c) => c.iso2 === e.target.value,
                   )
                   setPhonecode(selectedPhonecode || null)
-                  setPhone("")
                 }}
               >
                 <option value="">Código</option>
@@ -257,38 +265,60 @@ export default function OnboardingBusinessForm() {
                 />
               </div>
             )}
-            {country && state && (
-              <div className="flex items-stretch">
-                <p className="text-xl bg-dark-blue text-white py-2 px-6 rounded-l-3xl flex items-center justify-center w-40 whitespace-nowrap flex-shrink-0 overflow-hidden">
-                  Ciudad
-                </p>
-                <CitySelect
-                  required
-                  containerClassName="city-select border-dark-blue border rounded-r-3xl w-64"
-                  countryid={country.id}
-                  stateid={state.id}
-                  onChange={(_city) => setCity(_city as City)}
-                  placeHolder="Seleccionar ciudad"
-                />
-              </div>
-            )}
-            {country && state && city && (
-              <div className="flex items-stretch">
-                <p className="text-xl bg-dark-blue text-white py-2 px-6 rounded-l-3xl flex items-center justify-center w-40 whitespace-nowrap flex-shrink-0 overflow-hidden">
-                  Dirección
-                </p>
-                <input
-                  maxLength={100}
-                  type="text"
-                  name="address"
-                  placeholder="Dirección"
-                  className="border rounded-r-3xl border-dark-blue focus:outline-dark-blue focus:ring-dark-blue p-2 w-64"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  required
-                />
-              </div>
-            )}
+            {country &&
+              state &&
+              state.name !== "Ciudad Autónoma de Buenos Aires" && (
+                <div className="flex items-stretch">
+                  <p className="text-xl bg-dark-blue text-white py-2 px-6 rounded-l-3xl flex items-center justify-center w-40 whitespace-nowrap flex-shrink-0 overflow-hidden">
+                    Ciudad
+                  </p>
+                  <CitySelect
+                    required
+                    containerClassName="city-select border-dark-blue border rounded-r-3xl w-64"
+                    countryid={country.id}
+                    stateid={state.id}
+                    onChange={(_city) => setCity(_city as City)}
+                    placeHolder="Seleccionar ciudad"
+                  />
+                </div>
+              )}
+            {country &&
+              state &&
+              state.name === "Ciudad Autónoma de Buenos Aires" && (
+                <div className="flex items-stretch">
+                  <p className="text-xl bg-dark-blue text-white py-2 px-6 rounded-l-3xl flex items-center justify-center w-40 whitespace-nowrap flex-shrink-0 overflow-hidden">
+                    Ciudad
+                  </p>
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="Ciudad"
+                    className="border rounded-r-3xl border-dark-blue focus:outline-dark-blue focus:ring-dark-blue p-2 w-64"
+                    value="Ciudad Autónoma de Buenos Aires"
+                    readOnly
+                  />
+                </div>
+              )}
+
+            {country &&
+              state &&
+              (city || state.name === "Ciudad Autónoma de Buenos Aires") && (
+                <div className="flex items-stretch">
+                  <p className="text-xl bg-dark-blue text-white py-2 px-6 rounded-l-3xl flex items-center justify-center w-40 whitespace-nowrap flex-shrink-0 overflow-hidden">
+                    Dirección
+                  </p>
+                  <input
+                    maxLength={100}
+                    type="text"
+                    name="address"
+                    placeholder="Dirección"
+                    className="border rounded-r-3xl border-dark-blue focus:outline-dark-blue focus:ring-dark-blue p-2 w-64"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
           </div>
           <NextStepButton
             disabled={isSubmitDisabled}

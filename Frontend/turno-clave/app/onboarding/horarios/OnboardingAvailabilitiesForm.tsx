@@ -15,13 +15,41 @@ export default function OnboardingAvailabilitiesForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [availabilities, setAvailabilities] = useState<WeekAvailability>({
-    monday: { enabled: false, start: "", end: "" },
-    tuesday: { enabled: false, start: "", end: "" },
-    wednesday: { enabled: false, start: "", end: "" },
-    thursday: { enabled: false, start: "", end: "" },
-    friday: { enabled: false, start: "", end: "" },
-    saturday: { enabled: false, start: "", end: "" },
-    sunday: { enabled: false, start: "", end: "" },
+    monday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    tuesday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    wednesday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    thursday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    friday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    saturday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
+    sunday: {
+      enabled: false,
+      morning: { enabled: false, start: "08:00", end: "12:00" },
+      afternoon: { enabled: false, start: "14:00", end: "18:00" },
+    },
   })
 
   const days = [
@@ -32,7 +60,12 @@ export default function OnboardingAvailabilitiesForm() {
     { key: "friday", label: "Viernes" },
     { key: "saturday", label: "Sábado" },
     { key: "sunday", label: "Domingo" },
-  ]
+  ] as const
+
+  const shifts = {
+    morning: { label: "Mañana", start: "08:00", end: "12:00" },
+    afternoon: { label: "Tarde", start: "14:00", end: "18:00" },
+  } as const
 
   useEffect(() => {
     const storedData = localStorage.getItem("onboardingData")
@@ -51,8 +84,26 @@ export default function OnboardingAvailabilitiesForm() {
     }))
   }
 
+  const toggleShift = (
+    day: keyof WeekAvailability,
+    shift: keyof typeof shifts,
+  ) => {
+    setAvailabilities((prev) => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        enabled: true,
+        [shift]: {
+          ...prev[day][shift],
+          enabled: !prev[day][shift].enabled,
+        },
+      },
+    }))
+  }
+
   const updateTime = (
     day: keyof WeekAvailability,
+    shift: keyof typeof shifts,
     field: "start" | "end",
     value: string,
   ) => {
@@ -60,18 +111,29 @@ export default function OnboardingAvailabilitiesForm() {
       ...prev,
       [day]: {
         ...prev[day],
-        [field]: value,
+        [shift]: {
+          ...prev[day][shift],
+          [field]: value,
+        },
       },
     }))
   }
 
-  // submit is disabled if no day and time is selected
   const isSubmitDisabled =
-    !Object.values(availabilities).some((day) => day.enabled) ||
+    !Object.values(availabilities).some(
+      (day) => day.enabled && (day.morning.enabled || day.afternoon.enabled),
+    ) ||
     Object.values(availabilities).some(
       (day) =>
         day.enabled &&
-        (day.start === "" || day.end === "" || day.end <= day.start),
+        ((day.morning.enabled &&
+          (day.morning.start === "" ||
+            day.morning.end === "" ||
+            day.morning.end <= day.morning.start)) ||
+          (day.afternoon.enabled &&
+            (day.afternoon.start === "" ||
+              day.afternoon.end === "" ||
+              day.afternoon.end <= day.afternoon.start))),
     )
 
   const dayToNumber: Record<string, number> = {
@@ -97,17 +159,23 @@ export default function OnboardingAvailabilitiesForm() {
 
     onboardingData.availabilities = []
 
-    const result: BusinessAvailability[] = Object.entries(availabilities)
-      .filter(([_, value]) => value.enabled)
-      .map(([day, value]) => ({
-        dayOfWeek: dayToNumber[day],
-        startTime: value.start,
-        endTime: value.end,
-      }))
+    const result: BusinessAvailability[] = Object.entries(
+      availabilities,
+    ).flatMap(([day, value]) => {
+      if (!value.enabled) return []
 
-    onboardingData.availabilities = result
+      return (["morning", "afternoon"] as const)
+        .filter((shift) => value[shift].enabled)
+        .map((shift) => ({
+          day: dayToNumber[day],
+          startTime: value[shift].start,
+          endTime: value[shift].end,
+        }))
+    })
 
-    await createBusiness(onboardingData)
+    const creationData = { ...onboardingData, availabilities: result }
+
+    await createBusiness(creationData)
 
     localStorage.removeItem("onboardingData")
     router.push("/onboarding/listo")
@@ -117,68 +185,101 @@ export default function OnboardingAvailabilitiesForm() {
     <div className="mb-30">
       <form onSubmit={handleSubmit}>
         <div>
-          {days.map(({ key, label }) => {
-            const day = availabilities[key]
+          <div className="grid grid-cols-1 gap-4 min-[1500px]:grid-cols-2">
+            {days.map(({ key, label }) => {
+              const day = availabilities[key]
 
-            return (
-              <div
-                key={key}
-                className="flex mb-4 unselectable items-center justify-between py-2 px-4 mb-2 border-2 border-primary-orange rounded-3xl"
-              >
-                <label
-                  htmlFor={key}
-                  className="flex items-center cursor-pointer"
+              return (
+                <div
+                  key={key}
+                  className="unselectable rounded-3xl border-2 border-primary-orange px-4 py-3"
                 >
-                  <input
-                    type="checkbox"
-                    id={key}
-                    className="sr-only peer"
-                    checked={day.enabled}
-                    onChange={() => toggleDay(key)}
-                  />
+                  <label
+                    htmlFor={key}
+                    className="flex items-center cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      id={key}
+                      className="sr-only peer"
+                      checked={day.enabled}
+                      onChange={() => toggleDay(key)}
+                    />
 
-                  <span
-                    className="w-5 h-5 border-2 border-primary-orange rounded-full 
-          flex items-center justify-center
-          peer-checked:bg-primary-orange peer-checked:border-primary-orange
-          relative
-          
-          after:content-['✓'] 
-          after:text-white 
-          after:text-xs
-          after:absolute 
-          after:inset-0 
-          after:flex 
-          after:items-center 
-          after:justify-center
-          after:opacity-0
-          
+                    <span
+                      className="relative flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary-orange
+          peer-checked:border-primary-orange peer-checked:bg-primary-orange
+          after:absolute after:inset-0 after:flex after:items-center after:justify-center
+          after:text-xs after:text-white after:opacity-0 after:content-['✓']
           peer-checked:after:opacity-100"
-                  />
-                  <span className="ml-5 mr-2 md:mr-4">{label}</span>
-                </label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="time"
-                    value={day.start}
-                    onChange={(e) => updateTime(key, "start", e.target.value)}
-                    disabled={!day.enabled}
-                    className="px-2 py-1 border rounded-full text-sm disabled:opacity-40"
-                  />
+                    />
+                    <span className="ml-5 mr-2 md:mr-4">{label}</span>
+                  </label>
 
-                  <span className="text-sm text-gray-500">-</span>
+                  <div className="mt-3 space-y-2">
+                    {(
+                      Object.entries(shifts) as Array<
+                        [
+                          keyof typeof shifts,
+                          (typeof shifts)[keyof typeof shifts],
+                        ]
+                      >
+                    ).map(([shiftKey, shift]) => {
+                      const shiftAvailability = day[shiftKey]
 
-                  <input
-                    type="time"
-                    value={day.end}
-                    onChange={(e) => updateTime(key, "end", e.target.value)}
-                    disabled={!day.enabled}
-                    className="px-2 py-1 border rounded-full text-sm disabled:opacity-40"
-                  />
+                      return (
+                        <div
+                          key={shiftKey}
+                          className="flex w-full items-center gap-2"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => toggleShift(key, shiftKey)}
+                            disabled={!day.enabled}
+                            className={`w-20 shrink-0 rounded-full border px-2 py-1 text-sm transition disabled:opacity-40 ${
+                              shiftAvailability.enabled
+                                ? "border-primary-orange bg-primary-orange text-white"
+                                : "border-primary-orange text-primary-orange"
+                            }`}
+                          >
+                            {shift.label}
+                          </button>
+
+                          <input
+                            type="time"
+                            value={shiftAvailability.start}
+                            onChange={(e) =>
+                              updateTime(key, shiftKey, "start", e.target.value)
+                            }
+                            disabled={
+                              !day.enabled || !shiftAvailability.enabled
+                            }
+                            className="min-w-0 flex-1 rounded-full border px-2 py-1 text-sm disabled:opacity-40"
+                          />
+
+                          <span className="shrink-0 text-sm text-gray-500">
+                            -
+                          </span>
+
+                          <input
+                            type="time"
+                            value={shiftAvailability.end}
+                            onChange={(e) =>
+                              updateTime(key, shiftKey, "end", e.target.value)
+                            }
+                            disabled={
+                              !day.enabled || !shiftAvailability.enabled
+                            }
+                            className="min-w-0 flex-1 rounded-full border px-2 py-1 text-sm disabled:opacity-40"
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
 
           <div className="flex justify-center">
             <NextStepButton

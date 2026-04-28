@@ -38,6 +38,9 @@ export default async function DashboardLayout({
   }
 
   let businesses: BusinessDetail[] = []
+  if (session.user?.email === "doetesting02@gmail.com") {
+    redirect("/onboarding/negocio")
+  }
   try {
     businesses = await getMyBusinesses()
   } catch (error) {

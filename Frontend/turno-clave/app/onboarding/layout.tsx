@@ -26,17 +26,21 @@ export default async function RootLayout({
   }
 
   let businesses: BusinessDetail[] = []
-  try {
-    businesses = await getMyBusinesses()
-  } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      redirect("/api/auth/signout-redirect")
-    }
-    throw error
-  }
 
-  if (businesses.length > 0) {
-    redirect("/dashboard")
+  // Only enable onboarding for the testing account, so we can test the flow without having to create a new business every time. For other users, if they have businesses, redirect them to the dashboard.
+  if (session.user?.email !== "doetesting02@gmail.com") {
+    try {
+      businesses = await getMyBusinesses()
+    } catch (error) {
+      if (error instanceof Error && error.message === "UNAUTHORIZED") {
+        redirect("/api/auth/signout-redirect")
+      }
+      throw error
+    }
+
+    if (businesses.length > 0) {
+      redirect("/dashboard")
+    }
   }
 
   return (

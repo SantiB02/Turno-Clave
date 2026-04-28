@@ -19,7 +19,7 @@ export type BusinessDetail = {
 }
 
 export type BusinessAvailability = {
-  dayOfWeek: number
+  day: number
   startTime: string
   endTime: string
 }
@@ -27,8 +27,16 @@ export type BusinessAvailability = {
 export type WeekAvailability = {
   [key: string]: {
     enabled: boolean
-    start: string
-    end: string
+    morning: {
+      enabled: boolean
+      start: string
+      end: string
+    }
+    afternoon: {
+      enabled: boolean
+      start: string
+      end: string
+    }
   }
 }
 
