@@ -185,7 +185,7 @@ export default function OnboardingAvailabilitiesForm() {
     <div className="mb-30">
       <form onSubmit={handleSubmit}>
         <div>
-          <div className="grid grid-cols-1 gap-4 min-[1500px]:grid-cols-2">
+          <div className="space-y-4">
             {days.map(({ key, label }) => {
               const day = availabilities[key]
 
