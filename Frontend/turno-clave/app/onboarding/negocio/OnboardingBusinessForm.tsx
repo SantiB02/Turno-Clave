@@ -94,7 +94,7 @@ export default function OnboardingBusinessForm() {
 
     try {
       if (isSubmitDisabled) {
-        setError("Por favor, complete todos los campos requeridos.")
+        setError("Por favor, complete todos los campos.")
         return
       }
 
@@ -103,6 +103,12 @@ export default function OnboardingBusinessForm() {
       localStorage.setItem("onboardingData", JSON.stringify({})) // Clear previous data to avoid confusion in case of errors
 
       if (!city && state.name !== "Ciudad Autónoma de Buenos Aires") {
+        setError("Ciudad requerida")
+        return
+      }
+
+      // To avoid possible null value in city for onboardingData
+      if (!city) {
         setError("Ciudad requerida")
         return
       }
@@ -116,7 +122,7 @@ export default function OnboardingBusinessForm() {
         city:
           state.name === "Ciudad Autónoma de Buenos Aires"
             ? "Ciudad Autónoma de Buenos Aires"
-            : city!.name,
+            : city.name,
         address,
         timeZone: country.timezone,
         availabilities: [], // This will be filled in the next step of the onboarding process
