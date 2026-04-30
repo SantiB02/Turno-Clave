@@ -18,6 +18,15 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Services.Include(s => s.Business).ToListAsync();
         }
 
+        public Task<IEnumerable<Service>> GetServicesByUserExternalIdAsync(Guid userExternalId)
+        {
+            return _context.Services
+                .Include(s => s.Business)
+                .Where(s => s.Business.UserBusinesses.Any(ub => ub.User.ExternalId == userExternalId))
+                .ToListAsync()
+                .ContinueWith(t => t.Result.AsEnumerable());
+        }
+
         public Task<Service?> GetServiceByExternalIdAsync(Guid externalId)
         {
             return _context.Services.Include(s => s.Business).FirstOrDefaultAsync(s => s.ExternalId == externalId);

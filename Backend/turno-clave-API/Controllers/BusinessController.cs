@@ -33,14 +33,14 @@ namespace turno_clave_API.Controllers
 
             Guid userExternalId = Guid.Parse(userExternalIdString);
 
-            Result<Business> result = await _businessService.CreateAsync(dto, userExternalId);
+            Result<BusinessDTO> result = await _businessService.CreateAsync(dto, userExternalId);
             return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business));
         }
 
         [HttpGet("{externalId:guid}")]
         public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
-            Business? business = await _businessService.GetByExternalIdAsync(externalId);
+            BusinessDetailDTO? business = await _businessService.GetByExternalIdAsync(externalId);
 
             if (business == null)
             {
@@ -65,14 +65,14 @@ namespace turno_clave_API.Controllers
                 return Unauthorized();
             }
             Guid userExternalId = Guid.Parse(userExternalIdString);
-            IEnumerable<Business> businesses = await _businessService.GetByUserExternalIdAsync(userExternalId);
-            return Ok(businesses.Select(Business.ToDetailDto));
+            IEnumerable<BusinessDetailDTO> businesses = await _businessService.GetByUserExternalIdAsync(userExternalId);
+            return Ok(businesses);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateBusinessDTO dto)
         {
-            Business? updatedBusiness = await _businessService.UpdateAsync(dto);
+            BusinessDTO? updatedBusiness = await _businessService.UpdateAsync(dto);
 
             if (updatedBusiness == null)
             {
@@ -91,7 +91,7 @@ namespace turno_clave_API.Controllers
         [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {
-            Business? business = await _businessService.DeleteAsync(externalId);
+            BusinessDTO? business = await _businessService.DeleteAsync(externalId);
 
             if (business == null)
             {

@@ -9,18 +9,18 @@ namespace turno_clave_API.Application.Services
     {
         private readonly ILogger _logger;
         private readonly IProfessionalRepository _professionalRepository;
-        private readonly IBusinessService _businessService;
+        private readonly IBusinessRepository _businessRepository;
 
-        public ProfessionalService(ILogger<ProfessionalService> logger, IProfessionalRepository professionalRepository, IBusinessService businessService)
+        public ProfessionalService(ILogger<ProfessionalService> logger, IProfessionalRepository professionalRepository, IBusinessRepository businessRepository)
         {
             _logger = logger;
             _professionalRepository = professionalRepository;
-            _businessService = businessService;
+            _businessRepository = businessRepository;
         }
 
         public async Task<Professional> CreateAsync(CreateProfessionalDTO dto)
         {
-            Business? business = await _businessService.GetByExternalIdAsync(dto.BusinessExternalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
                 throw new KeyNotFoundException($"Business with ExternalId {dto.BusinessExternalId} not found.");
 

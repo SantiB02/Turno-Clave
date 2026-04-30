@@ -9,18 +9,18 @@ namespace turno_clave_API.Application.Services
     {
         private readonly ILogger _logger;
         private IServiceRepository _serviceRepository;
-        private IBusinessService _businessService;
+        private IBusinessRepository _businessRepository;
 
-        public ServiceService(ILogger<ServiceService> logger, IServiceRepository serviceRepository, IBusinessService businessService)
+        public ServiceService(ILogger<ServiceService> logger, IServiceRepository serviceRepository, IBusinessRepository businessRepository)
         {
             _logger = logger;
             _serviceRepository = serviceRepository;
-            _businessService = businessService;
+            _businessRepository = businessRepository;
         }
 
         public async Task<Service> CreateAsync(CreateServiceDTO dto)
         {
-            Business? business = await _businessService.GetByExternalIdAsync(dto.BusinessExternalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
                 throw new KeyNotFoundException($"Business with ExternalId {dto.BusinessExternalId} not found.");
 
@@ -36,6 +36,12 @@ namespace turno_clave_API.Application.Services
             _serviceRepository.AddService(service);
             await _serviceRepository.SaveAsync();
             return service;
+        }
+
+        public async Task<IEnumerable<Service>> GetByUserExternalIdAsync(Guid userExternalId)
+        {
+            IEnumerable<Service> services = await _serviceRepository.GetServicesByUserExternalIdAsync(userExternalId);
+            return services;
         }
 
         public async Task<Service?> GetByExternalIdAsync(Guid externalId)

@@ -29,7 +29,7 @@ namespace turno_clave_API.Application.Services
             _businessAvailabilityRepository = businessAvailabilityRepository;
         }
 
-        public async Task<Result<Business>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
+        public async Task<Result<BusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
         {
             string baseSlug = GenerateSlug(dto.Name);
             string slug = baseSlug;
@@ -46,7 +46,7 @@ namespace turno_clave_API.Application.Services
 
             if (!timeZoneResult.IsSuccess)
             {
-                return Result<Business>.Failure($"Invalid time zone: {dto.TimeZone}");
+                return Result<BusinessDTO>.Failure($"Invalid time zone: {dto.TimeZone}");
             }
 
             Business business = new()
@@ -74,7 +74,7 @@ namespace turno_clave_API.Application.Services
 
             if (user == null)
             {
-                return Result<Business>.Failure($"Unauthorized");
+                return Result<BusinessDTO>.Failure($"Unauthorized");
             }
 
             UserBusiness userBusiness = new()
@@ -83,28 +83,37 @@ namespace turno_clave_API.Application.Services
                 Business = business,
             };
 
-            _context.Businesses.Add(business);
-            _context.UserBusinesses.Add(userBusiness);
-
-
-            await _context.SaveChangesAsync();
-
-            return Result<Business>.Success(business); // TODO: Map to a DTO instead of returning the entity directly (to avoid cycles and sensitive data exposure)
+            // TODO: make this into a transaction
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Businesses.Add(business);
+                _context.UserBusinesses.Add(userBusiness);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                return Result<BusinessDTO>.Success(Business.ToDto(business)); // TODO: Map to a DTO instead of returning the entity directly (to avoid cycles and sensitive data exposure)
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating business");
+                await transaction.RollbackAsync();
+                return Result<BusinessDTO>.Failure("An error occurred while creating the business.");
+            }
         }
 
-        public async Task<Business?> GetByExternalIdAsync(Guid externalId)
+        public async Task<BusinessDetailDTO?> GetByExternalIdAsync(Guid externalId)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
-            return business;
+            return business != null ? Business.ToDetailDto(business) : null;
         }
 
-        public async Task<IEnumerable<Business>> GetByUserExternalIdAsync(Guid userExternalId)
+        public async Task<IEnumerable<BusinessDetailDTO>> GetByUserExternalIdAsync(Guid userExternalId)
         {
             IEnumerable<Business> businesses = await _businessRepository.GetBusinessesByUserExternalIdAsync(userExternalId);
-            return businesses;
+            return businesses.Select(Business.ToDetailDto);
         }
 
-        public async Task<Business?> UpdateAsync(UpdateBusinessDTO dto)
+        public async Task<BusinessDTO?> UpdateAsync(UpdateBusinessDTO dto)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.ExternalId);
             if (business == null)
@@ -120,10 +129,10 @@ namespace turno_clave_API.Application.Services
             business.Country = dto.Country;
 
             await _businessRepository.SaveAsync();
-            return business;
+            return Business.ToDto(business);
         }
 
-        public async Task<Business?> DeleteAsync(Guid externalId)
+        public async Task<BusinessDTO?> DeleteAsync(Guid externalId)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             if (business != null)
@@ -131,7 +140,7 @@ namespace turno_clave_API.Application.Services
                 business.IsActive = false;
                 await _businessRepository.SaveAsync();
             }
-            return business;
+            return Business.ToDto(business);
         }
 
         // Business availability implementations

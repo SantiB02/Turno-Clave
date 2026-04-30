@@ -38,6 +38,20 @@ namespace turno_clave_API.Controllers
             }
         }
 
+        [HttpGet("mine")]
+        public async Task<IActionResult> GetMine()
+        {
+            string? userExternalIdString = User.FindFirst("userId")?.Value;
+            if (userExternalIdString == null)
+            {
+                return Unauthorized();
+            }
+            Guid userExternalId = Guid.Parse(userExternalIdString);
+            IEnumerable<Service> services = await _serviceService.GetByUserExternalIdAsync(userExternalId);
+            IEnumerable<ServiceDTO> dtos = services.Select(Service.ToDto);
+            return Ok(dtos);
+        }
+
         [HttpGet("{externalId:guid}")]
         public async Task<IActionResult> GetByExternalId(Guid externalId)
         {

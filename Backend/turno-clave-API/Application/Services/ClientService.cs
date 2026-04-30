@@ -8,19 +8,19 @@ namespace turno_clave_API.Application.Services
     public class ClientService : IClientService
     {
         private readonly ILogger _logger;
-        private readonly IClientRepository _clientRepository;
-        private readonly IBusinessService _businessService;
+        private IClientRepository _clientRepository;
+        private IBusinessRepository _businessRepository;
 
-        public ClientService(ILogger<ClientService> logger, IClientRepository clientRepository, IBusinessService businessService)
+        public ClientService(ILogger<ClientService> logger, IClientRepository clientRepository, IBusinessRepository businessRepository)
         {
             _logger = logger;
             _clientRepository = clientRepository;
-            _businessService = businessService;
+            _businessRepository = businessRepository;
         }
 
         public async Task<Client> CreateAsync(CreateClientDTO dto)
         {
-            Business? business = await _businessService.GetByExternalIdAsync(dto.BusinessExternalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
                 throw new KeyNotFoundException($"Business with ExternalId {dto.BusinessExternalId} not found.");
 

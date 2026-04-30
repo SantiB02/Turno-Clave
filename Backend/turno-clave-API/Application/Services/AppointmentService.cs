@@ -10,7 +10,7 @@ namespace turno_clave_API.Application.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IBusinessService _businessService;
+        private readonly IBusinessRepository _businessRepository;
         private readonly IProfessionalService _professionalService;
         private readonly IClientService _clientService;
         private readonly IServiceService _serviceService;
@@ -18,14 +18,14 @@ namespace turno_clave_API.Application.Services
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
-            IBusinessService businessService,
+            IBusinessRepository businessRepository,
             IProfessionalService professionalService,
             IClientService clientService,
             IServiceService serviceService,
             IAvailabilityService availabilityService)
         {
             _appointmentRepository = appointmentRepository;
-            _businessService = businessService;
+            _businessRepository = businessRepository;
             _professionalService = professionalService;
             _clientService = clientService;
             _serviceService = serviceService;
@@ -37,7 +37,7 @@ namespace turno_clave_API.Application.Services
             if (dto.StartDateTime >= dto.EndDateTime)
                 return Result<Appointment>.Failure("StartDateTime must be earlier than EndDateTime.");
 
-            Business? business = await _businessService.GetByExternalIdAsync(dto.BusinessExternalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
                 return Result<Appointment>.Failure($"Business with ExternalId {dto.BusinessExternalId} not found.");
 

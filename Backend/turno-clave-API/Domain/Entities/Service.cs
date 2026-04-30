@@ -20,6 +20,7 @@ namespace turno_clave_API.Domain.Entities
 
         // Navigation
         public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<ProfessionalService> ProfessionalServices { get; set; } = [];
 
         public static ServiceDTO ToDto(Service s)
         {
