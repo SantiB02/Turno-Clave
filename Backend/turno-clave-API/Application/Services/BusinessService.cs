@@ -83,7 +83,6 @@ namespace turno_clave_API.Application.Services
                 Business = business,
             };
 
-            // TODO: make this into a transaction
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {

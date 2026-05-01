@@ -1,5 +1,6 @@
 ﻿using turno_clave_API.Application.DTOs.Service;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
@@ -18,12 +19,11 @@ namespace turno_clave_API.Application.Services
             _businessRepository = businessRepository;
         }
 
-        public async Task<Service> CreateAsync(CreateServiceDTO dto)
+        public async Task<Result<Service>> CreateAsync(CreateServiceDTO dto)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
-                throw new KeyNotFoundException($"Business with ExternalId {dto.BusinessExternalId} not found.");
-
+                return Result<Service>.Failure($"Business with ExternalId {dto.BusinessExternalId} not found.");
             Service service = new()
             {
                 BusinessId = business.Id,
@@ -35,26 +35,28 @@ namespace turno_clave_API.Application.Services
             };
             _serviceRepository.AddService(service);
             await _serviceRepository.SaveAsync();
-            return service;
+            return Result<Service>.Success(service);
         }
 
-        public async Task<IEnumerable<Service>> GetByUserExternalIdAsync(Guid userExternalId)
+        public async Task<Result<IEnumerable<Service>>> GetByUserExternalIdAsync(Guid userExternalId)
         {
             IEnumerable<Service> services = await _serviceRepository.GetServicesByUserExternalIdAsync(userExternalId);
-            return services;
+            return Result<IEnumerable<Service>>.Success(services);
         }
 
-        public async Task<Service?> GetByExternalIdAsync(Guid externalId)
+        public async Task<Result<Service?>> GetByExternalIdAsync(Guid externalId)
         {
             Service? service = await _serviceRepository.GetServiceByExternalIdAsync(externalId);
-            return service;
+            if (service == null)
+                return Result<Service?>.Failure($"Service with ExternalId {externalId} not found.");
+            return Result<Service?>.Success(service);
         }
 
-        public async Task<Service?> UpdateAsync(UpdateServiceDTO dto)
+        public async Task<Result<Service?>> UpdateAsync(UpdateServiceDTO dto)
         {
             Service? service = await _serviceRepository.GetServiceByExternalIdAsync(dto.ExternalId);
             if (service == null)
-                throw new KeyNotFoundException($"Service with ExternalId {dto.ExternalId} not found.");
+                return Result<Service?>.Failure($"Service with ExternalId {dto.ExternalId} not found.");
             service.Name = dto.Name ?? service.Name;
             service.Description = dto.Description ?? null;
             service.Price = dto.Price ?? service.Price;
@@ -62,10 +64,10 @@ namespace turno_clave_API.Application.Services
 
             _serviceRepository.UpdateService(service);
             await _serviceRepository.SaveAsync();
-            return service;
+            return Result<Service?>.Success(service);
         }
 
-        public async Task<Service?> DeleteAsync(Guid externalId)
+        public async Task<Result<Service?>> DeleteAsync(Guid externalId)
         {
             Service? service = await _serviceRepository.GetServiceByExternalIdAsync(externalId);
             if (service != null)
@@ -75,10 +77,10 @@ namespace turno_clave_API.Application.Services
             }
             else
             {
-                throw new KeyNotFoundException($"Service with ExternalId {externalId} not found.");
+                return Result<Service?>.Failure($"Service with ExternalId {externalId} not found.");
             }
 
-            return service;
+            return Result<Service?>.Success(service);
         }
     }
 }

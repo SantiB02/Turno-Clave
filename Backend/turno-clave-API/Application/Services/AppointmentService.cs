@@ -73,9 +73,11 @@ namespace turno_clave_API.Application.Services
             if (client == null)
                 return Result<Appointment>.Failure($"Client with ExternalId {dto.ClientExternalId} not found.");
 
-            Service? service = await _serviceService.GetByExternalIdAsync(dto.ServiceExternalId);
-            if (service == null)
+            Result<Service?> serviceResult = await _serviceService.GetByExternalIdAsync(dto.ServiceExternalId);
+            if (!serviceResult.IsSuccess || serviceResult.Value == null)
                 return Result<Appointment>.Failure($"Service with ExternalId {dto.ServiceExternalId} not found.");
+
+            Service service = serviceResult.Value;
 
             Appointment appointment = new()
             {
