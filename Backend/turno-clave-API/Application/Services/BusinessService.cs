@@ -77,6 +77,11 @@ namespace turno_clave_API.Application.Services
                 return Result<BusinessDTO>.Failure($"Unauthorized");
             }
 
+            if (user.ActiveBusinessExternalId == null)
+            {
+                user.ActiveBusinessExternalId = business.ExternalId;
+            }
+
             UserBusiness userBusiness = new()
             {
                 User = user,
@@ -88,9 +93,10 @@ namespace turno_clave_API.Application.Services
             {
                 _context.Businesses.Add(business);
                 _context.UserBusinesses.Add(userBusiness);
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return Result<BusinessDTO>.Success(Business.ToDto(business)); // TODO: Map to a DTO instead of returning the entity directly (to avoid cycles and sensitive data exposure)
+                return Result<BusinessDTO>.Success(Business.ToDto(business));
             }
             catch (Exception ex)
             {
