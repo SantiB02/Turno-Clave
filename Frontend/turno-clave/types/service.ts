@@ -1,5 +1,12 @@
+export type Service = {
+  externalId: string
+  name: string
+  description: string
+  price: number
+  durationMinutes: number
+}
+
 export type CreateServiceDTO = {
-  businessExternalId: string
   name: string
   description: string
   price: number

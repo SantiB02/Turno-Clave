@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using turno_clave_API.Application.DTOs.Business;
-using turno_clave_API.Application.Interfaces;
-using turno_clave_API.Domain.Entities;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.AspNetCore.Authorization;
+using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Application.DTOs.Service;
+using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Application.Services;
 using turno_clave_API.Common;
+using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Controllers
 {
@@ -15,11 +17,13 @@ namespace turno_clave_API.Controllers
     {
         private readonly IBusinessService _businessService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IServiceService _serviceService;
 
-        public BusinessController(IBusinessService businessService, ICurrentUserService currentUserService)
+        public BusinessController(IBusinessService businessService, ICurrentUserService currentUserService, IServiceService serviceService)
         {
             _businessService = businessService;
             _currentUserService = currentUserService;
+            _serviceService = serviceService;
         }
 
         [Authorize]
@@ -42,18 +46,40 @@ namespace turno_clave_API.Controllers
         {
             BusinessDetailDTO? business = await _businessService.GetByExternalIdAsync(externalId);
 
-            if (business == null)
+            return Ok(business);
+        }
+
+        [HttpGet("{businessExternalId}/services")]
+        public async Task<IActionResult> GetServices(Guid businessExternalId)
+        {
+            var result = await _serviceService.GetByBusinessExternalIdAsync(businessExternalId);
+
+            if (!result.IsSuccess)
             {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Business Not Found",
-                    detail: $"Business with ExternalId {externalId} not found.",
-                    type: $"/errors/BusinessNotFound",
-                    instance: HttpContext.Request.Path
-                );
+                return Problem(statusCode: 500, detail: result.Error);
             }
 
-            return Ok(business);
+            IEnumerable<ServiceDTO> dtos = (result.Value ?? Enumerable.Empty<Service>())
+                .Select(Service.ToDto);
+
+            return Ok(dtos);
+        }
+
+        [HttpGet("active/services")]
+        public async Task<IActionResult> GetServicesByActiveBusiness()
+        {
+            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+            var result = await _serviceService.GetByBusinessExternalIdAsync(businessExternalId);
+
+            if (!result.IsSuccess)
+            {
+                return Problem(statusCode: 500, detail: result.Error);
+            }
+
+            IEnumerable<ServiceDTO> dtos = (result.Value ?? Enumerable.Empty<Service>())
+                .Select(Service.ToDto);
+
+            return Ok(dtos);
         }
 
         [HttpGet("mine")]
@@ -74,17 +100,6 @@ namespace turno_clave_API.Controllers
         {
             BusinessDTO? updatedBusiness = await _businessService.UpdateAsync(dto);
 
-            if (updatedBusiness == null)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Business Not Found",
-                    detail: $"Business with ExternalId {dto.ExternalId} not found.",
-                    type: $"/errors/BusinessNotFound",
-                    instance: HttpContext.Request.Path
-                );
-            }
-
             return Ok(updatedBusiness);
         }
 
@@ -93,16 +108,6 @@ namespace turno_clave_API.Controllers
         {
             BusinessDTO? business = await _businessService.DeleteAsync(externalId);
 
-            if (business == null)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Business Not Found",
-                    detail: $"Business with ExternalId {externalId} not found.",
-                    type: $"/errors/BusinessNotFound",
-                    instance: HttpContext.Request.Path
-                );
-            }
             return Ok(business);
         }
     }

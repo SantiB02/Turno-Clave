@@ -43,6 +43,12 @@ namespace turno_clave_API.Application.Services
             return Result<Service>.Success(service);
         }
 
+        public async Task<Result<IEnumerable<Service>>> GetByBusinessExternalIdAsync(Guid businessExternalId)
+        {
+            IEnumerable<Service> services = await _serviceRepository.GetServicesByBusinessExternalIdAsync(businessExternalId);
+            return Result<IEnumerable<Service>>.Success(services);
+        }
+
         public async Task<Result<IEnumerable<Service>>> GetByUserExternalIdAsync(Guid userExternalId)
         {
             IEnumerable<Service> services = await _serviceRepository.GetServicesByUserExternalIdAsync(userExternalId);

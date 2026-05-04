@@ -2,6 +2,7 @@
 
 import { authenticatedFetch } from "@/lib/api/authenticated-fetch"
 import type { BusinessDetail, CreateBusinessDTO } from "@/types/business"
+import type { Service } from "@/types/service"
 
 export async function createBusiness(data: CreateBusinessDTO) {
   const res = await authenticatedFetch("/businesses", {
@@ -31,9 +32,21 @@ export async function getMyBusinesses(): Promise<BusinessDetail[]> {
 
     return res.json()
   } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      throw new Error("UNAUTHORIZED")
+    console.error("Error fetching businesses:", error)
+    throw new Error("Error fetching businesses")
+  }
+}
+
+export async function getServicesByActiveBusiness(): Promise<Service[]> {
+  try {
+    const res = await authenticatedFetch("/businesses/active/services")
+    if (!res.ok) {
+      console.error("Error fetching services:", res.status, await res.text())
+      throw new Error("Error fetching services")
     }
-    throw error
+    return res.json()
+  } catch (error) {
+    console.error("Error fetching services:", error)
+    throw new Error("Error fetching services")
   }
 }

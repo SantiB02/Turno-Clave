@@ -7,6 +7,7 @@ namespace turno_clave_API.Application.Interfaces
     public interface IServiceService
     {
         Task<Result<Service>> CreateAsync(CreateServiceDTO dto);
+        Task<Result<IEnumerable<Service>>> GetByBusinessExternalIdAsync(Guid businessExternalId);
         Task<Result<IEnumerable<Service>>> GetByUserExternalIdAsync(Guid userExternalId);
         Task<Result<Service?>> GetByExternalIdAsync(Guid externalId);
         Task<Result<Service?>> UpdateAsync(UpdateServiceDTO dto);

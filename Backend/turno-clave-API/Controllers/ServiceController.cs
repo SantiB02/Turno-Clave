@@ -47,17 +47,8 @@ namespace turno_clave_API.Controllers
             }
             Guid userExternalId = Guid.Parse(userExternalIdString);
             Result<IEnumerable<Service>> result = await _serviceService.GetByUserExternalIdAsync(userExternalId);
-            if (!result.IsSuccess || result.Value == null)
-            {
-                return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Services Not Found",
-                    detail: $"No services found for user with ExternalId {userExternalId}.",
-                    type: $"/errors/ServicesNotFound",
-                    instance: HttpContext.Request.Path
-                );
-            }
-            IEnumerable<ServiceDTO> dtos = result.Value.Select(Service.ToDto);
+
+            IEnumerable<ServiceDTO> dtos = result.Value?.Select(Service.ToDto) ?? Enumerable.Empty<ServiceDTO>();
             return Ok(dtos);
         }
 
