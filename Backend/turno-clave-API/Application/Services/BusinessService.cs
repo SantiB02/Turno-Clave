@@ -138,8 +138,11 @@ namespace turno_clave_API.Application.Services
             {
                 business.IsActive = false;
                 await _businessRepository.SaveAsync();
+                return Business.ToDto(business);
+            } else
+            {
+                return null;
             }
-            return Business.ToDto(business);
         }
 
         // Business availability implementations

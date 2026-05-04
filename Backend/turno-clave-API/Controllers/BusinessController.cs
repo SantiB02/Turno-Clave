@@ -14,24 +14,24 @@ namespace turno_clave_API.Controllers
     public class BusinessController : ControllerBase
     {
         private readonly IBusinessService _businessService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public BusinessController(IBusinessService businessService)
+        public BusinessController(IBusinessService businessService, ICurrentUserService currentUserService)
         {
             _businessService = businessService;
+            _currentUserService = currentUserService;
         }
 
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBusinessDTO dto)
         {
-            string? userExternalIdString = User.FindFirst("userId")?.Value;
+            Guid userExternalId = _currentUserService.GetExternalId();
 
-            if (userExternalIdString == null)
+            if (userExternalId == Guid.Empty)
             {
                 return Unauthorized();
             }
-
-            Guid userExternalId = Guid.Parse(userExternalIdString);
 
             Result<BusinessDTO> result = await _businessService.CreateAsync(dto, userExternalId);
             return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business));

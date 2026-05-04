@@ -6,6 +6,7 @@ namespace turno_clave_API.Domain.Entities
     {
         public int Id { get; set; }
         public Guid ExternalId { get; set; } = Guid.NewGuid();
+        public Guid? ActiveBusinessExternalId { get; set; }
 
         public string GoogleId { get; set; } = string.Empty;
         public required string Name { get; set; }

@@ -8,14 +8,16 @@ namespace turno_clave_API.Application.Services
     public class ClientService : IClientService
     {
         private readonly ILogger _logger;
-        private IClientRepository _clientRepository;
-        private IBusinessRepository _businessRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IBusinessRepository _businessRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ClientService(ILogger<ClientService> logger, IClientRepository clientRepository, IBusinessRepository businessRepository)
+        public ClientService(ILogger<ClientService> logger, IClientRepository clientRepository, IBusinessRepository businessRepository, ICurrentUserService currentUserService)
         {
             _logger = logger;
             _clientRepository = clientRepository;
             _businessRepository = businessRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Client> CreateAsync(CreateClientDTO dto)

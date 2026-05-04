@@ -9,21 +9,26 @@ namespace turno_clave_API.Application.Services
     public class ServiceService : IServiceService
     {
         private readonly ILogger _logger;
-        private IServiceRepository _serviceRepository;
-        private IBusinessRepository _businessRepository;
+        private readonly IServiceRepository _serviceRepository;
+        private readonly IBusinessRepository _businessRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ServiceService(ILogger<ServiceService> logger, IServiceRepository serviceRepository, IBusinessRepository businessRepository)
+        public ServiceService(ILogger<ServiceService> logger, IServiceRepository serviceRepository, IBusinessRepository businessRepository, ICurrentUserService currentUserService)
         {
             _logger = logger;
             _serviceRepository = serviceRepository;
             _businessRepository = businessRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Result<Service>> CreateAsync(CreateServiceDTO dto)
         {
-            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
+            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(businessExternalId);
             if (business == null)
-                return Result<Service>.Failure($"Business with ExternalId {dto.BusinessExternalId} not found.");
+                return Result<Service>.Failure($"Business with ExternalId {businessExternalId} not found.");
+
             Service service = new()
             {
                 BusinessId = business.Id,
