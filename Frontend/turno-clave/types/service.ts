@@ -1,9 +1,12 @@
+import type { ServiceProfessional } from "./professional"
+
 export type Service = {
   externalId: string
   name: string
   description: string
   price: number
   durationMinutes: number
+  professionals: ServiceProfessional[]
 }
 
 export type CreateServiceDTO = {

@@ -1,4 +1,5 @@
-﻿using turno_clave_API.Application.DTOs.Service;
+﻿using turno_clave_API.Application.DTOs.Professional;
+using turno_clave_API.Application.DTOs.Service;
 
 namespace turno_clave_API.Domain.Entities
 {
@@ -32,7 +33,15 @@ namespace turno_clave_API.Domain.Entities
                 Name = s.Name,
                 Description = s.Description,
                 Price = s.Price,
-                DurationMinutes = s.DurationMinutes
+                DurationMinutes = s.DurationMinutes,
+
+                Professionals = s.ProfessionalServices
+                    .Select(ps => new ServiceProfessionalDTO
+                    {
+                        ExternalId = ps.Professional.ExternalId,
+                        Name = ps.Professional.Name,
+                    })
+                    .ToList()
             };
         } 
     }

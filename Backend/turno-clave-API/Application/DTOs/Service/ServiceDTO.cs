@@ -1,4 +1,6 @@
-﻿namespace turno_clave_API.Application.DTOs.Service
+﻿using turno_clave_API.Application.DTOs.Professional;
+
+namespace turno_clave_API.Application.DTOs.Service
 {
     public class ServiceDTO
     {
@@ -9,5 +11,7 @@
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public int DurationMinutes { get; set; }
+
+        public List<ServiceProfessionalDTO> Professionals { get; set; } = [];
     }
 }

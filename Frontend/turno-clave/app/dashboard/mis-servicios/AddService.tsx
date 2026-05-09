@@ -66,6 +66,8 @@ export default function AddService({ professionals }: AddServiceProps) {
     setDescription("")
     setPrice("")
     setDurationMinutes("")
+    setSelectedProfessionalId("")
+    setSelectedProfessionals([])
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

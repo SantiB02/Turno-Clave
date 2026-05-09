@@ -21,6 +21,8 @@ namespace turno_clave_API.Infrastructure.Repositories
         public Task<IEnumerable<Service>> GetServicesByBusinessExternalIdAsync(Guid businessExternalId)
         {
             return _context.Services
+                .Include(s => s.ProfessionalServices)
+                    .ThenInclude(ps => ps.Professional)
                 .Include(s => s.Business)
                 .Where(s => s.Business.ExternalId == businessExternalId)
                 .ToListAsync()

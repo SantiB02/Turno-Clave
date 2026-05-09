@@ -4,3 +4,8 @@ export type Professional = {
   businessExternalId: string
   businessName: string
 }
+
+export type ServiceProfessional = {
+  externalId: string
+  name: string
+}

@@ -23,7 +23,7 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full cursor-pointer flex items-center justify-between bg-gray-800 text-white px-4 py-3"
+        className="w-full cursor-pointer flex items-center justify-between bg-primary-orange text-white px-4 py-3"
       >
         <span className="text-xl">{service.name}</span>
         <ChevronDownIcon
@@ -33,13 +33,34 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
 
       {/* Content */}
       {open && (
-        <div className="bg-gray-100 px-4 py-3 text-md text-gray-700 space-y-1">
-          <p>- Precio: ${service.price.toLocaleString("es-AR")}</p>
-          <p>- Duración: {service.durationMinutes} minutos</p>
+        <div className="px-4 py-3 text-md text-gray-700 space-y-1">
+          <p>
+            <span className="text-primary-orange font-bold">Precio:</span> $
+            {service.price.toLocaleString("es-AR")}
+          </p>
+          <p>
+            <span className="text-primary-orange font-bold">Duración:</span>{" "}
+            {service.durationMinutes} minutos
+          </p>
           {/* {service.professional && <p>- Profesional: {service.professional}</p>} */}
-          {service.description && <p>- Descripción: {service.description}</p>}
-
-          <p>- Formas de pago: Efectivo, QR, transferencia, débito.</p>
+          {service.description && (
+            <p>
+              <span className="text-primary-orange font-bold">
+                Descripción:
+              </span>{" "}
+              {service.description}
+            </p>
+          )}
+          {service.professionals.length > 0 && (
+            <p>
+              <span className="text-primary-orange font-bold">
+                {service.professionals.length === 1
+                  ? "Profesional:"
+                  : "Profesionales:"}
+              </span>{" "}
+              {service.professionals.map((p) => p.name).join(", ")}
+            </p>
+          )}
 
           {/* Actions */}
           <div className="flex justify-end gap-2 mt-3">

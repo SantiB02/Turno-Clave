@@ -49,17 +49,6 @@ export default function SidebarNav({ user }: Props) {
             <CalendarDaysIcon className="h-10 w-10" />
           </Link>
           <Link
-            title="Mis Servicios"
-            href="/dashboard/mis-servicios"
-            className={`flex items-center justify-center py-2 rounded ${
-              isActive("/dashboard/mis-servicios")
-                ? "bg-white text-orange-500"
-                : "hover:bg-orange-400 text-white"
-            }`}
-          >
-            <WrenchScrewdriverIcon className="h-10 w-10" />
-          </Link>
-          <Link
             title="Mis Negocios"
             href="/dashboard/mi-negocio"
             className={`flex items-center justify-center py-2 rounded ${
@@ -69,6 +58,17 @@ export default function SidebarNav({ user }: Props) {
             }`}
           >
             <BriefcaseIcon className="h-10 w-10" />
+          </Link>
+          <Link
+            title="Mis Servicios"
+            href="/dashboard/mis-servicios"
+            className={`flex items-center justify-center py-2 rounded ${
+              isActive("/dashboard/mis-servicios")
+                ? "bg-white text-orange-500"
+                : "hover:bg-orange-400 text-white"
+            }`}
+          >
+            <WrenchScrewdriverIcon className="h-10 w-10" />
           </Link>
           <Link
             title="Mis Estadísticas"
@@ -107,13 +107,6 @@ export default function SidebarNav({ user }: Props) {
           >
             <Cog6ToothIcon className="h-10 w-10" />
           </Link>
-          {/* <Link
-                title="Ayuda"
-                href="/dashboard/ayuda"
-                className="block mx-auto py-2 rounded hover:bg-orange-400"
-              >
-                <QuestionMarkCircleIcon className="h-10 w-10 inline-block mr-2" />
-              </Link> */}
           <SignOutIcon />
         </div>
       </div>
