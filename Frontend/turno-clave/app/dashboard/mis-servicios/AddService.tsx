@@ -83,8 +83,6 @@ export default function AddService({ professionals }: AddServiceProps) {
       price: numericPrice,
       durationMinutes: Number(durationMinutes),
     }
-    console.log("SERVICE DATA", data)
-    return
 
     await createService(data)
     router.refresh()
