@@ -143,6 +143,16 @@ export default function OnboardingBusinessForm() {
     setName(e.target.value)
   }
 
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // numbers only
+    const numeric = e.target.value.replace(/\D/g, "")
+    const cleaned = numeric.replace(/^0+/, "")
+
+    if (cleaned.length > 15) return
+
+    setPhone(cleaned)
+  }
+
   return (
     <div className="mb-30">
       <form onSubmit={handleSubmit}>
@@ -171,53 +181,55 @@ export default function OnboardingBusinessForm() {
             <h2 className="text-2xl text-center mb-4">
               ¿Cuál es su información de contacto?
             </h2>
-            <input
-              maxLength={100}
-              type="text"
-              name="email"
-              placeholder="Correo electrónico"
-              className="border rounded-2xl border-primary-orange mb-4 focus:outline-primary-orange focus:ring-primary-orange p-2 w-64"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <div className="flex">
-              {/* <PhonecodeSelect
-              src=""
-                containerClassName=" w-30 mr-4"
-                required
-                placeholder="+1"
-                onChange={(_phonecode) =>
-                  setPhonecode(_phonecode as SupportedCountry)
-                }
-              /> */}
-              <select
-                className="border first rounded-2xl mr-2  border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-2 w-24"
-                value={phonecode ? phonecode.iso2 : ""}
-                onChange={(e) => {
-                  const selectedPhonecode = supportedCountries.find(
-                    (c) => c.iso2 === e.target.value,
-                  )
-                  setPhonecode(selectedPhonecode || null)
-                }}
-              >
-                <option value="">Código</option>
-                {supportedCountries.map((c) => (
-                  <option key={c.iso2} value={c.iso2}>
-                    +{c.phone_code}
-                  </option>
-                ))}
-              </select>
+            <div className="w-64">
               <input
-                maxLength={15}
+                maxLength={100}
                 type="text"
-                name="phone"
-                placeholder="Número de teléfono"
-                className="border rounded-2xl border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-2 w-64"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                name="email"
+                placeholder="Correo electrónico"
+                className="border rounded-2xl border-primary-orange mb-4 focus:outline-primary-orange focus:ring-primary-orange p-2 w-full"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              <div className="flex">
+                {/* <PhonecodeSelect
+                src=""
+                  containerClassName=" w-30 mr-4"
+                  required
+                  placeholder="+1"
+                  onChange={(_phonecode) =>
+                    setPhonecode(_phonecode as SupportedCountry)
+                  }
+                /> */}
+                <select
+                  className="border first rounded-2xl mr-2  border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-2 w-24"
+                  value={phonecode ? phonecode.iso2 : ""}
+                  onChange={(e) => {
+                    const selectedPhonecode = supportedCountries.find(
+                      (c) => c.iso2 === e.target.value,
+                    )
+                    setPhonecode(selectedPhonecode || null)
+                  }}
+                >
+                  <option value="">Código</option>
+                  {supportedCountries.map((c) => (
+                    <option key={c.iso2} value={c.iso2}>
+                      +{c.phone_code}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  maxLength={15}
+                  type="text"
+                  name="phone"
+                  placeholder="Número de teléfono"
+                  className="border rounded-2xl border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-2 w-full"
+                  value={phone}
+                  onChange={handlePhoneChange}
+                  required
+                />
+              </div>
             </div>
           </div>
 
