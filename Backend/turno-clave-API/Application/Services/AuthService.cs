@@ -55,7 +55,7 @@ public class AuthService : IAuthService
 
     private async Task<AuthResponseDTO> IssueTokens(User user)
     {
-        DateTime accessTokenExpiresAt = DateTime.UtcNow.AddMinutes(1);
+        DateTime accessTokenExpiresAt = DateTime.UtcNow.AddHours(2);
         string accessToken = GenerateJwt(user, accessTokenExpiresAt);
 
         string refreshTokenValue = GenerateRefreshTokenValue();
@@ -134,7 +134,7 @@ public class AuthService : IAuthService
                     if (replacementUser == null)
                         throw new SecurityTokenException("User not found.");
 
-                    DateTime graceAccessTokenExpiresAt = DateTime.UtcNow.AddMinutes(1);
+                    DateTime graceAccessTokenExpiresAt = DateTime.UtcNow.AddHours(2);
                     string graceAccessToken = GenerateJwt(replacementUser, graceAccessTokenExpiresAt);
 
                     return new AuthResponseDTO
