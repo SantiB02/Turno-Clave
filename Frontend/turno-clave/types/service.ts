@@ -9,6 +9,7 @@ export type Service = {
 export type CreateServiceDTO = {
   name: string
   description: string
+  professionalExternalIds: string[]
   price: number
   durationMinutes: number
 }

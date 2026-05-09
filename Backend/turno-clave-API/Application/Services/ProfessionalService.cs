@@ -1,5 +1,6 @@
 ﻿using turno_clave_API.Application.DTOs.Professional;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
 
@@ -35,6 +36,12 @@ namespace turno_clave_API.Application.Services
             await _professionalRepository.SaveAsync();
 
             return professional;
+        }
+
+        public async Task<Result<IEnumerable<Professional>>> GetByBusinessExternalIdAsync(Guid businessExternalId)
+        {
+            IEnumerable<Professional> professionals = await _professionalRepository.GetProfessionalsByBusinessExternalIdAsync(businessExternalId);
+            return Result<IEnumerable<Professional>>.Success(professionals);
         }
 
         public async Task<Professional?> GetByExternalIdAsync(Guid externalId)

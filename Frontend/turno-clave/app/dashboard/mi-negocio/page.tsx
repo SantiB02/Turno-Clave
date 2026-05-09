@@ -3,7 +3,7 @@ import BusinessCard from "@/app/components/BusinessCard"
 import { auth } from "@/auth"
 import { getMyBusinesses } from "@/services/businessService"
 
-export default async function MisNegocios() {
+export default async function MiNegocio() {
   const session = await auth()
 
   if (!session) {
@@ -14,7 +14,7 @@ export default async function MisNegocios() {
 
   return (
     <div>
-      <h1 className="font-bold text-4xl mb-9">Mis Negocios</h1>
+      <h1 className="font-bold text-4xl mb-9">Mi Negocio</h1>
       {businesses.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">

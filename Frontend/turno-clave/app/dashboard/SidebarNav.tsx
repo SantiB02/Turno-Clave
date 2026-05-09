@@ -61,7 +61,7 @@ export default function SidebarNav({ user }: Props) {
           </Link>
           <Link
             title="Mis Negocios"
-            href="/dashboard/mis-negocios"
+            href="/dashboard/mi-negocio"
             className={`flex items-center justify-center py-2 rounded ${
               isActive("/dashboard/mis-negocios")
                 ? "bg-white text-orange-500"

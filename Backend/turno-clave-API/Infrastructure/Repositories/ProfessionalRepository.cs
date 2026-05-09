@@ -19,9 +19,24 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Professionals.Include(p => p.Business).ToListAsync();
         }
 
+        public Task<IEnumerable<Professional>> GetProfessionalsByBusinessExternalIdAsync(Guid businessExternalId)
+        {
+            return _context.Professionals.Include(p => p.Business).Where(p => p.Business.ExternalId == businessExternalId).ToListAsync().ContinueWith(t => t.Result.AsEnumerable());
+        }
+
         public Task<Professional?> GetProfessionalByExternalIdAsync(Guid externalId)
         {
             return _context.Professionals.Include(p => p.Business).FirstOrDefaultAsync(p => p.ExternalId == externalId);
+        }
+
+        public async Task<List<Professional>> GetProfessionalsByExternalIdsAsync(List<Guid> externalIds)
+        {
+            if (externalIds.Count == 0)
+            {
+                return [];
+            }
+
+            return await _context.Professionals.Where(p => externalIds.Contains(p.ExternalId)).ToListAsync();
         }
 
         public void AddProfessional(Professional professional)

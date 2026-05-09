@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.CodeAnalysis;
 using turno_clave_API.Application.DTOs.Business;
-using turno_clave_API.Application.DTOs.Service;
 using turno_clave_API.Application.Interfaces;
-using turno_clave_API.Application.Services;
 using turno_clave_API.Common;
-using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Controllers
 {
@@ -47,39 +43,6 @@ namespace turno_clave_API.Controllers
             BusinessDetailDTO? business = await _businessService.GetByExternalIdAsync(externalId);
 
             return Ok(business);
-        }
-
-        [HttpGet("{businessExternalId}/services")]
-        public async Task<IActionResult> GetServices(Guid businessExternalId)
-        {
-            var result = await _serviceService.GetByBusinessExternalIdAsync(businessExternalId);
-
-            if (!result.IsSuccess)
-            {
-                return Problem(statusCode: 500, detail: result.Error);
-            }
-
-            IEnumerable<ServiceDTO> dtos = (result.Value ?? Enumerable.Empty<Service>())
-                .Select(Service.ToDto);
-
-            return Ok(dtos);
-        }
-
-        [HttpGet("active/services")]
-        public async Task<IActionResult> GetServicesByActiveBusiness()
-        {
-            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
-            var result = await _serviceService.GetByBusinessExternalIdAsync(businessExternalId);
-
-            if (!result.IsSuccess)
-            {
-                return Problem(statusCode: 500, detail: result.Error);
-            }
-
-            IEnumerable<ServiceDTO> dtos = (result.Value ?? Enumerable.Empty<Service>())
-                .Select(Service.ToDto);
-
-            return Ok(dtos);
         }
 
         [HttpGet("mine")]

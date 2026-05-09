@@ -7,7 +7,7 @@ export async function authenticatedFetch(
 ) {
   const session = (await auth()) as ExtendedSession
 
-  if (!session?.backendToken) {
+  if (session?.authError || !session?.backendToken) {
     throw new Error("UNAUTHORIZED")
   }
 

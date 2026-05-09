@@ -12,10 +12,12 @@ namespace turno_clave_API.Controllers
     public class ServiceController : ControllerBase
     {
         private readonly IServiceService _serviceService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ServiceController(IServiceService serviceService)
+        public ServiceController(IServiceService serviceService, ICurrentUserService currentUserService)
         {
             _serviceService = serviceService;
+            _currentUserService = currentUserService;
         }
 
         [HttpPost]
@@ -35,6 +37,23 @@ namespace turno_clave_API.Controllers
 
             ServiceDTO dto = Service.ToDto(result.Value);
             return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
+        }
+
+        [HttpGet("active-business")]
+        public async Task<IActionResult> GetByActiveBusiness()
+        {
+            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+            Result<IEnumerable<Service>> result = await _serviceService.GetByBusinessExternalIdAsync(businessExternalId);
+
+            if (!result.IsSuccess)
+            {
+                return Problem(statusCode: 500, detail: result.Error);
+            }
+
+            IEnumerable<ServiceDTO> dtos = (result.Value ?? Enumerable.Empty<Service>())
+                .Select(Service.ToDto);
+
+            return Ok(dtos);
         }
 
         [HttpGet("mine")]

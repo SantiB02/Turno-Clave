@@ -38,7 +38,6 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
           <p>- Duración: {service.durationMinutes} minutos</p>
           {/* {service.professional && <p>- Profesional: {service.professional}</p>} */}
           {service.description && <p>- Descripción: {service.description}</p>}
-          <p>- Profesional: Pepito</p>
 
           <p>- Formas de pago: Efectivo, QR, transferencia, débito.</p>
 

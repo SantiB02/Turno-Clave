@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using turno_clave_API.Application.DTOs.Professional;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Controllers
@@ -11,10 +12,12 @@ namespace turno_clave_API.Controllers
     public class ProfessionalController : ControllerBase
     {
         private readonly IProfessionalService _professionalService;
+        private readonly ICurrentUserService _currentUserService;
 
-        public ProfessionalController(IProfessionalService professionalService)
+        public ProfessionalController(IProfessionalService professionalService, ICurrentUserService currentUserService)
         {
             _professionalService = professionalService;
+            _currentUserService = currentUserService;
         }
 
         [HttpPost]
@@ -36,6 +39,22 @@ namespace turno_clave_API.Controllers
                     instance: HttpContext.Request.Path
                 );
             }
+        }
+
+        [HttpGet("active-business")]
+        public async Task<IActionResult> GetByActiveBusiness()
+        {
+            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+            Result<IEnumerable<Professional>> result = await _professionalService.GetByBusinessExternalIdAsync(businessExternalId);
+            if (!result.IsSuccess)
+            {
+                return Problem(statusCode: 500, detail: result.Error);
+            }
+
+            IEnumerable<ProfessionalDTO> dtos = (result.Value ?? Enumerable.Empty<Professional>())
+                .Select(Professional.ToDto);
+
+            return Ok(dtos);
         }
 
         [HttpGet("{externalId:guid}")]

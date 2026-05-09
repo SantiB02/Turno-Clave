@@ -1,13 +1,17 @@
-import AddItemButton from "@/app/components/AddItemButton"
+import type { Professional } from "@/types/professional"
 import type { Service } from "@/types/service"
 import AddService from "./AddService"
 import ServiceAccordion from "./ServiceAccordion"
 
 type ServicesListProps = {
   services: Service[]
+  professionals: Professional[]
 }
 
-export default function ServicesView({ services }: ServicesListProps) {
+export default function ServicesView({
+  services,
+  professionals,
+}: ServicesListProps) {
   return (
     <div>
       <h1 className="font-bold text-4xl mb-9">Mis Servicios</h1>
@@ -22,7 +26,7 @@ export default function ServicesView({ services }: ServicesListProps) {
           </div>
         )}
       </div>
-      <AddService />
+      <AddService professionals={professionals} />
     </div>
   )
 }

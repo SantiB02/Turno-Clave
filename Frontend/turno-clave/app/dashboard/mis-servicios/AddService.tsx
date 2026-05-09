@@ -1,17 +1,27 @@
 "use client"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import AddItemButton from "@/app/components/AddItemButton"
 import ModalForm from "@/app/components/ModalForm"
 import { createService } from "@/services/serviceService"
+import type { Professional } from "@/types/professional"
 import type { CreateServiceDTO } from "@/types/service"
 
-export default function AddService() {
+type AddServiceProps = {
+  professionals: Professional[]
+}
+
+export default function AddService({ professionals }: AddServiceProps) {
   const router = useRouter()
 
   const [openModal, setOpenModal] = useState(false)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
+  const [selectedProfessionalId, setSelectedProfessionalId] = useState("")
+  const [selectedProfessionals, setSelectedProfessionals] = useState<
+    Professional[]
+  >([])
   const [price, setPrice] = useState("")
   const [durationMinutes, setDurationMinutes] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -43,7 +53,12 @@ export default function AddService() {
     setDurationMinutes(numeric)
   }
 
-  const isSubmitDisabled = !name || !price || !durationMinutes || isSubmitting
+  const isSubmitDisabled =
+    !name ||
+    !price ||
+    !durationMinutes ||
+    !selectedProfessionals.length ||
+    isSubmitting
 
   const handleCloseModal = () => {
     setOpenModal(false)
@@ -62,9 +77,14 @@ export default function AddService() {
     const data: CreateServiceDTO = {
       name,
       description,
+      professionalExternalIds: selectedProfessionals.map(
+        (professional) => professional.externalId,
+      ),
       price: numericPrice,
       durationMinutes: Number(durationMinutes),
     }
+    console.log("SERVICE DATA", data)
+    return
 
     await createService(data)
     router.refresh()
@@ -110,6 +130,73 @@ export default function AddService() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        <div>
+          <select
+            value={selectedProfessionalId}
+            onChange={(e) => {
+              const value = e.target.value
+              setSelectedProfessionalId(value)
+              const professional = professionals.find(
+                (p) => p.externalId === value,
+              )
+              if (!professional) return
+              const alreadySelected = selectedProfessionals.some(
+                (p) => p.externalId === professional.externalId,
+              )
+              if (alreadySelected) {
+                setSelectedProfessionalId("")
+                return
+              }
+              setSelectedProfessionals([...selectedProfessionals, professional])
+              setSelectedProfessionalId("")
+            }}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          >
+            <option value="">Seleccionar profesional</option>
+            {professionals.map((professional) => (
+              <option
+                key={professional.externalId}
+                value={professional.externalId}
+              >
+                {professional.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-sm text-gray-500 mb-2">
+            Para crear uno nuevo, dirígete a{" "}
+            <Link
+              href="/dashboard/mi-negocio"
+              className="text-primary-orange cursor-pointer hover:underline"
+            >
+              Mi Negocio
+            </Link>
+            .
+          </p>
+          <div className="flex flex-wrap gap-2 ">
+            {selectedProfessionals.map((professional) => (
+              <div
+                key={professional.externalId}
+                className="flex items-center gap-2 bg-orange-100 text-orange-800 px-3 py-1 rounded-full"
+              >
+                <span>{professional.name}</span>
+                <button
+                  type="button"
+                  className="text-2xl cursor-pointer"
+                  onClick={() =>
+                    setSelectedProfessionals(
+                      selectedProfessionals.filter(
+                        (p) => p.externalId !== professional.externalId,
+                      ),
+                    )
+                  }
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="flex gap-x-6">
           <div className="flex items-center gap-x-2">

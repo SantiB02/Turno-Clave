@@ -12,13 +12,19 @@ namespace turno_clave_API.Application.Services
         private readonly IServiceRepository _serviceRepository;
         private readonly IBusinessRepository _businessRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IProfessionalRepository _professionalRepository;
 
-        public ServiceService(ILogger<ServiceService> logger, IServiceRepository serviceRepository, IBusinessRepository businessRepository, ICurrentUserService currentUserService)
+        public ServiceService(ILogger<ServiceService> logger, 
+            IServiceRepository serviceRepository, 
+            IBusinessRepository businessRepository, 
+            ICurrentUserService currentUserService, 
+            IProfessionalRepository professionalRepository)
         {
             _logger = logger;
             _serviceRepository = serviceRepository;
             _businessRepository = businessRepository;
             _currentUserService = currentUserService;
+            _professionalRepository = professionalRepository;
         }
 
         public async Task<Result<Service>> CreateAsync(CreateServiceDTO dto)
@@ -29,6 +35,8 @@ namespace turno_clave_API.Application.Services
             if (business == null)
                 return Result<Service>.Failure($"Business with ExternalId {businessExternalId} not found.");
 
+            List<Professional> professionals = await _professionalRepository.GetProfessionalsByExternalIdsAsync(dto.ProfessionalExternalIds);
+
             Service service = new()
             {
                 BusinessId = business.Id,
@@ -36,10 +44,17 @@ namespace turno_clave_API.Application.Services
                 Name = dto.Name,
                 Description = dto.Description ?? null,
                 Price = dto.Price,
-                DurationMinutes = dto.DurationMinutes
+                DurationMinutes = dto.DurationMinutes,
+
+                ProfessionalServices = professionals.Select(p => new Domain.Entities.ProfessionalService
+                {
+                    Professional = p,
+                }).ToList(),
             };
+
             _serviceRepository.AddService(service);
             await _serviceRepository.SaveAsync();
+
             return Result<Service>.Success(service);
         }
 

@@ -2,10 +2,11 @@
 
 import { authenticatedFetch } from "@/lib/api/authenticated-fetch"
 import type { BusinessDetail, CreateBusinessDTO } from "@/types/business"
-import type { Service } from "@/types/service"
+
+const ROOT_PATH = "/businesses"
 
 export async function createBusiness(data: CreateBusinessDTO) {
-  const res = await authenticatedFetch("/businesses", {
+  const res = await authenticatedFetch(`${ROOT_PATH}`, {
     method: "POST",
     body: JSON.stringify(data),
   })
@@ -23,7 +24,7 @@ export async function createBusiness(data: CreateBusinessDTO) {
 
 export async function getMyBusinesses(): Promise<BusinessDetail[]> {
   try {
-    const res = await authenticatedFetch("/businesses/mine")
+    const res = await authenticatedFetch(`${ROOT_PATH}/mine`)
 
     if (!res.ok) {
       console.error("Error fetching businesses:", res.status, await res.text())
@@ -33,20 +34,9 @@ export async function getMyBusinesses(): Promise<BusinessDetail[]> {
     return res.json()
   } catch (error) {
     console.error("Error fetching businesses:", error)
-    throw new Error("Error fetching businesses")
-  }
-}
-
-export async function getServicesByActiveBusiness(): Promise<Service[]> {
-  try {
-    const res = await authenticatedFetch("/businesses/active/services")
-    if (!res.ok) {
-      console.error("Error fetching services:", res.status, await res.text())
-      throw new Error("Error fetching services")
+    if (error instanceof Error && error.message === "UNAUTHORIZED") {
+      throw error
     }
-    return res.json()
-  } catch (error) {
-    console.error("Error fetching services:", error)
-    throw new Error("Error fetching services")
+    throw new Error("Error fetching businesses")
   }
 }

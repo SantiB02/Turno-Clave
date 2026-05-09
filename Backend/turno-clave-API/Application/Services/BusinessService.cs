@@ -31,6 +31,13 @@ namespace turno_clave_API.Application.Services
 
         public async Task<Result<BusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
         {
+            User? user = await _userService.GetByExternalIdAsync(userExternalId);
+
+            if (user == null)
+            {
+                return Result<BusinessDTO>.Failure($"Unauthorized");
+            }
+
             string baseSlug = GenerateSlug(dto.Name);
             string slug = baseSlug;
             int counter = 2;
@@ -70,12 +77,6 @@ namespace turno_clave_API.Application.Services
                 }).ToList() ?? []
             };
 
-            User? user = await _userService.GetByExternalIdAsync(userExternalId);
-
-            if (user == null)
-            {
-                return Result<BusinessDTO>.Failure($"Unauthorized");
-            }
 
             if (user.ActiveBusinessExternalId == null)
             {
@@ -87,6 +88,20 @@ namespace turno_clave_API.Application.Services
                 User = user,
                 Business = business,
             };
+
+            Professional defaultProfessional = new()
+            {
+                Name = user.Name,
+                Business = business,
+                Availabilities = business.BusinessAvailabilities.Select(static a => new Availability
+                {
+                    DayOfWeek = a.Day,
+                    StartTime = TimeOnly.FromTimeSpan(a.StartTime),
+                    EndTime = TimeOnly.FromTimeSpan(a.EndTime),
+                }).ToList()
+            };
+
+            business.Professionals.Add(defaultProfessional);
 
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
