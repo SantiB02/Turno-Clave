@@ -87,8 +87,6 @@ export default function AddService({ professionals }: AddServiceProps) {
     await createService(data)
     router.refresh()
 
-    console.log(data)
-
     setOpenModal(false)
     setIsSubmitting(false)
   }
