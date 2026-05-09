@@ -40,7 +40,11 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public Task<Service?> GetServiceByExternalIdAsync(Guid externalId)
         {
-            return _context.Services.Include(s => s.Business).FirstOrDefaultAsync(s => s.ExternalId == externalId);
+            return _context.Services
+                .Include(s => s.ProfessionalServices)
+                    .ThenInclude(sp => sp.Professional)
+                .Include(s => s.Business)
+                .FirstOrDefaultAsync(s => s.ExternalId == externalId);
         }
 
         public void AddService(Service service)

@@ -16,3 +16,5 @@ export type CreateServiceDTO = {
   price: number
   durationMinutes: number
 }
+
+export type UpdateServiceDTO = CreateServiceDTO

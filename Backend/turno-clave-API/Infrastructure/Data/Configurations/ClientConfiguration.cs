@@ -19,6 +19,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(x => new { x.BusinessId, x.Email });
+
+            builder.HasQueryFilter(x => x.Business.IsActive);
         }
     }
 }

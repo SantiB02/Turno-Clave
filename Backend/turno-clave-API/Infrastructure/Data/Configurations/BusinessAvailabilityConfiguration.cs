@@ -28,6 +28,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                 .HasForeignKey(x => x.BusinessId)
                 .HasConstraintName("f_k_business_availabilities_businesses_business_id")
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasQueryFilter(x => x.IsActive);
         }
     }
 }

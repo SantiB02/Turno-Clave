@@ -18,6 +18,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.Property(x => x.City).IsRequired();
             builder.Property(x => x.Country).IsRequired();
             builder.Property(x => x.TimeZone).IsRequired();
+
+            builder.HasQueryFilter(x => x.IsActive);
         }
     }
 }

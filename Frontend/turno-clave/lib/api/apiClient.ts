@@ -3,6 +3,11 @@ export async function apiFetch(
   token: string | undefined,
   options: RequestInit = {},
 ) {
+  console.log("[apiFetch]", {
+    url: `${process.env.API_URL}/api${path}`,
+    method: options.method ?? "GET",
+    body: options.body,
+  })
   return fetch(`${process.env.API_URL}/api${path}`, {
     ...options,
     headers: {

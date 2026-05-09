@@ -28,6 +28,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .WithMany(p => p.Availabilities)
                    .HasForeignKey(x => x.ProfessionalId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasQueryFilter(x => x.Professional.IsActive);
         }
     }
 }

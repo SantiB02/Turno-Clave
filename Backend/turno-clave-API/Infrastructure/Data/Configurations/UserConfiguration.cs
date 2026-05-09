@@ -13,6 +13,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.Property(x => x.Email).IsRequired();
 
             builder.HasIndex(x => x.Email).IsUnique();
+
+            builder.HasQueryFilter(x => x.IsActive);
         }
     }
 }

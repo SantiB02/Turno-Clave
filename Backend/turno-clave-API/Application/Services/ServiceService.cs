@@ -78,15 +78,51 @@ namespace turno_clave_API.Application.Services
             return Result<Service?>.Success(service);
         }
 
-        public async Task<Result<Service?>> UpdateAsync(UpdateServiceDTO dto)
+        public async Task<Result<Service?>> UpdateAsync(Guid externalId, UpdateServiceDTO dto)
         {
-            Service? service = await _serviceRepository.GetServiceByExternalIdAsync(dto.ExternalId);
+            Service? service = await _serviceRepository.GetServiceByExternalIdAsync(externalId);
             if (service == null)
-                return Result<Service?>.Failure($"Service with ExternalId {dto.ExternalId} not found.");
+                return Result<Service?>.Failure($"Service with ExternalId {externalId} not found.");
             service.Name = dto.Name ?? service.Name;
             service.Description = dto.Description ?? null;
             service.Price = dto.Price ?? service.Price;
             service.DurationMinutes = dto.DurationMinutes ?? service.DurationMinutes;
+
+            // Sync professionals
+            if (dto.ProfessionalExternalIds != null)
+            {
+
+                // Remove old relations
+                service.ProfessionalServices = service.ProfessionalServices
+                    .Where(ps => dto.ProfessionalExternalIds.Contains(ps.Professional.ExternalId))
+                    .ToList();
+
+                // Existing ids after removal
+                List<Guid> existingIds = service.ProfessionalServices
+                    .Select(ps => ps.Professional.ExternalId)
+                    .ToList();
+
+                // Add new relations
+                List<Guid> idsToAdd = dto.ProfessionalExternalIds
+                    .Except(existingIds)
+                    .ToList();
+
+                foreach (Guid professionalExternalId in idsToAdd)
+                {
+                    Professional? professional =
+                        await _professionalRepository.GetProfessionalByExternalIdAsync(professionalExternalId);
+
+                    if (professional == null)
+                        continue;
+
+                    service.ProfessionalServices.Add(new Domain.Entities.ProfessionalService
+                    {
+                        Professional = professional,
+                        Service = service
+                    });
+                }
+            }
+
 
             _serviceRepository.UpdateService(service);
             await _serviceRepository.SaveAsync();

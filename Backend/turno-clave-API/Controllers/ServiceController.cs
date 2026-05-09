@@ -88,16 +88,16 @@ namespace turno_clave_API.Controllers
             return Ok(Service.ToDto(result.Value));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateServiceDTO updateServiceDTO)
+        [HttpPut("{externalId:guid}")]
+        public async Task<IActionResult> Update(Guid externalId, [FromBody] UpdateServiceDTO updateServiceDTO)
         {
-            Result<Service?> result = await _serviceService.UpdateAsync(updateServiceDTO);
+            Result<Service?> result = await _serviceService.UpdateAsync(externalId, updateServiceDTO);
             if (!result.IsSuccess || result.Value == null)
             {
                 return Problem(
                         statusCode: StatusCodes.Status404NotFound,
                         title: "Service Not Found",
-                        detail: $"Service with ExternalId {updateServiceDTO.ExternalId} not found.",
+                        detail: $"Service with ExternalId {externalId} not found.",
                         type: $"/errors/ServiceNotFound",
                         instance: HttpContext.Request.Path
                 );

@@ -17,6 +17,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .WithMany(b => b.AvailabilityExceptions)
                    .HasForeignKey(x => x.BusinessId)
                    .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasQueryFilter(x => x.Business.IsActive);
         }
     }
 }

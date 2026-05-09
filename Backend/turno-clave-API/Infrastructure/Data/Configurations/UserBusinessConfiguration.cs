@@ -16,6 +16,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.HasOne(ub => ub.Business)
                    .WithMany(b => b.UserBusinesses)
                    .HasForeignKey(ub => ub.BusinessId);
+
+            builder.HasQueryFilter(x => x.Business.IsActive);
         }
     }
 }

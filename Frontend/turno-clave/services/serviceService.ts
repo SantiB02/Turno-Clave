@@ -2,11 +2,11 @@
 
 import { authenticatedFetch } from "@/lib/api/authenticated-fetch"
 import { rethrowWithFallback, throwResponseError } from "@/lib/api/error-utils"
-import type { CreateServiceDTO, Service } from "@/types/service"
+import type { CreateServiceDTO, Service, UpdateServiceDTO } from "@/types/service"
 
 const ROOT_PATH = "/services"
 
-export async function createService(data: CreateServiceDTO) {
+export async function createService(data: CreateServiceDTO): Promise<Service> {
   try {
     const response = await authenticatedFetch(`${ROOT_PATH}`, {
       method: "POST",
@@ -21,6 +21,27 @@ export async function createService(data: CreateServiceDTO) {
   } catch (error) {
     console.error("[createService]", error)
     rethrowWithFallback(error, "Error creating service")
+  }
+}
+
+export async function updateService(
+  externalId: string,
+  data: UpdateServiceDTO,
+): Promise<Service> {
+  try {
+    const response = await authenticatedFetch(`${ROOT_PATH}/${externalId}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      await throwResponseError(response, "Error updating service")
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error("[updateService]", error)
+    rethrowWithFallback(error, "Error updating service")
   }
 }
 

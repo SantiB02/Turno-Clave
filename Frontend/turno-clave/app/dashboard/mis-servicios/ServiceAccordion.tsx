@@ -5,21 +5,53 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
+import ModalForm from "@/app/components/ModalForm"
+import { deleteService } from "@/services/serviceService"
+import type { Professional } from "@/types/professional"
 import type { Service } from "@/types/service"
+import ServiceFormModal from "./ServiceFormModal"
 
 interface Props {
   service: Service
-  onEdit?: (id: string) => void
-  onDelete?: (id: string) => void
+  professionals: Professional[]
+  onDeleteSuccess?: (serviceExternalId: string) => void
+  onUpdateSuccess?: (service: Service) => void
 }
 
-export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
+export default function ServiceAccordion({
+  service,
+  professionals,
+  onDeleteSuccess,
+  onUpdateSuccess,
+}: Props) {
+  const router = useRouter()
+
   const [open, setOpen] = useState(false)
+  const [openEditModal, setOpenEditModal] = useState(false)
+  const [openDeleteModal, setOpenDeleteModal] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+      await deleteService(service.externalId)
+      onDeleteSuccess?.(service.externalId)
+      router.refresh()
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Unknown error"
+      console.error("[ServiceAccordion] Error:", errorMessage)
+    } finally {
+      setLoading(false)
+      setOpenDeleteModal(false)
+    }
+  }
 
   return (
     <div className="max-w-xl rounded-xl overflow-hidden shadow-sm border border-gray-200">
-      {/* Header */}
       <button
         type="button"
         onClick={() => setOpen(!open)}
@@ -31,7 +63,6 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
         />
       </button>
 
-      {/* Content */}
       {open && (
         <div className="px-4 py-3 text-md text-gray-700 space-y-1">
           <p>
@@ -42,7 +73,6 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
             <span className="text-primary-orange font-bold">Duración:</span>{" "}
             {service.durationMinutes} minutos
           </p>
-          {/* {service.professional && <p>- Profesional: {service.professional}</p>} */}
           {service.description && (
             <p>
               <span className="text-primary-orange font-bold">
@@ -62,11 +92,10 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
             </p>
           )}
 
-          {/* Actions */}
           <div className="flex justify-end gap-2 mt-3">
             <button
               type="button"
-              onClick={() => onEdit?.(service.externalId)}
+              onClick={() => setOpenEditModal(true)}
               className="flex cursor-pointer items-center gap-1 text-md px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300 transition"
             >
               <PencilIcon className="w-4 h-4" />
@@ -75,7 +104,7 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
 
             <button
               type="button"
-              onClick={() => onDelete?.(service.externalId)}
+              onClick={() => setOpenDeleteModal(true)}
               className="flex cursor-pointer items-center gap-1 text-md px-3 py-1 rounded-md bg-red-100 text-red-600 hover:bg-red-200 transition"
             >
               <TrashIcon className="w-4 h-4" />
@@ -84,6 +113,31 @@ export default function ServiceAccordion({ service, onEdit, onDelete }: Props) {
           </div>
         </div>
       )}
+
+      <ServiceFormModal
+        open={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        professionals={professionals}
+        mode="edit"
+        initialService={service}
+        onSuccess={(updatedService) => {
+          onUpdateSuccess?.(updatedService)
+          setOpenEditModal(false)
+          router.refresh()
+        }}
+      />
+
+      <ModalForm
+        open={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        title="Eliminar Servicio"
+        onSubmit={handleDelete}
+        submitLabel="Eliminar"
+        loading={loading}
+        loadingLabel="Eliminando Servicio..."
+      >
+        <p>Â¿EstÃ¡s seguro de que quieres eliminar este servicio?</p>
+      </ModalForm>
     </div>
   )
 }

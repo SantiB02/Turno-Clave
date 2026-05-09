@@ -30,6 +30,8 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .WithMany(s => s.Appointments)
                    .HasForeignKey(x => x.ServiceId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(x => x.Status != Domain.Enums.AppointmentStatus.Cancelled);
         }
     }
 }
