@@ -202,7 +202,7 @@ export default function ServiceFormModal({
           ))}
         </select>
         <p className="text-sm text-gray-500 mb-2">
-          Para crear uno nuevo, dirígete a{" "}
+          Para crear un nuevo profesional, dirígete a{" "}
           <Link
             href="/dashboard/mi-negocio"
             className="text-primary-orange cursor-pointer hover:underline"

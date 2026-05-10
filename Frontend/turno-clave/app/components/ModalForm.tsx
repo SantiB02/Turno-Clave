@@ -56,7 +56,7 @@ export default function ModalForm({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 cursor-pointer rounded-lg text-gray-600 hover:bg-gray-100 transition"
+              className="px-4 py-2 bg-gray-200 cursor-pointer rounded-lg text-gray-700 hover:bg-gray-300 transition"
             >
               Cancelar
             </button>
