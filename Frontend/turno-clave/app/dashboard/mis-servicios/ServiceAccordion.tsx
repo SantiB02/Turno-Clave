@@ -136,7 +136,7 @@ export default function ServiceAccordion({
         loading={loading}
         loadingLabel="Eliminando Servicio..."
       >
-        <p>Â¿EstÃ¡s seguro de que quieres eliminar este servicio?</p>
+        <p>¿Estás seguro de que quieres eliminar este servicio?</p>
       </ModalForm>
     </div>
   )

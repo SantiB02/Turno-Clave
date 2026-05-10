@@ -22,8 +22,6 @@ namespace turno_clave_API.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
-        // TODO: Create global availability for business
-
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 

@@ -13,13 +13,11 @@ namespace turno_clave_API.Controllers
     {
         private readonly IBusinessService _businessService;
         private readonly ICurrentUserService _currentUserService;
-        private readonly IServiceService _serviceService;
 
-        public BusinessController(IBusinessService businessService, ICurrentUserService currentUserService, IServiceService serviceService)
+        public BusinessController(IBusinessService businessService, ICurrentUserService currentUserService)
         {
             _businessService = businessService;
             _currentUserService = currentUserService;
-            _serviceService = serviceService;
         }
 
         [Authorize]
