@@ -14,6 +14,9 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.Phone).IsRequired();
+            builder.Property(x => x.PaymentMethods)
+                .HasColumnType("text[]")
+                .HasDefaultValueSql("'{}'");
             builder.Property(x => x.Address).IsRequired();
             builder.Property(x => x.City).IsRequired();
             builder.Property(x => x.Country).IsRequired();
