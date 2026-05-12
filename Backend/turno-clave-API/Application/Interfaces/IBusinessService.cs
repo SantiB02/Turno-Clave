@@ -6,11 +6,11 @@ namespace turno_clave_API.Application.Interfaces
 {
     public interface IBusinessService
     {
-        Task<Result<BusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId);
+        Task<Result<MinimalBusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId);
         Task<BusinessDetailDTO?> GetByExternalIdAsync(Guid externalId);
         Task<IEnumerable<BusinessDetailDTO>> GetByUserExternalIdAsync(Guid userExternalId);
-        Task<BusinessDTO?> UpdateAsync(UpdateBusinessDTO dto);
-        Task<BusinessDTO?> DeleteAsync(Guid externalId);
+        Task<Result<MinimalBusinessDTO?>> UpdateAsync(Guid externalId, UpdateBusinessDTO dto);
+        Task<MinimalBusinessDTO?> DeleteAsync(Guid externalId);
         // Business availability methods
         Task<IEnumerable<BusinessAvailabilityDTO>> GetGlobalAvailabilityAsync(Guid businessExternalId);
         Task<BusinessAvailabilityDTO> CreateGlobalAvailabilityAsync(Guid businessExternalId, CreateBusinessAvailabilityDTO dto);

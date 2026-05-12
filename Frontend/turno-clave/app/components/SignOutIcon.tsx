@@ -27,8 +27,8 @@ export default function SignOutIcon() {
       <button
         type="button"
         onClick={() => setOpenSignoutModal(true)}
-        aria-label="Cerrar Sesión"
-        title="Cerrar Sesión"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
         className="flex items-center cursor-pointer justify-center py-2 rounded hover:bg-orange-400 w-full text-white"
       >
         <ArrowRightStartOnRectangleIcon className="h-10 w-10" />

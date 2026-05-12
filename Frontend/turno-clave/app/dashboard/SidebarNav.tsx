@@ -52,7 +52,7 @@ export default function SidebarNav({ user }: Props) {
             title="Mis Negocios"
             href="/dashboard/mi-negocio"
             className={`flex items-center justify-center py-2 rounded ${
-              isActive("/dashboard/mis-negocios")
+              isActive("/dashboard/mi-negocio")
                 ? "bg-white text-orange-500"
                 : "hover:bg-orange-400 text-white"
             }`}

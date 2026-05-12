@@ -130,7 +130,7 @@ export default function ServiceAccordion({
       <ModalForm
         open={openDeleteModal}
         onClose={() => setOpenDeleteModal(false)}
-        title="Eliminar Servicio"
+        title="Eliminar servicio"
         onSubmit={handleDelete}
         submitLabel="Eliminar"
         loading={loading}

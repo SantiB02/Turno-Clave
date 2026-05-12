@@ -31,7 +31,7 @@ namespace turno_clave_API.Controllers
                 return Unauthorized();
             }
 
-            Result<BusinessDTO> result = await _businessService.CreateAsync(dto, userExternalId);
+            Result<MinimalBusinessDTO> result = await _businessService.CreateAsync(dto, userExternalId);
             return result.ToActionResult(this, business => CreatedAtAction(nameof(GetByExternalId), new { externalId = business.ExternalId }, business));
         }
 
@@ -39,6 +39,18 @@ namespace turno_clave_API.Controllers
         public async Task<IActionResult> GetByExternalId(Guid externalId)
         {
             BusinessDetailDTO? business = await _businessService.GetByExternalIdAsync(externalId);
+
+            return Ok(business);
+        }
+
+        [HttpGet("active")]
+        public async Task<IActionResult> GetActive()
+        {
+            Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+            BusinessDetailDTO? business = await _businessService.GetByExternalIdAsync(businessExternalId);
+
+            if (business == null)
+                return NotFound();
 
             return Ok(business);
         }
@@ -56,18 +68,37 @@ namespace turno_clave_API.Controllers
             return Ok(businesses);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateBusinessDTO dto)
+        [HttpPut("{externalId:Guid}")]
+        public async Task<IActionResult> Update(Guid externalId, [FromBody] UpdateBusinessDTO dto)
         {
-            BusinessDTO? updatedBusiness = await _businessService.UpdateAsync(dto);
+            Result<MinimalBusinessDTO?> updatedBusiness = await _businessService.UpdateAsync(externalId, dto);
 
-            return Ok(updatedBusiness);
+            if (!updatedBusiness.IsSuccess)
+            {
+                return updatedBusiness.Error switch
+                {
+                    "BUSINESS_NOT_FOUND" => NotFound(),
+
+                    "INVALID_TIMEZONE" => Problem(
+                        title: "Invalid time zone",
+                        detail: "The provided time zone is invalid.",
+                        statusCode: StatusCodes.Status400BadRequest
+                    ),
+
+                    _ => Problem(
+                        title: "Unexpected error",
+                        statusCode: StatusCodes.Status500InternalServerError
+                    )
+                };
+            }
+
+            return Ok(updatedBusiness.Value);
         }
 
         [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {
-            BusinessDTO? business = await _businessService.DeleteAsync(externalId);
+            MinimalBusinessDTO? business = await _businessService.DeleteAsync(externalId);
 
             return Ok(business);
         }

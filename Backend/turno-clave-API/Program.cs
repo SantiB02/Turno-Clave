@@ -22,6 +22,8 @@ builder.Services.AddControllers()
     {
         // Prevent JSON serialization errors when EF navigation properties create cycles
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        // To return enum string instead of number
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 builder.Services.AddAuthorization();

@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation"
-import BusinessCard from "@/app/components/BusinessCard"
 import { auth } from "@/auth"
-import { getMyBusinesses } from "@/services/businessService"
+import { getActiveBusiness } from "@/services/businessService"
+import type { BusinessDetail } from "@/types/business"
+import MiNegocioTabs from "./MiNegocioTabs"
 
 export default async function MiNegocio() {
   const session = await auth()
@@ -10,24 +11,12 @@ export default async function MiNegocio() {
     redirect("/")
   }
 
-  const businesses = await getMyBusinesses()
+  const business: BusinessDetail = await getActiveBusiness()
 
   return (
     <div>
       <h1 className="font-bold text-4xl mb-9">Mi Negocio</h1>
-      {businesses.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">
-            No tienes negocios registrados aún
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {businesses.map((business) => (
-            <BusinessCard key={business.externalId} business={business} />
-          ))}
-        </div>
-      )}
+      <MiNegocioTabs business={business} />
     </div>
   )
 }

@@ -165,3 +165,48 @@ aside::-webkit-scrollbar-track {
   -ms-user-select: none;      /* IE 10 and Edge */
   user-select: none;         /* Standard syntax */
 }
+
+.state-select .stdropdown-container,
+.city-select .stdropdown-container,
+.country-select .stdropdown-container {
+  position: relative;
+}
+
+.state-select .stdropdown-menu,
+.city-select .stdropdown-menu,
+.country-select .stdropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.modal-floating-select .stdropdown-container {
+  position: relative;
+  border: none !important;
+  background-color: transparent !important;
+}
+
+.modal-floating-select .stsearch-box {
+  padding: 0;
+  background-color: transparent !important;
+}
+
+.modal-floating-select .stdropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.modal-floating-select-upward .stdropdown-menu {
+  top: auto;
+  bottom: calc(100% + 4px);
+}

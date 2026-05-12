@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { createBusiness } from "@/services/businessService"
 import type {
-  BusinessAvailability,
+  CreateBusinessAvailabilityDTO,
   CreateBusinessDTO,
   WeekAvailability,
 } from "@/types/business"
@@ -158,7 +158,7 @@ export default function OnboardingAvailabilitiesForm() {
 
     onboardingData.availabilities = []
 
-    const result: BusinessAvailability[] = Object.entries(
+    const result: CreateBusinessAvailabilityDTO[] = Object.entries(
       availabilities,
     ).flatMap(([day, value]) => {
       if (!value.enabled) return []
@@ -172,7 +172,10 @@ export default function OnboardingAvailabilitiesForm() {
         }))
     })
 
-    const creationData = { ...onboardingData, availabilities: result }
+    const creationData: CreateBusinessDTO = {
+      ...onboardingData,
+      availabilities: result,
+    }
 
     await createBusiness(creationData)
 

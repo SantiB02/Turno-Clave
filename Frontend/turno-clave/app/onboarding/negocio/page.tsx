@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
-import { getMyBusinesses } from "@/services/businessService"
-import type { BusinessDetail } from "@/types/business"
 import OnboardingBusinessForm from "./OnboardingBusinessForm"
 
 export default async function OnboardingBusiness() {

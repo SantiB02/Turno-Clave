@@ -1,4 +1,5 @@
 ﻿using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Domain.Enums;
 
 namespace turno_clave_API.Domain.Entities
 {
@@ -12,7 +13,7 @@ namespace turno_clave_API.Domain.Entities
         public string? LogoUrl { get; set; }
         public required string Email { get; set; }
         public required string Phone { get; set; }
-        public List<string> PaymentMethods { get; set; } = [];
+        public List<PaymentMethod> PaymentMethods { get; set; } = [];
         public required string Address { get; set; }
         public required string City { get; set; }
         public required string State { get; set; }
@@ -38,9 +39,9 @@ namespace turno_clave_API.Domain.Entities
         // availability which will be applied/merged according to business rules (e.g. intersect or override).
         public ICollection<BusinessAvailability> BusinessAvailabilities { get; set; } = new List<BusinessAvailability>();
 
-        public static BusinessDTO ToDto(Business business)
+        public static MinimalBusinessDTO ToDto(Business business)
         {
-            return new BusinessDTO
+            return new MinimalBusinessDTO
             {
                 ExternalId = business.ExternalId,
                 Name = business.Name,
@@ -59,10 +60,19 @@ namespace turno_clave_API.Domain.Entities
                 LogoUrl = business.LogoUrl ?? string.Empty,
                 Email = business.Email,
                 Phone = business.Phone,
+                PaymentMethods = business.PaymentMethods,
                 Address = business.Address,
                 City = business.City,
                 State = business.State,
-                Country = business.Country
+                Country = business.Country,
+
+                Availabilities = business.BusinessAvailabilities.Select(ba => new BusinessAvailabilityDTO
+                {
+                    ExternalId = ba.ExternalId,
+                    Day = ba.Day,
+                    StartTime = ba.StartTime,
+                    EndTime = ba.EndTime,
+                }).ToList(),
             };
         }
     }

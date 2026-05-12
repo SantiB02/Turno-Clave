@@ -2,7 +2,7 @@
 
 namespace turno_clave_API.Application.DTOs.Business
 {
-    public class BusinessDTO
+    public class MinimalBusinessDTO
     {
         [Required]
         public Guid ExternalId { get; set; } = default!;

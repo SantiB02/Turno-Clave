@@ -29,31 +29,23 @@ namespace turno_clave_API.Application.Services
             _businessAvailabilityRepository = businessAvailabilityRepository;
         }
 
-        public async Task<Result<BusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
+        public async Task<Result<MinimalBusinessDTO>> CreateAsync(CreateBusinessDTO dto, Guid userExternalId)
         {
             User? user = await _userService.GetByExternalIdAsync(userExternalId);
 
             if (user == null)
             {
-                return Result<BusinessDTO>.Failure($"Unauthorized");
+                return Result<MinimalBusinessDTO>.Failure($"Unauthorized");
             }
 
-            string baseSlug = GenerateSlug(dto.Name);
-            string slug = baseSlug;
-            int counter = 2;
-
-            // Adds a number if the slug already exists, to ensure uniqueness (e.g. "my-business", "my-business-2", "my-business-3", etc.)
-            while (await _businessRepository.SlugExistsAsync(slug))
-            {
-                slug = $"{baseSlug}-{counter}";
-                counter++;
-            }
+            string slug = await GenerateSlugAsync(dto.Name);
+            
 
             Result<string> timeZoneResult = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
 
             if (!timeZoneResult.IsSuccess)
             {
-                return Result<BusinessDTO>.Failure($"Invalid time zone: {dto.TimeZone}");
+                return Result<MinimalBusinessDTO>.Failure($"Invalid time zone: {dto.TimeZone}");
             }
 
             Business business = new()
@@ -111,13 +103,13 @@ namespace turno_clave_API.Application.Services
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                return Result<BusinessDTO>.Success(Business.ToDto(business));
+                return Result<MinimalBusinessDTO>.Success(Business.ToDto(business));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error creating business");
                 await transaction.RollbackAsync();
-                return Result<BusinessDTO>.Failure("An error occurred while creating the business.");
+                return Result<MinimalBusinessDTO>.Failure("An error occurred while creating the business.");
             }
         }
 
@@ -133,26 +125,47 @@ namespace turno_clave_API.Application.Services
             return businesses.Select(Business.ToDetailDto);
         }
 
-        public async Task<BusinessDTO?> UpdateAsync(UpdateBusinessDTO dto)
+        public async Task<Result<MinimalBusinessDTO?>> UpdateAsync(Guid externalId, UpdateBusinessDTO dto)
         {
-            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.ExternalId);
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             if (business == null)
             {
-                return null;
+                return Result<MinimalBusinessDTO?>.Failure($"BUSINESS_NOT_FOUND");
+            }
+
+            // Change slug only if business name is different from current one
+            if (!business.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
+            {
+                string newSlug = await GenerateSlugAsync(dto.Name);
+                business.Slug = newSlug;
+            }
+
+            // Change the business' time zone only if the country changed
+            if (!business.Country.Equals(dto.Country, StringComparison.OrdinalIgnoreCase))
+            {
+                Result<string> timeZoneResult = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
+
+                if (!timeZoneResult.IsSuccess)
+                {
+                    return Result<MinimalBusinessDTO?>.Failure($"INVALID_TIMEZONE");
+                }
+                business.TimeZone = dto.TimeZone;
             }
 
             business.Name = dto.Name;
             business.Description = dto.Description;
+            business.PaymentMethods = dto.PaymentMethods;
             business.Phone = dto.Phone;
-            business.Address = dto.Address;
-            business.City = dto.City;
             business.Country = dto.Country;
+            business.State = dto.State;
+            business.City = dto.City;
+            business.Address = dto.Address;
 
             await _businessRepository.SaveAsync();
-            return Business.ToDto(business);
+            return Result<MinimalBusinessDTO?>.Success(Business.ToDto(business));
         }
 
-        public async Task<BusinessDTO?> DeleteAsync(Guid externalId)
+        public async Task<MinimalBusinessDTO?> DeleteAsync(Guid externalId)
         {
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
             if (business != null)
@@ -255,7 +268,7 @@ namespace turno_clave_API.Application.Services
             return true;
         }
 
-        private static string GenerateSlug(string name)
+        private async Task<string> GenerateSlugAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return string.Empty;
@@ -272,18 +285,28 @@ namespace turno_clave_API.Application.Services
             var noDiacritics = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
 
             // Lowercase, replace whitespace with hyphens, remove invalid chars, collapse hyphens, trim
-            string slug = noDiacritics.ToLowerInvariant().Trim();
-            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-");
-            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"[^a-z0-9\-]", "");
-            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"-+", "-").Trim('-');
+            string baseSlug = noDiacritics.ToLowerInvariant().Trim();
+            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"\s+", "-");
+            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"[^a-z0-9\-]", "");
+            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"-+", "-").Trim('-');
 
             // Limit length to 80 characters
-            if (slug.Length > 80)
-                slug = slug.Substring(0, 80);
+            if (baseSlug.Length > 80)
+                baseSlug = baseSlug.Substring(0, 80);
 
             // Fallback to a short random identifier if slug becomes empty
-            if (string.IsNullOrEmpty(slug))
-                slug = Guid.NewGuid().ToString("n").Substring(0, 8);
+            if (string.IsNullOrEmpty(baseSlug))
+                baseSlug = Guid.NewGuid().ToString("n").Substring(0, 8);
+
+            string slug = baseSlug;
+            int counter = 2;
+
+            // Adds a number if the slug already exists, to ensure uniqueness (e.g. "my-business", "my-business-2", "my-business-3", etc.)
+            while (await _businessRepository.SlugExistsAsync(slug))
+            {
+                slug = $"{baseSlug}-{counter}";
+                counter++;
+            }
 
             return slug;
         }
