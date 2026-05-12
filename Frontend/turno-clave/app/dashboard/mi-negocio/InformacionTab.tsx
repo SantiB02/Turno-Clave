@@ -15,6 +15,7 @@ import {
 } from "react-country-state-city"
 import type { City, State } from "react-country-state-city/dist/esm/types"
 import "react-country-state-city/dist/react-country-state-city.css"
+import Image from "next/image"
 import ModalForm from "@/app/components/ModalForm"
 import {
   type SupportedCountry,
@@ -227,61 +228,76 @@ export default function InformacionTab({ business }: InformacionTabProps) {
         <ExclamationTriangleIcon className="h-6 w-6 text-yellow-400 mr-1" />
         <p>Estos datos serán públicos para tus clientes.</p>
       </div>
-      <div className="max-w-120 border rounded-xl px-4 py-3 mt-2 border-gray-400">
-        <ul className="flex flex-col gap-1">
-          <li>
-            <span className="text-primary-orange font-bold">Nombre:</span>{" "}
-            {business.name}{" "}
-            <span className="text-sm text-gray-500 ml-1">
-              ({business.slug})
-            </span>
-            <div className="relative inline-block group">
-              <QuestionMarkCircleIcon className="h-5 w-5 text-gray-500 ml-1 inline-block cursor-pointer" />
 
-              <div className="absolute left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-nowrap z-10">
-                Este es el identificador único de tu negocio en el link
-                compartido a tus clientes.
+      <div className="max-w-120 border rounded-xl mt-2 border-gray-400">
+        <div className="h-20 relative w-full bg-gray-300 rounded-xl mb-2">
+          <Image
+            alt="Logo de negocio"
+            src={
+              business.logoUrl.length > 0
+                ? business.logoUrl
+                : "/default-avatar.png"
+            }
+            width={80}
+            height={80}
+            className="rounded-full absolute top-6 left-4 object-cover scale-105"
+          />
+        </div>
+        <div className="px-4 pt-6 pb-4">
+          <ul className="flex flex-col gap-1">
+            <li>
+              <span className="text-primary-orange font-bold">Nombre:</span>{" "}
+              {business.name}{" "}
+              <span className="text-sm text-gray-500 ml-1">
+                ({business.slug})
+              </span>
+              <div className="relative inline-block group">
+                <QuestionMarkCircleIcon className="h-5 w-5 text-gray-500 ml-1 inline-block cursor-pointer" />
+                <div className="absolute left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-nowrap z-10">
+                  Este es el identificador único de tu negocio en el link
+                  compartido a tus clientes.
+                </div>
               </div>
-            </div>
-          </li>
-          {business.description && (
+            </li>
+            {business.description && (
+              <li>
+                <span className="text-primary-orange font-bold">
+                  Descripción:
+                </span>{" "}
+                {business.description}
+              </li>
+            )}
+            <li>
+              <span className="text-primary-orange font-bold">Ubicación:</span>{" "}
+              {business.address}, {business.city}, {business.state},{" "}
+              {business.country}
+            </li>
+            <li>
+              <span className="text-primary-orange font-bold">Teléfono:</span>{" "}
+              {business.phone}
+            </li>
             <li>
               <span className="text-primary-orange font-bold">
-                Descripción:
+                Medios de pago:
               </span>{" "}
-              {business.description}
+              {business.paymentMethods.length === 0 ? (
+                <span className="text-gray-600">No configurados.</span>
+              ) : (
+                business.paymentMethods
+                  .map((method) => PAYMENT_METHOD_LABELS[method])
+                  .join(", ")
+              )}
             </li>
-          )}
-          <li>
-            <span className="text-primary-orange font-bold">Ubicación:</span>{" "}
-            {business.address}, {business.city}, {business.state},{" "}
-            {business.country}
-          </li>
-          <li>
-            <span className="text-primary-orange font-bold">Teléfono:</span>{" "}
-            {business.phone}
-          </li>
-          <li>
-            <span className="text-primary-orange font-bold">
-              Medios de pago:
-            </span>{" "}
-            {business.paymentMethods.length === 0 ? (
-              <span className="text-gray-600">No configurados.</span>
-            ) : (
-              business.paymentMethods
-                .map((method) => PAYMENT_METHOD_LABELS[method])
-                .join(", ")
-            )}
-          </li>
-        </ul>
-        <button
-          type="button"
-          onClick={() => setIsEditModalOpen(true)}
-          className="flex text-primary-orange cursor-pointer border-1 rounded-2xl border-primary-orange px-3 py-1 mt-3 hover:bg-primary-orange hover:text-white transition-colors"
-        >
-          <PencilSquareIcon className="h-6 w-6 mr-1" />
-          Editar
-        </button>
+          </ul>
+          <button
+            type="button"
+            onClick={() => setIsEditModalOpen(true)}
+            className="flex text-primary-orange cursor-pointer border-1 rounded-2xl border-primary-orange px-3 py-1 mt-3 hover:bg-primary-orange hover:text-white transition-colors"
+          >
+            <PencilSquareIcon className="h-6 w-6 mr-1" />
+            Editar
+          </button>
+        </div>
       </div>
 
       <ModalForm
