@@ -375,7 +375,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="country" className="block mb-1">
-                  Pais
+                  País
                 </label>
 
                 <select
