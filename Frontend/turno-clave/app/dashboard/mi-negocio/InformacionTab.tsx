@@ -192,8 +192,6 @@ export default function InformacionTab({ business }: InformacionTabProps) {
         paymentMethods,
       }
 
-      console.log("DATA FOR UPDATE", data)
-
       await updateBusiness(business.externalId, data)
       shouldCloseModal = true
       router.refresh()
@@ -227,7 +225,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
     <div>
       <div className="flex underline">
         <ExclamationTriangleIcon className="h-6 w-6 text-yellow-400 mr-1" />
-        <p>Estos datos seran publicos para tus clientes.</p>
+        <p>Estos datos serán públicos para tus clientes.</p>
       </div>
       <div className="max-w-120 border rounded-xl px-4 py-3 mt-2 border-gray-400">
         <ul className="flex flex-col gap-1">
@@ -241,7 +239,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
               <QuestionMarkCircleIcon className="h-5 w-5 text-gray-500 ml-1 inline-block cursor-pointer" />
 
               <div className="absolute left-1/2 -translate-x-1/2 mt-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded px-2 py-1 whitespace-nowrap z-10">
-                Este es el identificador unico de tu negocio en el link
+                Este es el identificador único de tu negocio en el link
                 compartido a tus clientes.
               </div>
             </div>
@@ -249,18 +247,18 @@ export default function InformacionTab({ business }: InformacionTabProps) {
           {business.description && (
             <li>
               <span className="text-primary-orange font-bold">
-                Descripcion:
+                Descripción:
               </span>{" "}
               {business.description}
             </li>
           )}
           <li>
-            <span className="text-primary-orange font-bold">Ubicacion:</span>{" "}
+            <span className="text-primary-orange font-bold">Ubicación:</span>{" "}
             {business.address}, {business.city}, {business.state},{" "}
             {business.country}
           </li>
           <li>
-            <span className="text-primary-orange font-bold">Telefono:</span>{" "}
+            <span className="text-primary-orange font-bold">Teléfono:</span>{" "}
             {business.phone}
           </li>
           <li>
@@ -299,7 +297,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
       >
         <div className="space-y-3">
           <section>
-            <h3 className="font-semibold text-lg mb-3">Datos basicos</h3>
+            <h3 className="font-semibold text-lg mb-3">Datos básicos</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -319,7 +317,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
 
               <div>
                 <label htmlFor="phone" className="block mb-1">
-                  Telefono
+                  Teléfono
                 </label>
 
                 <input
@@ -335,7 +333,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
           </section>
 
           <section>
-            <h3 className="font-semibold text-lg mb-3">Descripcion</h3>
+            <h3 className="font-semibold text-lg mb-3">Descripción</h3>
 
             <textarea
               name="description"
@@ -348,7 +346,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
           </section>
 
           <section>
-            <h3 className="font-semibold text-lg mb-3">Metodos de pago</h3>
+            <h3 className="font-semibold text-lg mb-3">Medios de pago</h3>
             <div className="flex flex-wrap gap-2">
               {PAYMENT_METHODS.map((method) => (
                 <label
@@ -372,7 +370,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
           </section>
 
           <section>
-            <h3 className="font-semibold text-lg mb-3">Ubicacion</h3>
+            <h3 className="font-semibold text-lg mb-3">Ubicación</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -396,7 +394,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
                   }}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value="">Seleccionar pais</option>
+                  <option value="">Seleccionar país</option>
                   {supportedCountries.map((item) => (
                     <option key={item.iso2} value={item.iso2}>
                       {item.name}
@@ -474,7 +472,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
                 (city || state.name === "Ciudad Autónoma de Buenos Aires") && (
                   <div>
                     <label htmlFor="address" className="block mb-1">
-                      Direccion
+                      Dirección
                     </label>
                     <input
                       name="address"
@@ -491,7 +489,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
         </div>
         {error && (
           <div className="w-full mt-4 bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-3">
-            <p>Ocurrio un error al editar el negocio:</p>
+            <p>Ocurrió un error al editar el negocio:</p>
             <p>{error}</p>
           </div>
         )}
