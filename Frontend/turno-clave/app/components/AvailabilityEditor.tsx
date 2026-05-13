@@ -13,8 +13,8 @@ const DAYS = [
 ] as const
 
 const SHIFTS = {
-  morning: { label: "Mañana" },
-  afternoon: { label: "Tarde" },
+  morning: { label: "Horario 1" },
+  afternoon: { label: "Horario 2" },
 } as const
 
 type AvailabilityEditorProps = {
@@ -81,7 +81,7 @@ export default function AvailabilityEditor({
                       type="button"
                       onClick={() => onToggleShift(key, shiftKey)}
                       disabled={!day.enabled}
-                      className={`w-20 shrink-0 rounded-full border px-2 py-1 text-sm transition disabled:opacity-40 ${
+                      className={`w-20 shrink-0 cursor-pointer rounded-full border px-2 py-1 text-sm transition disabled:opacity-40 ${
                         shiftAvailability.enabled
                           ? "border-primary-orange bg-primary-orange text-white"
                           : "border-primary-orange text-primary-orange"
@@ -100,7 +100,9 @@ export default function AvailabilityEditor({
                       className="min-w-0 flex-1 rounded-full border px-2 py-1 text-sm disabled:opacity-40"
                     />
 
-                    <span className="shrink-0 text-sm text-gray-500">-</span>
+                    <span className="shrink-0 text-sm text-gray-500 font-bold">
+                      -
+                    </span>
 
                     <input
                       type="time"

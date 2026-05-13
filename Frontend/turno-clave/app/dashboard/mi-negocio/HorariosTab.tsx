@@ -26,14 +26,21 @@ type HorariosTabProps = {
 export default function HorariosTab({ business }: HorariosTabProps) {
   const router = useRouter()
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
-  const [availabilities, setAvailabilities] = useState<WeekAvailability>(
-    mapBusinessAvailabilitiesToWeek(business.availabilities),
-  )
+  const [savedAvailabilities, setSavedAvailabilities] =
+    useState<WeekAvailability>(
+      mapBusinessAvailabilitiesToWeek(business.availabilities),
+    )
+
+  const [availabilities, setAvailabilities] =
+    useState<WeekAvailability>(savedAvailabilities)
 
   useEffect(() => {
-    setAvailabilities(mapBusinessAvailabilitiesToWeek(business.availabilities))
+    const mapped = mapBusinessAvailabilitiesToWeek(business.availabilities)
+
+    setAvailabilities(mapped)
+    setSavedAvailabilities(mapped)
   }, [business.availabilities])
 
   const toggleDay = (day: keyof WeekAvailability) => {
@@ -78,13 +85,17 @@ export default function HorariosTab({ business }: HorariosTabProps) {
     }))
   }
 
+  const hasChanges =
+    JSON.stringify(availabilities) !== JSON.stringify(savedAvailabilities)
+
   const isSubmitDisabled =
     loading ||
+    !hasChanges ||
     hasNoEnabledAvailabilities(availabilities) ||
     hasInvalidAvailabilityRanges(availabilities) ||
     hasAvailabilitiesWithoutShift(availabilities)
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -132,7 +143,7 @@ export default function HorariosTab({ business }: HorariosTabProps) {
             type="submit"
             className={`rounded-lg px-4 py-2 font-medium text-white transition ${
               isSubmitDisabled
-                ? "cursor-not-allowed bg-orange-300"
+                ? "bg-orange-300"
                 : "cursor-pointer bg-orange-500 hover:bg-orange-600"
             }`}
             disabled={isSubmitDisabled}

@@ -13,7 +13,7 @@ export default async function MiCuenta() {
     <div>
       <h1 className="font-bold text-4xl mb-9">Mi Cuenta</h1>
       <div className="mb-6">
-        <UserAvatar height={100} width={100} />
+        <UserAvatar user={session?.user} height={100} width={100} />
       </div>
       <ul>
         <li className="mb-4">
