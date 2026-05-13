@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Didact_Gothic, Geist_Mono } from "next/font/google"
 import "./globals.css"
+import { Analytics } from "@vercel/analytics/next"
 
 const didactGothic = Didact_Gothic({
   weight: ["400"],
@@ -27,7 +28,10 @@ export default function RootLayout({
       <body
         className={`${didactGothic.className} ${geistMono.variable} antialiased`}
       >
-        <main className="min-h-screen bg-white">{children}</main>
+        <main className="min-h-screen bg-white">
+          {children}
+          <Analytics />
+        </main>
       </body>
     </html>
   )
