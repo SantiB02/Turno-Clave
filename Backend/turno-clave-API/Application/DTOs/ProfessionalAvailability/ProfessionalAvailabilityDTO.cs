@@ -1,6 +1,6 @@
-﻿namespace turno_clave_API.Application.DTOs.Availability
+﻿namespace turno_clave_API.Application.DTOs.ProfessionalAvailability
 {
-    public class AvailabilityDTO
+    public class ProfessionalAvailabilityDTO
     {
         public Guid ExternalId { get; set; }
         public Guid ProfessionalExternalId { get; set; }

@@ -4,12 +4,12 @@ using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Application.Interfaces
 {
-    public interface IAvailabilityService
+    public interface IProfessionalAvailabilityService
     {
-        Task<Result<Availability>> CreateAsync(CreateAvailabilityDTO dto);
-        Task<Availability?> GetByExternalIdAsync(Guid externalId);
-        Task<Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto);
-        Task<Result<Availability>> DeleteAsync(Guid externalId);
+        Task<Result<ProfessionalAvailability>> CreateAsync(CreateProfessionalAvailabilityDTO dto);
+        Task<ProfessionalAvailability?> GetByExternalIdAsync(Guid externalId);
+        Task<Result<ProfessionalAvailability>> UpdateAsync(UpdateProfessionalAvailabilityDTO dto);
+        Task<Result<ProfessionalAvailability>> DeleteAsync(Guid externalId);
         Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime);
         Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek);
     }

@@ -14,7 +14,7 @@ namespace turno_clave_API.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public ICollection<Appointment> Appointments { get; set; } = [];
-        public ICollection<Availability> Availabilities { get; set; } = [];
+        public ICollection<ProfessionalAvailability> Availabilities { get; set; } = [];
         public ICollection<ProfessionalService> ProfessionalServices { get; set; } = [];
 
         public static ProfessionalDTO ToDto(Professional p)
@@ -27,7 +27,7 @@ namespace turno_clave_API.Domain.Entities
                 Name = p.Name,
                 IsActive = p.IsActive,
                 Availabilities = p.Availabilities
-                    .Select(Availability.ToProfessionalAvailabilityDTO)
+                    .Select(ProfessionalAvailability.ToProfessionalAvailabilityDTO)
                     .ToList(),
             };
         }

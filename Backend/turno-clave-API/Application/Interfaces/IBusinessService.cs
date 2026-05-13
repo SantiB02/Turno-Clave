@@ -1,6 +1,6 @@
 ﻿using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Common;
-using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Application.Interfaces
 {

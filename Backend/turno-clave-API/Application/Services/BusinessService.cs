@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
 using turno_clave_API.Common;
+using turno_clave_API.Application.DTOs.BusinessAvailability;
 
 namespace turno_clave_API.Application.Services
 {
@@ -85,7 +86,7 @@ namespace turno_clave_API.Application.Services
             {
                 Name = user.Name,
                 Business = business,
-                Availabilities = business.BusinessAvailabilities.Select(static a => new Availability
+                Availabilities = business.BusinessAvailabilities.Select(static a => new ProfessionalAvailability
                 {
                     DayOfWeek = a.DayOfWeek,
                     StartTime = TimeOnly.FromTimeSpan(a.StartTime),

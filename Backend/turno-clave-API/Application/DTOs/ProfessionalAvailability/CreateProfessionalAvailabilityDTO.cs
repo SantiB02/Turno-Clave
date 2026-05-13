@@ -1,6 +1,6 @@
 ﻿namespace turno_clave_API.Application.DTOs.Availability
 {
-    public class CreateAvailabilityDTO
+    public class CreateProfessionalAvailabilityDTO
     {
         public required Guid ProfessionalExternalId { get; set; }
         public required DayOfWeek DayOfWeek { get; set; }

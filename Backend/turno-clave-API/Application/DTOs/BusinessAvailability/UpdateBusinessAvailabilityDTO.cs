@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
-namespace turno_clave_API.Application.DTOs.Business
+namespace turno_clave_API.Application.DTOs.BusinessAvailability
 {
     public class UpdateBusinessAvailabilityDTO : IValidatableObject
     {

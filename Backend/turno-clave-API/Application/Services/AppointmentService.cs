@@ -14,7 +14,7 @@ namespace turno_clave_API.Application.Services
         private readonly IProfessionalService _professionalService;
         private readonly IClientService _clientService;
         private readonly IServiceService _serviceService;
-        private readonly IAvailabilityService _availabilityService;
+        private readonly IProfessionalAvailabilityService _availabilityService;
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
@@ -22,7 +22,7 @@ namespace turno_clave_API.Application.Services
             IProfessionalService professionalService,
             IClientService clientService,
             IServiceService serviceService,
-            IAvailabilityService availabilityService)
+            IProfessionalAvailabilityService availabilityService)
         {
             _appointmentRepository = appointmentRepository;
             _businessRepository = businessRepository;

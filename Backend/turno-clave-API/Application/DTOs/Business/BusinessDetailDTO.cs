@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Domain.Enums;
 
 namespace turno_clave_API.Application.DTOs.Business

@@ -4,9 +4,9 @@ using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Infrastructure.Data.Configurations
 {
-    public class AvailabilityConfiguration : IEntityTypeConfiguration<Availability>
+    public class ProfessionalAvailabilityConfiguration : IEntityTypeConfiguration<ProfessionalAvailability>
     {
-        public void Configure(EntityTypeBuilder<Availability> builder)
+        public void Configure(EntityTypeBuilder<ProfessionalAvailability> builder)
         {
             builder.HasKey(x => x.Id);
 

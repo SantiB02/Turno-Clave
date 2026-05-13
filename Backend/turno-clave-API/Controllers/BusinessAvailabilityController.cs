@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Application.Interfaces;
 
 namespace turno_clave_API.Controllers

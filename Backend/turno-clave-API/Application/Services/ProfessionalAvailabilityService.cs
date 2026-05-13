@@ -7,31 +7,31 @@ using turno_clave_API.Infrastructure.Repositories.Interfaces;
 namespace turno_clave_API.Application.Services
 {
     // TODO: Implement validations
-    public class AvailabilityService : IAvailabilityService
+    public class ProfessionalAvailabilityService : IProfessionalAvailabilityService
     {
         private readonly ILogger _logger;
         private readonly IAvailabilityRepository _availabilityRepository;
         private readonly IProfessionalService _professionalService;
 
-        public AvailabilityService(ILogger<AvailabilityService> logger, IAvailabilityRepository availabilityRepository, IProfessionalService professionalService)
+        public ProfessionalAvailabilityService(ILogger<ProfessionalAvailabilityService> logger, IAvailabilityRepository availabilityRepository, IProfessionalService professionalService)
         {
             _logger = logger;
             _availabilityRepository = availabilityRepository;
             _professionalService = professionalService;
         }
 
-        public async Task<Result<Availability>> CreateAsync(CreateAvailabilityDTO dto)
+        public async Task<Result<ProfessionalAvailability>> CreateAsync(CreateProfessionalAvailabilityDTO dto)
         {
             Professional? professional = await _professionalService.GetByExternalIdAsync(dto.ProfessionalExternalId);
             if (professional == null)
-                return Result<Availability>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
+                return Result<ProfessionalAvailability>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
 
             // Validate that the new availability does not overlap with existing availabilities for the same professional.
             bool isValid = await IsAvailabilityValidAsync(professional, dto.DayOfWeek, dto.StartTime, dto.EndTime);
             if (!isValid)
-                return Result<Availability>.Failure("Time slot already taken or invalid start and end time"); // TODO: Improve error message
+                return Result<ProfessionalAvailability>.Failure("Time slot already taken or invalid start and end time"); // TODO: Improve error message
 
-            Availability availability = new()
+            ProfessionalAvailability availability = new()
             {
                 ProfessionalId = professional.Id,
                 Professional = professional,
@@ -42,20 +42,20 @@ namespace turno_clave_API.Application.Services
             _availabilityRepository.AddAvailability(availability);
             await _availabilityRepository.SaveAsync();
 
-            return Result<Availability>.Success(availability);
+            return Result<ProfessionalAvailability>.Success(availability);
         }
 
-        public async Task<Availability?> GetByExternalIdAsync(Guid externalId)
+        public async Task<ProfessionalAvailability?> GetByExternalIdAsync(Guid externalId)
         {
-            Availability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
+            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
             return availability;
         }
 
-        public async Task<Result<Availability>> UpdateAsync(UpdateAvailabilityDTO dto)
+        public async Task<Result<ProfessionalAvailability>> UpdateAsync(UpdateProfessionalAvailabilityDTO dto)
         {
-            Availability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(dto.ExternalId);
+            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(dto.ExternalId);
             if (availability == null)
-                return Result<Availability>.Failure($"Availability with ExternalId {dto.ExternalId} not found.");
+                return Result<ProfessionalAvailability>.Failure($"Availability with ExternalId {dto.ExternalId} not found.");
 
             availability.DayOfWeek = dto.DayOfWeek;
             availability.StartTime = dto.StartTime;
@@ -63,20 +63,20 @@ namespace turno_clave_API.Application.Services
 
             _availabilityRepository.UpdateAvailability(availability);
             await _availabilityRepository.SaveAsync();
-            return Result<Availability>.Success(availability);
+            return Result<ProfessionalAvailability>.Success(availability);
         }
 
-        public async Task<Result<Availability>> DeleteAsync(Guid externalId)
+        public async Task<Result<ProfessionalAvailability>> DeleteAsync(Guid externalId)
         {
-            Availability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
+            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
             if (availability == null)
             {
-                return Result<Availability>.Failure($"Availability with ExternalId {externalId} not found.");
+                return Result<ProfessionalAvailability>.Failure($"Availability with ExternalId {externalId} not found.");
             }
 
             await _availabilityRepository.DeleteAvailabilityAsync(availability.ExternalId);
             await _availabilityRepository.SaveAsync();
-            return Result<Availability>.Success(availability);
+            return Result<ProfessionalAvailability>.Success(availability);
         }
 
         public async Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)

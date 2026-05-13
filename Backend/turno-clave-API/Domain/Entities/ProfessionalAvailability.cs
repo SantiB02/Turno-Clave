@@ -1,8 +1,9 @@
 ﻿using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Application.DTOs.ProfessionalAvailability;
 
 namespace turno_clave_API.Domain.Entities
 {
-    public class Availability
+    public class ProfessionalAvailability
     {
         public int Id { get; set; }
         public Guid ExternalId { get; set; } = Guid.NewGuid();
@@ -14,9 +15,9 @@ namespace turno_clave_API.Domain.Entities
         public TimeOnly StartTime { get; set; } // 17:45, 18:00, 13:30:20, etc.
         public TimeOnly EndTime { get; set; }
 
-        public static AvailabilityDTO ToDto(Availability av)
+        public static ProfessionalAvailabilityDTO ToDto(ProfessionalAvailability av)
         {
-            return new AvailabilityDTO
+            return new ProfessionalAvailabilityDTO
             {
                 ExternalId = av.ExternalId,
                 ProfessionalExternalId = av.Professional.ExternalId,
@@ -26,9 +27,9 @@ namespace turno_clave_API.Domain.Entities
             };
         }
 
-        public static ProfessionalAvailabilityDTO ToProfessionalAvailabilityDTO(Availability av)
+        public static NestedProfessionalAvailabilityDTO ToProfessionalAvailabilityDTO(ProfessionalAvailability av)
         {
-            return new ProfessionalAvailabilityDTO
+            return new NestedProfessionalAvailabilityDTO
             {
                 ExternalId = av.ExternalId,
                 DayOfWeek = av.DayOfWeek,

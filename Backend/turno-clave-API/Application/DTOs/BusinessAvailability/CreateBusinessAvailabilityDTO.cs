@@ -1,13 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
-namespace turno_clave_API.Application.DTOs.Business
+namespace turno_clave_API.Application.DTOs.BusinessAvailability
 {
-    public class BusinessAvailabilityDTO : IValidatableObject
+    public class CreateBusinessAvailabilityDTO : IValidatableObject
     {
-        [Required]
-        public Guid ExternalId { get; set; }
-
         [Required]
         public DayOfWeek DayOfWeek { get; set; }
 

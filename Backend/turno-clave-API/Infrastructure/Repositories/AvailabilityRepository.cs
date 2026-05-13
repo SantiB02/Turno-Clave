@@ -14,40 +14,40 @@ namespace turno_clave_API.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<List<Availability>> GetAvailabilitiesAsync()
+        public Task<List<ProfessionalAvailability>> GetAvailabilitiesAsync()
         {
-            return _context.Availabilities.ToListAsync();
+            return _context.ProfessionalAvailabilities.ToListAsync();
         }
 
-        public Task<Availability?> GetAvailabilityByExternalIdAsync(Guid externalId)
+        public Task<ProfessionalAvailability?> GetAvailabilityByExternalIdAsync(Guid externalId)
         {
-            return _context.Availabilities.Include(av => av.Professional).FirstOrDefaultAsync(a => a.ExternalId == externalId);
+            return _context.ProfessionalAvailabilities.Include(av => av.Professional).FirstOrDefaultAsync(a => a.ExternalId == externalId);
         }
 
-        public void AddAvailability(Availability availability)
+        public void AddAvailability(ProfessionalAvailability availability)
         {
-            _context.Availabilities.Add(availability);
+            _context.ProfessionalAvailabilities.Add(availability);
         }
 
-        public void UpdateAvailability(Availability availability)
+        public void UpdateAvailability(ProfessionalAvailability availability)
         {
-            _context.Availabilities.Update(availability);
+            _context.ProfessionalAvailabilities.Update(availability);
         }
 
         public async Task DeleteAvailabilityAsync(Guid availabilityId)
         {
-            Availability? availability = await _context.Availabilities.FirstOrDefaultAsync(a => a.ExternalId == availabilityId) ?? throw new KeyNotFoundException($"Availability with ExternalId {availabilityId} not found.");
-            _context.Availabilities.Remove(availability);
+            ProfessionalAvailability? availability = await _context.ProfessionalAvailabilities.FirstOrDefaultAsync(a => a.ExternalId == availabilityId) ?? throw new KeyNotFoundException($"Availability with ExternalId {availabilityId} not found.");
+            _context.ProfessionalAvailabilities.Remove(availability);
         }
 
-        public async Task DeleteAvailabilityAsync(Availability availability)
+        public async Task DeleteAvailabilityAsync(ProfessionalAvailability availability)
         {
-            _context.Availabilities.Remove(availability);
+            _context.ProfessionalAvailabilities.Remove(availability);
         }
 
         public async Task<bool> IsAvailabilityTakenAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
-            return await _context.Availabilities
+            return await _context.ProfessionalAvailabilities
                 .Where(av => av.ProfessionalId == professional.Id)
                 .AnyAsync(a =>
                     a.DayOfWeek == dayOfWeek &&
@@ -58,7 +58,7 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public async Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek)
         {
-            return await _context.Availabilities
+            return await _context.ProfessionalAvailabilities
                 .Where(av => av.ProfessionalId == professional.Id)
                 .AnyAsync(a => a.DayOfWeek == dayOfWeek);
         }
