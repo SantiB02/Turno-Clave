@@ -51,7 +51,7 @@ export type UpdateBusinessDTO = {
 // ----- BUSINESS AVAILABILITY -----
 
 export type CreateBusinessAvailabilityDTO = {
-  day: number
+  dayOfWeek: number
   startTime: string
   endTime: string
 }
@@ -64,7 +64,7 @@ export type UpdateBusinessAvailabilitiesDTO = {
 
 export type BusinessAvailabilityDTO = {
   externalId: string
-  day: number | string
+  dayOfWeek: number | string
   startTime: string
   endTime: string
 }

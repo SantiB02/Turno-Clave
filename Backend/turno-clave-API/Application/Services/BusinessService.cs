@@ -63,7 +63,7 @@ namespace turno_clave_API.Application.Services
                 TimeZone = timeZoneResult.Value!, // null-forgiving because we know it's not null if IsSuccess is true
                 BusinessAvailabilities = dto.Availabilities?.Select(a => new BusinessAvailability
                 {
-                    Day = a.Day,
+                    DayOfWeek = a.DayOfWeek,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
                 }).ToList() ?? []
@@ -87,7 +87,7 @@ namespace turno_clave_API.Application.Services
                 Business = business,
                 Availabilities = business.BusinessAvailabilities.Select(static a => new Availability
                 {
-                    DayOfWeek = a.Day,
+                    DayOfWeek = a.DayOfWeek,
                     StartTime = TimeOnly.FromTimeSpan(a.StartTime),
                     EndTime = TimeOnly.FromTimeSpan(a.EndTime),
                 }).ToList()
@@ -186,7 +186,7 @@ namespace turno_clave_API.Application.Services
             return list.Select(b => new BusinessAvailabilityDTO
             {
                 ExternalId = b.ExternalId,
-                Day = b.Day,
+                DayOfWeek = b.DayOfWeek,
                 StartTime = b.StartTime,
                 EndTime = b.EndTime
             });
@@ -203,7 +203,7 @@ namespace turno_clave_API.Application.Services
 
             // Check for overlapping availabilities for the same business/day
             var existing = (await _businessAvailabilityRepository.GetByBusinessExternalIdAsync(businessExternalId))
-                .Where(x => x.Day == dto.Day && x.IsActive);
+                .Where(x => x.DayOfWeek == dto.DayOfWeek && x.IsActive);
 
             bool overlaps = existing.Any(e => !(dto.EndTime <= e.StartTime || dto.StartTime >= e.EndTime));
             if (overlaps)
@@ -213,7 +213,7 @@ namespace turno_clave_API.Application.Services
             {
                 Business = business,
                 BusinessId = business.Id,
-                Day = dto.Day,
+                DayOfWeek = dto.DayOfWeek,
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime
             };
@@ -224,7 +224,7 @@ namespace turno_clave_API.Application.Services
             return new BusinessAvailabilityDTO
             {
                 ExternalId = entity.ExternalId,
-                Day = entity.Day,
+                DayOfWeek = entity.DayOfWeek,
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime
             };
@@ -239,13 +239,13 @@ namespace turno_clave_API.Application.Services
 
             // Check overlap against other availabilities
             var existing = (await _businessAvailabilityRepository.GetByBusinessExternalIdAsync(entity.Business.ExternalId))
-                .Where(x => x.Id != entity.Id && x.Day == dto.Day && x.IsActive);
+                .Where(x => x.Id != entity.Id && x.DayOfWeek == dto.DayOfWeek && x.IsActive);
 
             bool overlaps = existing.Any(e => !(dto.EndTime <= e.StartTime || dto.StartTime >= e.EndTime));
             if (overlaps)
                 throw new InvalidOperationException("The provided availability overlaps an existing one.");
 
-            entity.Day = dto.Day;
+            entity.DayOfWeek = dto.DayOfWeek;
             entity.StartTime = dto.StartTime;
             entity.EndTime = dto.EndTime;
 
@@ -255,7 +255,7 @@ namespace turno_clave_API.Application.Services
             return new BusinessAvailabilityDTO
             {
                 ExternalId = entity.ExternalId,
-                Day = entity.Day,
+                DayOfWeek = entity.DayOfWeek,
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime
             };
@@ -273,7 +273,7 @@ namespace turno_clave_API.Application.Services
             business.BusinessAvailabilities = dto.Availabilities
                 .Select(a => new BusinessAvailability
                 {
-                    Day = a.Day,
+                    DayOfWeek = a.DayOfWeek,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
                 })
@@ -284,7 +284,7 @@ namespace turno_clave_API.Application.Services
             return business.BusinessAvailabilities
                 .Select(a => new BusinessAvailabilityDTO
                 {
-                    Day = a.Day,
+                    DayOfWeek = a.DayOfWeek,
                     StartTime = a.StartTime,
                     EndTime = a.EndTime
                 })

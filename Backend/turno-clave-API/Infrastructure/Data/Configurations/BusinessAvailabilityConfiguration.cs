@@ -14,7 +14,7 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
 
             builder.Property(x => x.ExternalId).IsRequired().HasColumnName("external_id");
             builder.Property(x => x.BusinessId).IsRequired().HasColumnName("business_id");
-            builder.Property(x => x.Day).IsRequired().HasColumnName("day");
+            builder.Property(x => x.DayOfWeek).IsRequired().HasColumnName("day");
             builder.Property(x => x.StartTime).IsRequired().HasColumnName("start_time");
             builder.Property(x => x.EndTime).IsRequired().HasColumnName("end_time");
             builder.Property(x => x.IsActive).IsRequired().HasColumnName("is_active");

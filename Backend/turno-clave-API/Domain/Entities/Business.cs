@@ -69,7 +69,7 @@ namespace turno_clave_API.Domain.Entities
                 Availabilities = business.BusinessAvailabilities.Select(ba => new BusinessAvailabilityDTO
                 {
                     ExternalId = ba.ExternalId,
-                    Day = ba.Day,
+                    DayOfWeek = ba.DayOfWeek,
                     StartTime = ba.StartTime,
                     EndTime = ba.EndTime,
                 }).ToList(),

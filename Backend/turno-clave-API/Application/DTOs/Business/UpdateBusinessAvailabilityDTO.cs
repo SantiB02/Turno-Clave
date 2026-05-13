@@ -6,7 +6,7 @@ namespace turno_clave_API.Application.DTOs.Business
     public class UpdateBusinessAvailabilityDTO : IValidatableObject
     {
         [Required]
-        public DayOfWeek Day { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
 
         [Required]
         public TimeSpan StartTime { get; set; }

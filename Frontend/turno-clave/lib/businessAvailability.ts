@@ -46,7 +46,9 @@ const stringToDay: Record<string, DayKey> = {
   sábado: "saturday",
 }
 
-function normalizeDayKey(day: BusinessAvailabilityDTO["day"]): DayKey | null {
+function normalizeDayKey(
+  day: BusinessAvailabilityDTO["dayOfWeek"],
+): DayKey | null {
   if (typeof day === "number") {
     return numberToDay[day] ?? null
   }
@@ -112,7 +114,7 @@ export function mapBusinessAvailabilitiesToWeek(
   const groupedAvailabilities = availabilities.reduce<
     Partial<Record<keyof WeekAvailability, BusinessAvailabilityDTO[]>>
   >((acc, availability) => {
-    const dayKey = normalizeDayKey(availability.day)
+    const dayKey = normalizeDayKey(availability.dayOfWeek)
 
     if (!dayKey) {
       return acc
@@ -164,7 +166,7 @@ export function mapWeekToCreateBusinessAvailabilities(
     return (["morning", "afternoon"] as const)
       .filter((shift) => value[shift].enabled)
       .map((shift) => ({
-        day: dayToNumber[day],
+        dayOfWeek: dayToNumber[day],
         startTime: value[shift].start,
         endTime: value[shift].end,
       }))
