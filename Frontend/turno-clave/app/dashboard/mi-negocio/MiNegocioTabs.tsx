@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import type { BusinessDetail } from "@/types/business"
+import HorariosTab from "./HorariosTab"
 import InformacionTab from "./InformacionTab"
 
 const tabs = [
@@ -44,7 +45,7 @@ export default function MiNegocioTabs({ business }: MiNegocioTabsProps) {
               ${
                 activeTab === tab.id
                   ? "border-primary-orange text-primary-orange font-bold"
-                  : "border-transparent text-gray-500 hover:text-black"
+                  : "border-transparent text-gray-500 hover:text-primary-orange"
               }
             `}
           >
@@ -56,7 +57,7 @@ export default function MiNegocioTabs({ business }: MiNegocioTabsProps) {
       <div className="py-6">
         {activeTab === "informacion" && <InformacionTab business={business} />}
 
-        {activeTab === "horarios" && <div></div>}
+        {activeTab === "horarios" && <HorariosTab business={business} />}
 
         {activeTab === "profesionales" && <div></div>}
 

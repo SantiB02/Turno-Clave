@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using turno_clave_API.Application.DTOs.Professional;
 using turno_clave_API.Application.Interfaces;
@@ -8,6 +9,7 @@ using turno_clave_API.Domain.Entities;
 namespace turno_clave_API.Controllers
 {
     [Route("api/professionals")]
+    [Authorize]
     [ApiController]
     public class ProfessionalController : ControllerBase
     {

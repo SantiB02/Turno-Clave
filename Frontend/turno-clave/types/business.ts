@@ -45,6 +45,7 @@ export type UpdateBusinessDTO = {
   city: string
   address: string
   timeZone: string
+  availabilities?: CreateBusinessAvailabilityDTO[]
 }
 
 // ----- BUSINESS AVAILABILITY -----
@@ -55,12 +56,20 @@ export type CreateBusinessAvailabilityDTO = {
   endTime: string
 }
 
+export type UpdateBusinessAvailabilityDTO = CreateBusinessAvailabilityDTO
+
+export type UpdateBusinessAvailabilitiesDTO = {
+  availabilities: CreateBusinessAvailabilityDTO[]
+}
+
 export type BusinessAvailabilityDTO = {
   externalId: string
-  day: number
+  day: number | string
   startTime: string
   endTime: string
 }
+
+export type ShiftKey = "morning" | "afternoon"
 
 export type WeekAvailability = {
   [key: string]: {

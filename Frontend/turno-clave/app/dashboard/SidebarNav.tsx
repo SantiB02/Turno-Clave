@@ -1,6 +1,6 @@
 "use client"
 import {
-  BriefcaseIcon,
+  BuildingStorefrontIcon,
   CalendarDaysIcon,
   ChartBarSquareIcon,
   Cog6ToothIcon,
@@ -57,7 +57,7 @@ export default function SidebarNav({ user }: Props) {
                 : "hover:bg-orange-400 text-white"
             }`}
           >
-            <BriefcaseIcon className="h-10 w-10" />
+            <BuildingStorefrontIcon className="h-10 w-10" />
           </Link>
           <Link
             title="Mis Servicios"

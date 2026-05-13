@@ -230,9 +230,9 @@ namespace turno_clave_API.Application.Services
             };
         }
 
-        public async Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(BusinessAvailabilityDTO dto)
+        public async Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(Guid externalId, UpdateBusinessAvailabilityDTO dto)
         {
-            var entity = await _businessAvailabilityRepository.GetByExternalIdAsync(dto.ExternalId);
+            var entity = await _businessAvailabilityRepository.GetByExternalIdAsync(externalId);
             if (entity == null) return null;
             if (dto.StartTime >= dto.EndTime)
                 throw new ArgumentException("StartTime must be earlier than EndTime.");
@@ -259,6 +259,36 @@ namespace turno_clave_API.Application.Services
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime
             };
+        }
+
+        public async Task<List<BusinessAvailabilityDTO>?> UpdateGlobalAvailabilitiesAsync(Guid businessExternalId, UpdateBusinessAvailabilitiesDTO dto)
+        {
+            Business? business = await _businessRepository
+                .GetBusinessByExternalIdAsync(businessExternalId);
+
+            if (business == null) return null;
+
+            _context.BusinessAvailabilities.RemoveRange(business.BusinessAvailabilities);
+
+            business.BusinessAvailabilities = dto.Availabilities
+                .Select(a => new BusinessAvailability
+                {
+                    Day = a.Day,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToList();
+
+            await _context.SaveChangesAsync();
+
+            return business.BusinessAvailabilities
+                .Select(a => new BusinessAvailabilityDTO
+                {
+                    Day = a.Day,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToList();
         }
 
         public async Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId)

@@ -6,6 +6,7 @@ using turno_clave_API.Application.Interfaces;
 namespace turno_clave_API.Controllers
 {
     [Route("api/businesses/{businessExternalId:guid}/availabilities")]
+    [Authorize]
     [ApiController]
     public class BusinessAvailabilityController : ControllerBase
     {
@@ -23,7 +24,6 @@ namespace turno_clave_API.Controllers
             return Ok(list);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(Guid businessExternalId, [FromBody] CreateBusinessAvailabilityDTO dto)
         {
@@ -31,16 +31,23 @@ namespace turno_clave_API.Controllers
             return CreatedAtAction(nameof(Get), new { businessExternalId }, created);
         }
 
-        [Authorize]
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] BusinessAvailabilityDTO dto)
+        [HttpPut("{externalId:guid}")]
+        public async Task<IActionResult> Update(Guid externalId, [FromBody] UpdateBusinessAvailabilityDTO dto)
         {
-            var updated = await _businessService.UpdateGlobalAvailabilityAsync(dto);
+            var updated = await _businessService.UpdateGlobalAvailabilityAsync(externalId, dto);
             if (updated == null) return NotFound();
             return Ok(updated);
         }
 
-        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> UpdateAvailabilities(Guid businessExternalId, [FromBody] UpdateBusinessAvailabilitiesDTO dto)
+        {
+            List<BusinessAvailabilityDTO>? updated = await _businessService.UpdateGlobalAvailabilitiesAsync(businessExternalId, dto);
+            if (updated == null) return NotFound($"Business with external id {businessExternalId} not found");
+
+            return Ok(updated);
+        }
+
         [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {

@@ -21,7 +21,9 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public Task<Business?> GetBusinessByExternalIdAsync(Guid externalId)
         {
-            return _context.Businesses.FirstOrDefaultAsync(b => b.ExternalId == externalId);
+            return _context.Businesses
+                .Include(b => b.BusinessAvailabilities)
+                .FirstOrDefaultAsync(b => b.ExternalId == externalId);
         }
 
         public async Task<IEnumerable<Business>> GetBusinessesByUserExternalIdAsync(Guid userExternalId)

@@ -8,6 +8,7 @@ using turno_clave_API.Common;
 namespace turno_clave_API.Controllers
 {
     [Route("api/businesses")]
+    [Authorize]
     [ApiController]
     public class BusinessController : ControllerBase
     {
@@ -19,8 +20,7 @@ namespace turno_clave_API.Controllers
             _businessService = businessService;
             _currentUserService = currentUserService;
         }
-
-        [Authorize]
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBusinessDTO dto)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using turno_clave_API.Application.DTOs.Client;
 using turno_clave_API.Application.Interfaces;
@@ -7,6 +8,7 @@ using turno_clave_API.Domain.Entities;
 namespace turno_clave_API.Controllers
 {
     [Route("api/clients")]
+    [Authorize]
     [ApiController]
     public class ClientController : ControllerBase
     {

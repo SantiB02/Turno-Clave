@@ -5,10 +5,12 @@ using turno_clave_API.Application.DTOs.Availability;
 using turno_clave_API.Common;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace turno_clave_API.Controllers
 {
     [Route("api/availabilities")]
+    [Authorize]
     [ApiController]
     public class AvailabilityController : ControllerBase
     {
