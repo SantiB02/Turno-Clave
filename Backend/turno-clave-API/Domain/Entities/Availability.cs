@@ -25,5 +25,16 @@ namespace turno_clave_API.Domain.Entities
                 EndTime = av.EndTime
             };
         }
+
+        public static ProfessionalAvailabilityDTO ToProfessionalAvailabilityDTO(Availability av)
+        {
+            return new ProfessionalAvailabilityDTO
+            {
+                ExternalId = av.ExternalId,
+                DayOfWeek = av.DayOfWeek,
+                StartTime = av.StartTime,
+                EndTime = av.EndTime
+            };
+        }
     }
 }

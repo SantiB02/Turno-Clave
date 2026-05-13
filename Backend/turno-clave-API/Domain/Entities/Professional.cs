@@ -25,7 +25,10 @@ namespace turno_clave_API.Domain.Entities
                 BusinessExternalId = p.Business?.ExternalId ?? Guid.Empty,
                 BusinessName = p.Business?.Name ?? string.Empty,
                 Name = p.Name,
-                IsActive = p.IsActive
+                IsActive = p.IsActive,
+                Availabilities = p.Availabilities
+                    .Select(Availability.ToProfessionalAvailabilityDTO)
+                    .ToList(),
             };
         }
     }

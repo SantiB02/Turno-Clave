@@ -9,3 +9,10 @@ export type ServiceProfessional = {
   externalId: string
   name: string
 }
+
+export type ProfessionalAvailability = {
+  externalId: string
+  dayOfWeek: number
+  startTime: string
+  endTime: string
+}
