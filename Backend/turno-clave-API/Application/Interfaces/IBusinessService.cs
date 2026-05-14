@@ -18,6 +18,6 @@ namespace turno_clave_API.Application.Interfaces
         Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(Guid externalId, UpdateBusinessAvailabilityDTO dto);
         Task<List<BusinessAvailabilityDTO>?> UpdateGlobalAvailabilitiesAsync(Guid businessExternalId, UpdateBusinessAvailabilitiesDTO dto);
         Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId);
-        bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, List<AvailabilityRange> businessAvailabilities);
+        bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, IEnumerable<AvailabilityRange> businessAvailabilities);
     }
 }

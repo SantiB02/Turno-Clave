@@ -271,23 +271,14 @@ namespace turno_clave_API.Application.Services
 
             if (business == null) return null;
 
-            List<AvailabilityRange> newBusinessAvailabilities = dto.Availabilities
-                .Select(a => new AvailabilityRange
-                {
-                    DayOfWeek = a.DayOfWeek,
-                    StartTime = a.StartTime,
-                    EndTime = a.EndTime
-                })
-                .ToList();
-
-            if (AvailabilityValidator.HasOverlappingAvailabilities(newBusinessAvailabilities))
+            if (AvailabilityValidator.HasOverlappingAvailabilities(dto.Availabilities))
             {
                 throw new BusinessException("Los horarios de un mismo día no pueden superponerse.");
             }
 
             bool valid = AreAllProfessionalAvailabilitiesValid(
                 business.Professionals.ToList(),
-                newBusinessAvailabilities
+                dto.Availabilities
             );
 
             if (!valid)
@@ -368,7 +359,7 @@ namespace turno_clave_API.Application.Services
             return slug;
         }
 
-        public bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, List<AvailabilityRange> businessAvailabilities)
+        public bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, IEnumerable<AvailabilityRange> businessAvailabilities)
         {
             return businessAvailabilities.Any(businessAvailability =>
                 businessAvailability.DayOfWeek == professionalAvailability.DayOfWeek &&
@@ -377,7 +368,7 @@ namespace turno_clave_API.Application.Services
             );
         }
 
-        private bool AreAllProfessionalAvailabilitiesValid(List<Professional> professionals, List<AvailabilityRange> newBusinessAvailabilities)
+        private bool AreAllProfessionalAvailabilitiesValid(List<Professional> professionals, IEnumerable<AvailabilityRange> newBusinessAvailabilities)
         {
             return professionals.All(professional =>
                 professional.Availabilities.All(professionalAvailability =>

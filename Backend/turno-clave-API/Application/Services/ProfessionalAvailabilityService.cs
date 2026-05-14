@@ -81,17 +81,7 @@ namespace turno_clave_API.Application.Services
             if (professional == null)
                 return null;
 
-            List<AvailabilityRange> professionalAvailabilities = dto.Availabilities
-                .Select(a => new AvailabilityRange
-                {
-                    DayOfWeek = a.DayOfWeek,
-                    StartTime = a.StartTime,
-                    EndTime = a.EndTime
-                })
-                .ToList();
-
-            if (AvailabilityValidator.HasOverlappingAvailabilities(
-                professionalAvailabilities))
+            if (AvailabilityValidator.HasOverlappingAvailabilities(dto.Availabilities))
             {
                 throw new BusinessException(
                     "Los horarios de un mismo día no pueden superponerse."
@@ -108,7 +98,7 @@ namespace turno_clave_API.Application.Services
                     })
                     .ToList();
 
-            bool valid = professionalAvailabilities.All(availability => 
+            bool valid = dto.Availabilities.All(availability => 
                 _businessService.IsAvailabilityWithinBusinessHours(availability, businessAvailabilities)
             );
 

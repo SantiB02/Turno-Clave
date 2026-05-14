@@ -4,7 +4,7 @@ namespace turno_clave_API.Application.Validators
 {
     public static class AvailabilityValidator
     {
-        public static bool HasOverlappingAvailabilities(List<AvailabilityRange> availabilities)
+        public static bool HasOverlappingAvailabilities(IEnumerable<AvailabilityRange> availabilities)
         {
             var groupedByDay = availabilities
                 .GroupBy(a => a.DayOfWeek);
