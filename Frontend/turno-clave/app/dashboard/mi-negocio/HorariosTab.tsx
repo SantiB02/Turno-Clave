@@ -59,8 +59,6 @@ export default function HorariosTab({ business }: HorariosTabProps) {
         (p) => p.externalId === selectedEntity,
       )
 
-      console.log("PROFESSIONAL AVAILABILITIES:", professional?.availabilities)
-
       return mapBusinessAvailabilitiesToWeek(professional?.availabilities ?? [])
     }
     const mapped = getSelectedAvailabilities()
