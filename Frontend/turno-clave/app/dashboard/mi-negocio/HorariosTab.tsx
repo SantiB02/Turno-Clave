@@ -173,7 +173,10 @@ export default function HorariosTab({ business }: HorariosTabProps) {
         <p>Horarios de:</p>
         <select
           value={selectedEntity}
-          onChange={(e) => setSelectedEntity(e.target.value)}
+          onChange={(e) => {
+            setSelectedEntity(e.target.value)
+            setError(null)
+          }}
           className="border border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-1 rounded"
         >
           <option value="business">Negocio</option>

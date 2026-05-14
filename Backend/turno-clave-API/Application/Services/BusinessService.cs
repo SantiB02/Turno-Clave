@@ -9,6 +9,8 @@ using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
 using turno_clave_API.Common;
 using turno_clave_API.Application.DTOs.BusinessAvailability;
+using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Application.Validators;
 
 namespace turno_clave_API.Application.Services
 {
@@ -89,8 +91,8 @@ namespace turno_clave_API.Application.Services
                 Availabilities = business.BusinessAvailabilities.Select(static a => new ProfessionalAvailability
                 {
                     DayOfWeek = a.DayOfWeek,
-                    StartTime = TimeOnly.FromTimeSpan(a.StartTime),
-                    EndTime = TimeOnly.FromTimeSpan(a.EndTime),
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime,
                 }).ToList()
             };
 
@@ -269,6 +271,30 @@ namespace turno_clave_API.Application.Services
 
             if (business == null) return null;
 
+            List<AvailabilityRange> newBusinessAvailabilities = dto.Availabilities
+                .Select(a => new AvailabilityRange
+                {
+                    DayOfWeek = a.DayOfWeek,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToList();
+
+            if (AvailabilityValidator.HasOverlappingAvailabilities(newBusinessAvailabilities))
+            {
+                throw new BusinessException("Los horarios de un mismo día no pueden superponerse.");
+            }
+
+            bool valid = AreAllProfessionalAvailabilitiesValid(
+                business.Professionals.ToList(),
+                newBusinessAvailabilities
+            );
+
+            if (!valid)
+            {
+                throw new BusinessException("Algunos profesionales tienen horarios fuera de los nuevos horarios del negocio.");
+            }
+
             _context.BusinessAvailabilities.RemoveRange(business.BusinessAvailabilities);
 
             business.BusinessAvailabilities = dto.Availabilities
@@ -340,6 +366,32 @@ namespace turno_clave_API.Application.Services
             }
 
             return slug;
+        }
+
+        public bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, List<AvailabilityRange> businessAvailabilities)
+        {
+            return businessAvailabilities.Any(businessAvailability =>
+                businessAvailability.DayOfWeek == professionalAvailability.DayOfWeek &&
+                professionalAvailability.StartTime >= businessAvailability.StartTime &&
+                professionalAvailability.EndTime <= businessAvailability.EndTime
+            );
+        }
+
+        private bool AreAllProfessionalAvailabilitiesValid(List<Professional> professionals, List<AvailabilityRange> newBusinessAvailabilities)
+        {
+            return professionals.All(professional =>
+                professional.Availabilities.All(professionalAvailability =>
+                    IsAvailabilityWithinBusinessHours(
+                        new AvailabilityRange
+                        {
+                            DayOfWeek = professionalAvailability.DayOfWeek,
+                            StartTime = professionalAvailability.StartTime,
+                            EndTime = professionalAvailability.EndTime
+                        },
+                        newBusinessAvailabilities
+                    )
+                )
+            );
         }
     }
 }

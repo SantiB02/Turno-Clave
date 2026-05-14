@@ -60,10 +60,19 @@ namespace turno_clave_API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAvailabilities(Guid professionalExternalId, [FromBody] UpdateProfessionalAvailabilitiesDTO dto)
         {
-            List<ProfessionalAvailabilityDTO>? updatedAvailabilities = await _professionalAvailabilityService.UpdateAvailabilitiesAsync(professionalExternalId, dto);
-            if (updatedAvailabilities == null) return NotFound($"Professional with external id {professionalExternalId} not found");
+            try
+            {
+                List<ProfessionalAvailabilityDTO>? updatedAvailabilities = await _professionalAvailabilityService.UpdateAvailabilitiesAsync(professionalExternalId, dto);
+                if (updatedAvailabilities == null) return NotFound($"Professional with external id {professionalExternalId} not found");
 
-            return Ok(updatedAvailabilities);
+                return Ok(updatedAvailabilities);
+            } catch (BusinessException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message,
+                });
+            }
         }
 
         [HttpDelete("{externalId:guid}")]

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Common;
 
 namespace turno_clave_API.Controllers
 {
@@ -42,10 +43,19 @@ namespace turno_clave_API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAvailabilities(Guid businessExternalId, [FromBody] UpdateBusinessAvailabilitiesDTO dto)
         {
-            List<BusinessAvailabilityDTO>? updated = await _businessService.UpdateGlobalAvailabilitiesAsync(businessExternalId, dto);
-            if (updated == null) return NotFound($"Business with external id {businessExternalId} not found");
+            try
+            {
+                List<BusinessAvailabilityDTO>? updated = await _businessService.UpdateGlobalAvailabilitiesAsync(businessExternalId, dto);
+                if (updated == null) return NotFound($"Business with external id {businessExternalId} not found");
 
-            return Ok(updated);
+                return Ok(updated);
+            } catch (BusinessException ex)
+            {
+                return Conflict(new
+                {
+                    message = ex.Message,
+                });
+            }
         }
 
         [HttpDelete("{externalId:guid}")]

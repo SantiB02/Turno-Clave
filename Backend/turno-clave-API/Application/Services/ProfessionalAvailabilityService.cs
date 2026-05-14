@@ -1,6 +1,7 @@
 ﻿using turno_clave_API.Application.DTOs.Availability;
 using turno_clave_API.Application.DTOs.ProfessionalAvailability;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Application.Validators;
 using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
@@ -13,12 +14,18 @@ namespace turno_clave_API.Application.Services
         private readonly ILogger _logger;
         private readonly IProfessionalAvailabilityRepository _professionalAvailabilityRepository;
         private readonly IProfessionalService _professionalService;
+        private readonly IBusinessService _businessService;
 
-        public ProfessionalAvailabilityService(ILogger<ProfessionalAvailabilityService> logger, IProfessionalAvailabilityRepository professionalAvailabilityRepository, IProfessionalService professionalService)
+        public ProfessionalAvailabilityService(
+            ILogger<ProfessionalAvailabilityService> logger, 
+            IProfessionalAvailabilityRepository professionalAvailabilityRepository, 
+            IProfessionalService professionalService, 
+            IBusinessService businessService)
         {
             _logger = logger;
             _professionalAvailabilityRepository = professionalAvailabilityRepository;
             _professionalService = professionalService;
+            _businessService = businessService;
         }
 
         public async Task<Result<ProfessionalAvailability>> CreateAsync(CreateProfessionalAvailabilityDTO dto)
@@ -73,6 +80,44 @@ namespace turno_clave_API.Application.Services
 
             if (professional == null)
                 return null;
+
+            List<AvailabilityRange> professionalAvailabilities = dto.Availabilities
+                .Select(a => new AvailabilityRange
+                {
+                    DayOfWeek = a.DayOfWeek,
+                    StartTime = a.StartTime,
+                    EndTime = a.EndTime
+                })
+                .ToList();
+
+            if (AvailabilityValidator.HasOverlappingAvailabilities(
+                professionalAvailabilities))
+            {
+                throw new BusinessException(
+                    "Los horarios de un mismo día no pueden superponerse."
+                );
+            }
+
+            List<AvailabilityRange> businessAvailabilities =
+                professional.Business.BusinessAvailabilities
+                    .Select(a => new AvailabilityRange
+                    {
+                        DayOfWeek = a.DayOfWeek,
+                        StartTime = a.StartTime,
+                        EndTime = a.EndTime
+                    })
+                    .ToList();
+
+            bool valid = professionalAvailabilities.All(availability => 
+                _businessService.IsAvailabilityWithinBusinessHours(availability, businessAvailabilities)
+            );
+
+            if (!valid)
+            {
+                throw new BusinessException(
+                    "Los horarios del profesional deben estar dentro de los horarios del negocio."
+                );
+            }
 
             return await _professionalAvailabilityRepository.UpdateAvailabilitiesAsync(professional, dto);
         }

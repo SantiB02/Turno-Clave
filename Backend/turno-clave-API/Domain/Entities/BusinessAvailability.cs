@@ -15,8 +15,8 @@ namespace turno_clave_API.Domain.Entities
         public DayOfWeek DayOfWeek { get; set; }
 
         // Time range (local to the business timezone). Use TimeSpan to represent time-of-day.
-        public TimeSpan StartTime { get; set; }
-        public TimeSpan EndTime { get; set; }
+        public TimeOnly StartTime { get; set; }
+        public TimeOnly EndTime { get; set; }
 
         public bool IsActive { get; set; } = true;
 

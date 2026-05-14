@@ -4,14 +4,32 @@ export function isUnauthorizedError(error: unknown) {
 
 export async function throwResponseError(
   response: Response,
-  message: string,
+  fallbackMessage: string,
 ): Promise<never> {
-  const errorText = (await response.text()) || "Unknown error"
+  let data: unknown = null
 
-  throw new Error(`${message}: ${response.status} ${errorText}`)
+  try {
+    data = await response.json()
+  } catch {
+    throw new Error(fallbackMessage)
+  }
+
+  if (
+    data &&
+    typeof data === "object" &&
+    "message" in data &&
+    typeof data.message === "string"
+  ) {
+    throw new Error(data.message)
+  }
+
+  throw new Error(fallbackMessage)
 }
 
-export function rethrowWithFallback(error: unknown, fallbackMessage: string): never {
+export function rethrowWithFallback(
+  error: unknown,
+  fallbackMessage: string,
+): never {
   if (isUnauthorizedError(error)) {
     throw error
   }

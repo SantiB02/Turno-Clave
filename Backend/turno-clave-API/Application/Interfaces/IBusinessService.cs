@@ -1,6 +1,7 @@
 ﻿using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Common;
+using turno_clave_API.Domain.Entities;
 
 namespace turno_clave_API.Application.Interfaces
 {
@@ -17,5 +18,6 @@ namespace turno_clave_API.Application.Interfaces
         Task<BusinessAvailabilityDTO?> UpdateGlobalAvailabilityAsync(Guid externalId, UpdateBusinessAvailabilityDTO dto);
         Task<List<BusinessAvailabilityDTO>?> UpdateGlobalAvailabilitiesAsync(Guid businessExternalId, UpdateBusinessAvailabilitiesDTO dto);
         Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId);
+        bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, List<AvailabilityRange> businessAvailabilities);
     }
 }

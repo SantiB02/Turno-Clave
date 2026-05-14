@@ -23,6 +23,8 @@ namespace turno_clave_API.Infrastructure.Repositories
         {
             return _context.Businesses
                 .Include(b => b.BusinessAvailabilities)
+                .Include(b => b.Professionals)
+                    .ThenInclude(p => p.Availabilities)
                 .FirstOrDefaultAsync(b => b.ExternalId == externalId);
         }
 
