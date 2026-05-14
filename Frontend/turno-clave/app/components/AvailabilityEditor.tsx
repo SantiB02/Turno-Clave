@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect } from "react"
 import type { ShiftKey, WeekAvailability } from "@/types/business"
 
 const DAYS = [
