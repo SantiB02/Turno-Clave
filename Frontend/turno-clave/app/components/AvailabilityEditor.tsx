@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react"
 import type { ShiftKey, WeekAvailability } from "@/types/business"
 
 const DAYS = [
@@ -35,6 +36,10 @@ export default function AvailabilityEditor({
   onToggleShift,
   onUpdateTime,
 }: AvailabilityEditorProps) {
+  useEffect(() => {
+    console.log("AVAILABILITIES PASSED", availabilities)
+  }, [availabilities])
+
   return (
     <div className="grid grid-cols-1 justify-items-center gap-4 lg:grid-cols-2 xl:grid-cols-3">
       {DAYS.map(({ key, label }) => {

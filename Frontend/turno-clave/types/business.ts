@@ -59,7 +59,7 @@ export type CreateBusinessAvailabilityDTO = {
 export type UpdateBusinessAvailabilityDTO = CreateBusinessAvailabilityDTO
 
 export type UpdateBusinessAvailabilitiesDTO = {
-  availabilities: CreateBusinessAvailabilityDTO[]
+  availabilities: UpdateBusinessAvailabilityDTO[]
 }
 
 export type BusinessAvailabilityDTO = {

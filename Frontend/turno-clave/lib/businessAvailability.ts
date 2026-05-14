@@ -1,9 +1,10 @@
 import type {
   BusinessAvailabilityDTO,
-  CreateBusinessAvailabilityDTO,
   ShiftKey,
+  UpdateBusinessAvailabilityDTO,
   WeekAvailability,
 } from "@/types/business"
+import type { UpdateProfessionalAvailabilityDTO } from "@/types/professional"
 
 type DayKey = keyof WeekAvailability
 
@@ -155,7 +156,7 @@ export function mapBusinessAvailabilitiesToWeek(
 
 export function mapWeekToCreateBusinessAvailabilities(
   availabilities: WeekAvailability,
-): CreateBusinessAvailabilityDTO[] {
+): UpdateBusinessAvailabilityDTO[] | UpdateProfessionalAvailabilityDTO[] {
   return (
     Object.entries(availabilities) as Array<
       [keyof WeekAvailability, WeekAvailability[keyof WeekAvailability]]

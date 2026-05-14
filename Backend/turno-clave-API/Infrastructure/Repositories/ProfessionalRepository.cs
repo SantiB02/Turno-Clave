@@ -31,7 +31,10 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public Task<Professional?> GetProfessionalByExternalIdAsync(Guid externalId)
         {
-            return _context.Professionals.Include(p => p.Business).FirstOrDefaultAsync(p => p.ExternalId == externalId);
+            return _context.Professionals
+                .Include(p => p.Availabilities)
+                .Include(p => p.Business)
+                .FirstOrDefaultAsync(p => p.ExternalId == externalId);
         }
 
         public async Task<List<Professional>> GetProfessionalsByExternalIdsAsync(List<Guid> externalIds)

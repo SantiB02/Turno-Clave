@@ -14,7 +14,7 @@ namespace turno_clave_API.Application.Services
         private readonly IProfessionalService _professionalService;
         private readonly IClientService _clientService;
         private readonly IServiceService _serviceService;
-        private readonly IProfessionalAvailabilityService _availabilityService;
+        private readonly IProfessionalAvailabilityService _professionalAvailabilityService;
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
@@ -22,14 +22,14 @@ namespace turno_clave_API.Application.Services
             IProfessionalService professionalService,
             IClientService clientService,
             IServiceService serviceService,
-            IProfessionalAvailabilityService availabilityService)
+            IProfessionalAvailabilityService professionalAvailabilityService)
         {
             _appointmentRepository = appointmentRepository;
             _businessRepository = businessRepository;
             _professionalService = professionalService;
             _clientService = clientService;
             _serviceService = serviceService;
-            _availabilityService = availabilityService;
+            _professionalAvailabilityService = professionalAvailabilityService;
         }
 
         public async Task<Result<Appointment>> CreateAsync(CreateAppointmentDTO dto)
@@ -65,7 +65,7 @@ namespace turno_clave_API.Application.Services
             if (isAppointmentTaken)
                 return Result<Appointment>.Failure($"The professional is not available on {day} from {startTime} to {endTime}."); // TODO: improve error message to specify if the issue is with the day, time range, or both
 
-            bool isDayWorkDay = await _availabilityService.IsDayWorkDayAsync(professional, day);
+            bool isDayWorkDay = await _professionalAvailabilityService.IsDayWorkDayAsync(professional, day);
             if (!isDayWorkDay)
                 return Result<Appointment>.Failure($"The professional does not work on {day}.");
 

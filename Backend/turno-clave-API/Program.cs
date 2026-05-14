@@ -69,7 +69,7 @@ builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
 builder.Services.AddScoped<IProfessionalAvailabilityService, ProfessionalAvailabilityService>();
-builder.Services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+builder.Services.AddScoped<IProfessionalAvailabilityRepository, ProfessionalAvailabilityRepository>();
 
 builder.Services.AddScoped<IBusinessAvailabilityRepository, BusinessAvailabilityRepository>();
 

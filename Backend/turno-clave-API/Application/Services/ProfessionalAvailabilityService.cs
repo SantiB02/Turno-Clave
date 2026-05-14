@@ -1,4 +1,5 @@
 ﻿using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Application.DTOs.ProfessionalAvailability;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
@@ -10,13 +11,13 @@ namespace turno_clave_API.Application.Services
     public class ProfessionalAvailabilityService : IProfessionalAvailabilityService
     {
         private readonly ILogger _logger;
-        private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IProfessionalAvailabilityRepository _professionalAvailabilityRepository;
         private readonly IProfessionalService _professionalService;
 
-        public ProfessionalAvailabilityService(ILogger<ProfessionalAvailabilityService> logger, IAvailabilityRepository availabilityRepository, IProfessionalService professionalService)
+        public ProfessionalAvailabilityService(ILogger<ProfessionalAvailabilityService> logger, IProfessionalAvailabilityRepository professionalAvailabilityRepository, IProfessionalService professionalService)
         {
             _logger = logger;
-            _availabilityRepository = availabilityRepository;
+            _professionalAvailabilityRepository = professionalAvailabilityRepository;
             _professionalService = professionalService;
         }
 
@@ -39,57 +40,67 @@ namespace turno_clave_API.Application.Services
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime
             };
-            _availabilityRepository.AddAvailability(availability);
-            await _availabilityRepository.SaveAsync();
+            _professionalAvailabilityRepository.AddAvailability(availability);
+            await _professionalAvailabilityRepository.SaveAsync();
 
             return Result<ProfessionalAvailability>.Success(availability);
         }
 
         public async Task<ProfessionalAvailability?> GetByExternalIdAsync(Guid externalId)
         {
-            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
+            ProfessionalAvailability? availability = await _professionalAvailabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
             return availability;
         }
 
-        public async Task<Result<ProfessionalAvailability>> UpdateAsync(UpdateProfessionalAvailabilityDTO dto)
+        public async Task<Result<ProfessionalAvailability>> UpdateAsync(Guid externalId, UpdateProfessionalAvailabilityDTO dto)
         {
-            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(dto.ExternalId);
+            ProfessionalAvailability? availability = await _professionalAvailabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
             if (availability == null)
-                return Result<ProfessionalAvailability>.Failure($"Availability with ExternalId {dto.ExternalId} not found.");
+                return Result<ProfessionalAvailability>.Failure($"Availability with ExternalId {externalId} not found.");
 
             availability.DayOfWeek = dto.DayOfWeek;
             availability.StartTime = dto.StartTime;
             availability.EndTime = dto.EndTime;
 
-            _availabilityRepository.UpdateAvailability(availability);
-            await _availabilityRepository.SaveAsync();
+            _professionalAvailabilityRepository.UpdateAvailability(availability);
+            await _professionalAvailabilityRepository.SaveAsync();
             return Result<ProfessionalAvailability>.Success(availability);
+        }
+
+        public async Task<List<ProfessionalAvailabilityDTO>?> UpdateAvailabilitiesAsync(Guid professionalExternalId, UpdateProfessionalAvailabilitiesDTO dto)
+        {
+            Professional? professional = await _professionalService.GetByExternalIdAsync(professionalExternalId);
+
+            if (professional == null)
+                return null;
+
+            return await _professionalAvailabilityRepository.UpdateAvailabilitiesAsync(professional, dto);
         }
 
         public async Task<Result<ProfessionalAvailability>> DeleteAsync(Guid externalId)
         {
-            ProfessionalAvailability? availability = await _availabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
+            ProfessionalAvailability? availability = await _professionalAvailabilityRepository.GetAvailabilityByExternalIdAsync(externalId);
             if (availability == null)
             {
                 return Result<ProfessionalAvailability>.Failure($"Availability with ExternalId {externalId} not found.");
             }
 
-            await _availabilityRepository.DeleteAvailabilityAsync(availability.ExternalId);
-            await _availabilityRepository.SaveAsync();
+            await _professionalAvailabilityRepository.DeleteAvailabilityAsync(availability.ExternalId);
+            await _professionalAvailabilityRepository.SaveAsync();
             return Result<ProfessionalAvailability>.Success(availability);
         }
 
         public async Task<bool> IsAvailabilityValidAsync(Professional professional, DayOfWeek dayOfWeek, TimeOnly startTime, TimeOnly endTime)
         {
             bool isStartTimeCorrect = startTime < endTime;
-            bool isAvailabilityTaken = await _availabilityRepository.IsAvailabilityTakenAsync(professional, dayOfWeek, startTime, endTime);
+            bool isAvailabilityTaken = await _professionalAvailabilityRepository.IsAvailabilityTakenAsync(professional, dayOfWeek, startTime, endTime);
 
             return isStartTimeCorrect && !isAvailabilityTaken;
         }
 
         public async Task<bool> IsDayWorkDayAsync(Professional professional, DayOfWeek dayOfWeek)
         {
-            return await _availabilityRepository.IsDayWorkDayAsync(professional, dayOfWeek);
+            return await _professionalAvailabilityRepository.IsDayWorkDayAsync(professional, dayOfWeek);
         }
     }
 }

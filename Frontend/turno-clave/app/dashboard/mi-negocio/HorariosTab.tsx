@@ -12,12 +12,14 @@ import {
   mapWeekToCreateBusinessAvailabilities,
 } from "@/lib/businessAvailability"
 import { updateBusinessAvailabilities } from "@/services/businessAvailabilityService"
+import { updateProfessionalAvailabilities } from "@/services/professionalAvailabilityService"
+import { getProfessionalsByActiveBusiness } from "@/services/professionalService"
 import type {
   BusinessDetail,
   ShiftKey,
-  UpdateBusinessAvailabilitiesDTO,
   WeekAvailability,
 } from "@/types/business"
+import type { Professional } from "@/types/professional"
 
 type HorariosTabProps = {
   business: BusinessDetail
@@ -26,6 +28,8 @@ type HorariosTabProps = {
 export default function HorariosTab({ business }: HorariosTabProps) {
   const router = useRouter()
 
+  const [professionals, setProfessionals] = useState<Professional[]>([])
+  const [selectedEntity, setSelectedEntity] = useState<string>("business")
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [savedAvailabilities, setSavedAvailabilities] =
@@ -37,11 +41,33 @@ export default function HorariosTab({ business }: HorariosTabProps) {
     useState<WeekAvailability>(savedAvailabilities)
 
   useEffect(() => {
-    const mapped = mapBusinessAvailabilitiesToWeek(business.availabilities)
+    async function loadProfessionals() {
+      const professionals: Professional[] =
+        await getProfessionalsByActiveBusiness()
+      setProfessionals(professionals)
+    }
+    loadProfessionals()
+  }, [])
+
+  useEffect(() => {
+    function getSelectedAvailabilities(): WeekAvailability {
+      if (selectedEntity === "business") {
+        return mapBusinessAvailabilitiesToWeek(business.availabilities)
+      }
+
+      const professional = professionals.find(
+        (p) => p.externalId === selectedEntity,
+      )
+
+      console.log("PROFESSIONAL AVAILABILITIES:", professional?.availabilities)
+
+      return mapBusinessAvailabilitiesToWeek(professional?.availabilities ?? [])
+    }
+    const mapped = getSelectedAvailabilities()
 
     setAvailabilities(mapped)
     setSavedAvailabilities(mapped)
-  }, [business.availabilities])
+  }, [selectedEntity, business.availabilities, professionals])
 
   const toggleDay = (day: keyof WeekAvailability) => {
     setAvailabilities((prev) => ({
@@ -97,15 +123,40 @@ export default function HorariosTab({ business }: HorariosTabProps) {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     setLoading(true)
     setError(null)
 
     try {
-      const data: UpdateBusinessAvailabilitiesDTO = {
-        availabilities: mapWeekToCreateBusinessAvailabilities(availabilities),
+      const updatedAvailabilities =
+        mapWeekToCreateBusinessAvailabilities(availabilities)
+
+      const data = {
+        availabilities: updatedAvailabilities,
       }
 
-      await updateBusinessAvailabilities(business.externalId, data)
+      if (selectedEntity === "business") {
+        await updateBusinessAvailabilities(business.externalId, data)
+      } else {
+        const updatedAvailabilities = await updateProfessionalAvailabilities(
+          selectedEntity,
+          data,
+        )
+
+        setProfessionals((prev) =>
+          prev.map((professional) =>
+            professional.externalId === selectedEntity
+              ? {
+                  ...professional,
+                  availabilities: updatedAvailabilities,
+                }
+              : professional,
+          ),
+        )
+      }
+
+      setSavedAvailabilities(availabilities)
+
       router.refresh()
     } catch (submitError) {
       setError(
@@ -118,6 +169,26 @@ export default function HorariosTab({ business }: HorariosTabProps) {
 
   return (
     <div className="max-w-6xl">
+      <div className="flex items-center gap-2 px-4 py-2 rounded">
+        <p>Horarios de:</p>
+        <select
+          value={selectedEntity}
+          onChange={(e) => setSelectedEntity(e.target.value)}
+          className="border border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-1 rounded"
+        >
+          <option value="business">Negocio</option>
+
+          {professionals.map((professional) => (
+            <option
+              key={professional.externalId}
+              value={professional.externalId}
+            >
+              {professional.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="mt-1 flex underline">
         <ExclamationTriangleIcon className="mr-1 h-6 w-6 text-yellow-400" />
         <p>Estos horarios se mostrarán a tus clientes para reservar turnos.</p>

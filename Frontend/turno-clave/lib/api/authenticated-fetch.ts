@@ -1,4 +1,4 @@
-import { auth, type ExtendedSession } from "@/auth"
+import { auth, type ExtendedSession, signOut } from "@/auth"
 import { apiFetch } from "./apiClient"
 
 export async function authenticatedFetch(
@@ -8,7 +8,7 @@ export async function authenticatedFetch(
   const session = (await auth()) as ExtendedSession
 
   if (session?.authError || !session?.backendToken) {
-    throw new Error("UNAUTHORIZED")
+    signOut()
   }
 
   const res = await apiFetch(path, session.backendToken, options)

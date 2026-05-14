@@ -3,12 +3,15 @@ export type Professional = {
   name: string
   businessExternalId: string
   businessName: string
+  availabilities: NestedProfessionalAvailability[]
 }
 
 export type ServiceProfessional = {
   externalId: string
   name: string
 }
+
+// ----- PROFESSIONAL AVAILABILITY -----
 
 export type NestedProfessionalAvailability = {
   externalId: string
@@ -19,4 +22,14 @@ export type NestedProfessionalAvailability = {
 
 export type ProfessionalAvailability = NestedProfessionalAvailability & {
   professionalExternalId: string
+}
+
+export type UpdateProfessionalAvailabilityDTO = {
+  dayOfWeek: number
+  startTime: string
+  endTime: string
+}
+
+export type UpdateProfessionalAvailabilitiesDTO = {
+  availabilities: UpdateProfessionalAvailabilityDTO[]
 }

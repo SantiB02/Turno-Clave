@@ -12,7 +12,7 @@ const ROOT_PATH = "/businesses"
 export async function updateBusinessAvailabilities(
   businessExternalId: string,
   data: UpdateBusinessAvailabilitiesDTO,
-): Promise<BusinessAvailabilityDTO> {
+): Promise<BusinessAvailabilityDTO[]> {
   try {
     const res = await authenticatedFetch(
       `${ROOT_PATH}/${businessExternalId}/availabilities`,
