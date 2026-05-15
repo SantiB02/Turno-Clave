@@ -197,10 +197,20 @@ export default function ProfesionalesTab({
     <div>
       <h1 className="mb-6 text-xl text-dark-blue underline">Profesionales</h1>
       {professionalsError && (
-        <ErrorMessage
-          title="Ocurrió un error al cargar los profesionales:"
-          message={professionalsError}
-        />
+        <div className="my-2">
+          <ErrorMessage
+            title="Ocurrió un error al cargar los profesionales:"
+            message={professionalsError}
+          />
+        </div>
+      )}
+      {servicesError && (
+        <div className="my-2">
+          <ErrorMessage
+            title="Ocurrió un error al cargar los servicios:"
+            message={servicesError}
+          />
+        </div>
       )}
       {loadingProfessionals ? (
         <div>Cargando profesionales...</div>
