@@ -29,10 +29,10 @@ export default async function MiNegocio() {
 
   const servicesResult = await getServicesByActiveBusiness()
 
-  if (false) {
+  if (servicesResult.ok) {
     services = servicesResult.data
   } else {
-    servicesError = "servicesResult.message"
+    servicesError = servicesResult.message
   }
 
   return (
