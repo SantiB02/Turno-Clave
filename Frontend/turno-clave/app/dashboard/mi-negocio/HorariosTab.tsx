@@ -4,6 +4,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import AvailabilityEditor from "@/app/components/AvailabilityEditor"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import {
   hasAvailabilitiesWithoutShift,
   hasInvalidAvailabilityRanges,
@@ -24,6 +25,7 @@ type HorariosTabProps = {
   business: BusinessDetail
   professionals: Professional[]
   setProfessionals: React.Dispatch<React.SetStateAction<Professional[]>>
+  professionalsError: string | null
 }
 
 const SKELETON_DAY_KEYS = [
@@ -82,6 +84,7 @@ export default function HorariosTab({
   business,
   professionals,
   setProfessionals,
+  professionalsError,
 }: HorariosTabProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -99,7 +102,7 @@ export default function HorariosTab({
   const [error, setError] = useState<string | null>(null)
   const [savedAvailabilities, setSavedAvailabilities] =
     useState<WeekAvailability>(
-      mapBusinessAvailabilitiesToWeek(business.availabilities),
+      mapBusinessAvailabilitiesToWeek(business?.availabilities ?? []),
     )
 
   const [availabilities, setAvailabilities] =
@@ -275,6 +278,12 @@ export default function HorariosTab({
           ))}
         </select>
       </div>
+      {professionalsError && (
+        <ErrorMessage
+          title="Ocurrió un error al cargar los profesionales:"
+          message={professionalsError}
+        />
+      )}
 
       <div className="mt-1 flex underline">
         <ExclamationTriangleIcon className="mr-1 h-6 w-6 text-yellow-400" />
@@ -290,10 +299,10 @@ export default function HorariosTab({
         />
 
         {error && (
-          <div className="rounded border border-red-400 bg-red-200 px-4 py-3 text-red-700">
-            <p>Ocurrió un error al editar los horarios:</p>
-            <p>{error}</p>
-          </div>
+          <ErrorMessage
+            title="Ocurrió un error al cargar los horarios:"
+            message={error}
+          />
         )}
 
         <div className="flex justify-end">

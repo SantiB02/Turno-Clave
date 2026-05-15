@@ -37,6 +37,7 @@ export default function ServiceFormModal({
   const [price, setPrice] = useState("")
   const [durationMinutes, setDurationMinutes] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) return
@@ -132,15 +133,22 @@ export default function ServiceFormModal({
         durationMinutes: Number(durationMinutes),
       }
 
-      const service =
-        mode === "create"
-          ? await createService(data)
-          : await updateService(initialService!.externalId, data)
+      let result = null
+      if (mode === "create") {
+        result = await createService(data)
+      } else if (mode === "edit") {
+        result = await updateService(initialService!.externalId, data)
+      }
+
+      if (!result || !result.ok) {
+        setError(result?.message ?? "Error inesperado")
+        return
+      }
+
+      const service = result.data
 
       onSuccess?.(service)
       onClose()
-    } catch (error) {
-      console.error("[ServiceFormModal]", error)
     } finally {
       setIsSubmitting(false)
     }

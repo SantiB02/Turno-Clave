@@ -37,17 +37,16 @@ export default async function DashboardLayout({
     redirect("/")
   }
 
-  let businesses: BusinessDetail[] = []
   if (session.user?.email === "doetesting02@gmail.com") {
     redirect("/onboarding/negocio")
   }
-  try {
-    businesses = await getMyBusinesses()
-  } catch (error) {
-    if (error instanceof Error && error.message === "UNAUTHORIZED") {
-      redirect("/api/auth/signout-redirect")
-    }
-    throw error
+
+  const result = await getMyBusinesses()
+
+  let businesses: BusinessDetail[] = []
+
+  if (result.ok) {
+    businesses = result.data
   }
 
   if (businesses.length === 0) {

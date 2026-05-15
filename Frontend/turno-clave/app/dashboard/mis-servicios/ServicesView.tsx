@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import type { Professional } from "@/types/professional"
 import type { Service } from "@/types/service"
 import AddService from "./AddService"
@@ -9,11 +10,15 @@ import ServiceAccordion from "./ServiceAccordion"
 type ServicesListProps = {
   services: Service[]
   professionals: Professional[]
+  servicesError: string | null
+  professionalsError: string | null
 }
 
 export default function ServicesView({
   services,
   professionals,
+  servicesError,
+  professionalsError,
 }: ServicesListProps) {
   const [serviceList, setServiceList] = useState(services)
 
@@ -36,7 +41,9 @@ export default function ServicesView({
   const handleServiceUpdated = (updatedService: Service) => {
     setServiceList((currentServices) =>
       currentServices.map((service) =>
-        service.externalId === updatedService.externalId ? updatedService : service,
+        service.externalId === updatedService.externalId
+          ? updatedService
+          : service,
       ),
     )
   }
@@ -45,6 +52,22 @@ export default function ServicesView({
     <div>
       <h1 className="font-bold text-4xl mb-9">Mis Servicios</h1>
       <div className="mt-6">
+        {servicesError && (
+          <div className="my-2">
+            <ErrorMessage
+              title="Ocurrió un error al cargar los servicios:"
+              message={servicesError}
+            />
+          </div>
+        )}
+        {professionalsError && (
+          <div className="my-2">
+            <ErrorMessage
+              title="Ocurrió un error al cargar los profesionales:"
+              message={professionalsError}
+            />
+          </div>
+        )}
         {serviceList.length === 0 ? (
           <p className="text-gray-500">No tienes servicios registrados.</p>
         ) : (

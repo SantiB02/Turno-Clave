@@ -1,5 +1,4 @@
 import type { ApiResult } from "@/types/apiResult"
-import { apiFetch } from "./apiClient"
 
 function extractErrorMessage(data: any): string {
   return (

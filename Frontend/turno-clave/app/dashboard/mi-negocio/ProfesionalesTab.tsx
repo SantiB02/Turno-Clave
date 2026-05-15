@@ -6,6 +6,7 @@ import { useState } from "react"
 import Accordion from "@/app/components/Accordion"
 import AddItemButton from "@/app/components/AddItemButton"
 import Button from "@/app/components/Button"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import ModalForm from "@/app/components/ModalForm"
 import {
   formatAvailabilityTime,
@@ -61,6 +62,8 @@ type ProfesionalesTabProps = {
   setProfessionals: React.Dispatch<React.SetStateAction<Professional[]>>
   businessServices: Service[]
   loadingProfessionals: boolean
+  professionalsError: string | null
+  servicesError: string | null
 }
 
 export default function ProfesionalesTab({
@@ -68,6 +71,8 @@ export default function ProfesionalesTab({
   setProfessionals,
   businessServices,
   loadingProfessionals,
+  professionalsError,
+  servicesError,
 }: ProfesionalesTabProps) {
   const router = useRouter()
 
@@ -119,48 +124,54 @@ export default function ProfesionalesTab({
     )
   }
 
+  async function executeAction() {
+    if (modalMode === "create") {
+      return await createProfessional({
+        name: professionalName.trim(),
+        serviceExternalIds: selectedServiceIds,
+      })
+    }
+
+    if (modalMode === "edit-services" && selectedProfessional) {
+      return await updateProfessional(selectedProfessional.externalId, {
+        name: selectedProfessional.name,
+        serviceExternalIds: selectedServiceIds,
+      })
+    }
+
+    return null
+  }
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     setLoading(true)
     setError(null)
 
     try {
-      if (modalMode === "create") {
-        const createdProfessional = await createProfessional({
-          name: professionalName.trim(),
-          serviceExternalIds: selectedServiceIds,
-        })
+      const result = await executeAction()
 
-        setProfessionals((currentProfessionals) => [
-          ...currentProfessionals,
-          createdProfessional,
-        ])
+      if (!result?.ok) {
+        setError(result?.message ?? "Error inesperado")
+        return
       }
 
-      if (modalMode === "edit-services" && selectedProfessional) {
-        const updatedProfessional = await updateProfessional(
-          selectedProfessional.externalId,
-          {
-            name: selectedProfessional.name,
-            serviceExternalIds: selectedServiceIds,
-          },
-        )
+      const data = result.data
 
-        setProfessionals((currentProfessionals) =>
-          currentProfessionals.map((professional) =>
-            professional.externalId === updatedProfessional.externalId
-              ? updatedProfessional
-              : professional,
-          ),
-        )
-      }
+      setProfessionals((prev) => {
+        if (modalMode === "create") {
+          return [...prev, data]
+        }
+
+        if (modalMode === "edit-services") {
+          return prev.map((p) => (p.externalId === data.externalId ? data : p))
+        }
+
+        return prev
+      })
 
       resetModalState()
       router.refresh()
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error ? submitError.message : "Unknown error",
-      )
     } finally {
       setLoading(false)
     }
@@ -184,7 +195,13 @@ export default function ProfesionalesTab({
 
   return (
     <div>
-      <h1 className="mb-6 text-xl underline">Profesionales</h1>
+      <h1 className="mb-6 text-xl text-dark-blue underline">Profesionales</h1>
+      {professionalsError && (
+        <ErrorMessage
+          title="Ocurrió un error al cargar los profesionales:"
+          message={professionalsError}
+        />
+      )}
       {loadingProfessionals ? (
         <div>Cargando profesionales...</div>
       ) : (
@@ -335,14 +352,14 @@ export default function ProfesionalesTab({
         </div>
 
         {error && (
-          <div className="rounded border border-red-400 bg-red-200 px-4 py-3 text-red-700">
-            <p>
-              {modalMode === "create"
+          <ErrorMessage
+            title={
+              modalMode === "create"
                 ? "Ocurrió un error al crear el profesional:"
-                : "Ocurrió un error al actualizar los servicios:"}
-            </p>
-            <p>{error}</p>
-          </div>
+                : "Ocurrió un error al actualizar los servicios:"
+            }
+            message={error}
+          />
         )}
       </ModalForm>
     </div>

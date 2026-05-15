@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import AvailabilityEditor from "@/app/components/AvailabilityEditor"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import {
   createDefaultWeekAvailability,
   hasInvalidAvailabilityRanges,
@@ -20,6 +21,7 @@ import NextStepButton from "../NextStepButton"
 export default function OnboardingAvailabilitiesForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [availabilities, setAvailabilities] = useState<WeekAvailability>(
     createDefaultWeekAvailability(),
   )
@@ -94,7 +96,13 @@ export default function OnboardingAvailabilitiesForm() {
       availabilities: mapWeekToCreateBusinessAvailabilities(availabilities),
     }
 
-    await createBusiness(creationData)
+    const result = await createBusiness(creationData)
+
+    if (!result.ok) {
+      setLoading(false)
+      setError(result.message)
+      return
+    }
 
     localStorage.removeItem("onboardingData")
     router.push("/onboarding/listo")
@@ -102,6 +110,12 @@ export default function OnboardingAvailabilitiesForm() {
 
   return (
     <div className="mb-30">
+      {error && (
+        <ErrorMessage
+          title="Ocurrió un error al crear el negocio:"
+          message={error}
+        />
+      )}
       <form onSubmit={handleSubmit}>
         <div>
           <AvailabilityEditor

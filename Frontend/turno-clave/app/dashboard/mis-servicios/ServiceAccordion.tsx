@@ -29,7 +29,7 @@ export default function ServiceAccordion({
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const handleDelete = async (e: React.FormEvent) => {
+  const handleDelete = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
 

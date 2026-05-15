@@ -16,6 +16,7 @@ import {
 import type { City, State } from "react-country-state-city/dist/esm/types"
 import "react-country-state-city/dist/react-country-state-city.css"
 import Image from "next/image"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import ModalForm from "@/app/components/ModalForm"
 import {
   type SupportedCountry,
@@ -163,50 +164,44 @@ export default function InformacionTab({ business }: InformacionTabProps) {
     e.preventDefault()
     setLoading(true)
     setError(null)
-    let shouldCloseModal = false
 
-    try {
-      if (!country || !state) {
-        setError("Por favor, complete todos los campos requeridos.")
-        return
-      }
-
-      const resolvedCity =
-        state.name === "Ciudad Autónoma de Buenos Aires"
-          ? "Ciudad Autónoma de Buenos Aires"
-          : city?.name
-
-      if (!resolvedCity) {
-        setError("Por favor, seleccione una ciudad.")
-        return
-      }
-
-      const data: UpdateBusinessDTO = {
-        name,
-        description,
-        phone,
-        country: country.name,
-        state: state.name,
-        city: resolvedCity,
-        timeZone: country.timezone,
-        address,
-        paymentMethods,
-      }
-
-      await updateBusiness(business.externalId, data)
-      shouldCloseModal = true
-      router.refresh()
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error ? submitError.message : "Unknown error",
-      )
-    } finally {
-      if (shouldCloseModal) {
-        handleClose()
-      }
-
-      setLoading(false)
+    if (!country || !state) {
+      setError("Por favor, complete todos los campos requeridos.")
+      return
     }
+
+    const resolvedCity =
+      state.name === "Ciudad Autónoma de Buenos Aires"
+        ? "Ciudad Autónoma de Buenos Aires"
+        : city?.name
+
+    if (!resolvedCity) {
+      setError("Por favor, seleccione una ciudad.")
+      return
+    }
+
+    const data: UpdateBusinessDTO = {
+      name,
+      description,
+      phone,
+      country: country.name,
+      state: state.name,
+      city: resolvedCity,
+      timeZone: country.timezone,
+      address,
+      paymentMethods,
+    }
+
+    const result = await updateBusiness(business.externalId, data)
+
+    if (!result.ok) {
+      setError(result.message)
+      return
+    }
+
+    router.refresh()
+    handleClose()
+    setLoading(false)
   }
 
   const phoneRegex = /^\+?[0-9]{6,15}$/
@@ -504,10 +499,10 @@ export default function InformacionTab({ business }: InformacionTabProps) {
           </section>
         </div>
         {error && (
-          <div className="w-full mt-4 bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-3">
-            <p>Ocurrió un error al editar el negocio:</p>
-            <p>{error}</p>
-          </div>
+          <ErrorMessage
+            title="Ocurrió un error al editar el negocio:"
+            message={error}
+          />
         )}
       </ModalForm>
     </div>

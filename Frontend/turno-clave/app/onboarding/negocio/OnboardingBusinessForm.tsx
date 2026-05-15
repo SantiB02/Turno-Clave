@@ -5,6 +5,7 @@ import { CitySelect, StateSelect } from "react-country-state-city"
 import type { City, State } from "react-country-state-city/dist/esm/types"
 import "react-country-state-city/dist/react-country-state-city.css"
 import { useRouter } from "next/navigation"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import {
   type SupportedCountry,
   supportedCountries,
@@ -159,12 +160,7 @@ export default function OnboardingBusinessForm() {
         <h2 className="text-2xl text-center mb-4">
           ¿Cómo se llama tu negocio?
         </h2>
-        {error && (
-          <div className="bg-red-100 mb-4 border border-red-400 text-red-700 px-4 py-3 rounded">
-            <p className="font-bold">Error:</p>
-            <p>{error}</p>
-          </div>
-        )}
+        {error && <ErrorMessage title="Error:" message={error} />}
         <div className="text-center">
           <input
             maxLength={100}

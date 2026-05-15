@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import { getProfessionalsByActiveBusiness } from "@/services/professionalService"
 import type { BusinessDetail } from "@/types/business"
 import type { Professional } from "@/types/professional"
@@ -18,13 +19,17 @@ const tabs = [
 ] as const
 
 type MiNegocioTabsProps = {
-  business: BusinessDetail
+  business?: BusinessDetail | null
   services: Service[]
+  businessError: string | null
+  servicesError: string | null
 }
 
 export default function MiNegocioTabs({
   business,
   services,
+  businessError,
+  servicesError,
 }: MiNegocioTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -32,20 +37,40 @@ export default function MiNegocioTabs({
   const [professionals, setProfessionals] = useState<Professional[]>([])
   const [loadingProfessionals, setLoadingProfessionals] =
     useState<boolean>(false)
+  const [professionalsError, setProfessionalsError] = useState<string | null>(
+    null,
+  )
 
   const activeTab = searchParams.get("tab") || "informacion"
 
   useEffect(() => {
     async function loadProfessionals() {
-      try {
-        setLoadingProfessionals(true)
+      setLoadingProfessionals(true)
 
-        const data: Professional[] = await getProfessionalsByActiveBusiness()
+      const result = await getProfessionalsByActiveBusiness()
 
-        setProfessionals(data)
-      } finally {
+      if (!result.ok) {
+        setProfessionalsError(result.message)
         setLoadingProfessionals(false)
+        return
       }
+
+      const data = result.data
+
+      data.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1
+        }
+
+        if (a.name > b.name) {
+          return 1
+        }
+
+        return 0
+      })
+
+      setProfessionals(data)
+      setLoadingProfessionals(false)
     }
 
     loadProfessionals()
@@ -62,6 +87,8 @@ export default function MiNegocioTabs({
 
     router.replace(`?${params.toString()}`)
   }
+
+  const isBusinessLoading = !business && !businessError
 
   return (
     <div>
@@ -88,14 +115,37 @@ export default function MiNegocioTabs({
       </div>
 
       <div className="py-6">
-        {activeTab === "informacion" && <InformacionTab business={business} />}
+        {activeTab === "informacion" && (
+          <>
+            {businessError && (
+              <ErrorMessage title="Error:" message={businessError} />
+            )}
+
+            {isBusinessLoading && <div>Cargando información de negocio...</div>}
+
+            {business && !businessError && (
+              <InformacionTab business={business} />
+            )}
+          </>
+        )}
 
         {activeTab === "horarios" && (
-          <HorariosTab
-            business={business}
-            professionals={professionals}
-            setProfessionals={setProfessionals}
-          />
+          <>
+            {businessError && (
+              <div className="text-red-600">{businessError}</div>
+            )}
+
+            {isBusinessLoading && <div>Cargando información de negocio...</div>}
+
+            {business && !businessError && (
+              <HorariosTab
+                business={business}
+                professionals={professionals}
+                setProfessionals={setProfessionals}
+                professionalsError={professionalsError}
+              />
+            )}
+          </>
         )}
 
         {activeTab === "profesionales" && (
@@ -104,6 +154,8 @@ export default function MiNegocioTabs({
             setProfessionals={setProfessionals}
             businessServices={services}
             loadingProfessionals={loadingProfessionals}
+            professionalsError={professionalsError}
+            servicesError={servicesError}
           />
         )}
 
