@@ -14,6 +14,8 @@ interface ModalFormProps {
   loading?: boolean
   loadingLabel?: string
   submitDisabled?: boolean
+  submitButtonBgColor?: string
+  submitButtonBgHoverColor?: string
   width?: "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full"
 }
 
@@ -27,6 +29,8 @@ export default function ModalForm({
   loading = false,
   loadingLabel = "Cargando...",
   submitDisabled = false,
+  submitButtonBgColor,
+  submitButtonBgHoverColor,
   width,
 }: ModalFormProps) {
   const [mounted, setMounted] = useState(false)
@@ -110,7 +114,7 @@ export default function ModalForm({
 
                 <button
                   type="submit"
-                  className={`px-4 py-2 rounded-lg bg-orange-500 text-white font-medium hover:bg-orange-600 transition ${loading || submitDisabled ? "opacity-50 cursor-loading" : "cursor-pointer"}`}
+                  className={`px-4 py-2 rounded-lg ${submitButtonBgColor ? `${submitButtonBgColor}` : "bg-orange-500"} text-white font-medium ${submitButtonBgHoverColor ? `${submitButtonBgHoverColor}` : "hover:bg-orange-600"} transition ${loading || submitDisabled ? "opacity-50 cursor-loading" : "cursor-pointer"}`}
                   disabled={loading || submitDisabled}
                 >
                   {loading ? loadingLabel : submitLabel}

@@ -6,6 +6,8 @@ interface ButtonProps {
   disabled?: boolean
   type?: "button" | "submit" | "reset"
   href?: string
+  backgroundColor?: string
+  hoverBackgroundColor?: string
 }
 
 export default function Button({
@@ -14,6 +16,8 @@ export default function Button({
   disabled,
   type,
   href,
+  backgroundColor,
+  hoverBackgroundColor,
 }: ButtonProps) {
   if (href) {
     return (
@@ -22,7 +26,11 @@ export default function Button({
           type={type || "button"}
           onClick={onClick}
           disabled={disabled}
-          className="bg-primary-orange cursor-pointer hover:bg-primary-orange/80 text-white px-4 py-2 rounded-lg transition"
+          className={`
+            ${backgroundColor ?? "bg-primary-orange"}
+            ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
+            cursor-pointer text-white px-4 py-2 rounded-lg transition
+          `}
         >
           {label}
         </button>
@@ -34,7 +42,11 @@ export default function Button({
         type={type || "button"}
         onClick={onClick}
         disabled={disabled}
-        className="bg-primary-orange cursor-pointer hover:bg-primary-orange/80 text-white px-4 py-2 rounded-lg transition"
+        className={`
+            ${backgroundColor ?? "bg-primary-orange"}
+            ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
+            cursor-pointer text-white px-4 py-2 rounded-lg transition
+          `}
       >
         {label}
       </button>

@@ -36,3 +36,11 @@ export async function updateProfessional(
     }),
   )
 }
+
+export async function deleteProfessional(externalId: string) {
+  return apiRequest<Professional>(() =>
+    authenticatedFetch(`${ROOT_PATH}/${externalId}`, {
+      method: "DELETE",
+    }),
+  )
+}

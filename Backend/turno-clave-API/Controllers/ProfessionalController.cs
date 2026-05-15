@@ -101,7 +101,8 @@ namespace turno_clave_API.Controllers
         {
             try
             {
-                Professional? professional = await _professionalService.DeleteAsync(externalId);
+                Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+                Professional? professional = await _professionalService.DeleteAsync(businessExternalId, externalId);
                 if (professional == null)
                 {
                     return Problem(
@@ -114,13 +115,13 @@ namespace turno_clave_API.Controllers
                 }
                 return Ok(Professional.ToDto(professional));
             }
-            catch (KeyNotFoundException ex)
+            catch (UnauthorizedAccessException ex)
             {
                 return Problem(
-                    statusCode: StatusCodes.Status404NotFound,
-                    title: "Professional not found",
+                    statusCode: StatusCodes.Status401Unauthorized,
+                    title: "Unauthorized",
                     detail: ex.Message,
-                    type: "/errors/ProfessionalNotFound",
+                    type: "/errors/Unauthorized",
                     instance: HttpContext.Request.Path
                 );
             }

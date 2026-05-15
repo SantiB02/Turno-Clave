@@ -80,17 +80,19 @@ namespace turno_clave_API.Application.Services
             return professional;
         }
 
-        public async Task<Professional?> DeleteAsync(Guid externalId)
+        public async Task<Professional?> DeleteAsync(Guid businessExternalId, Guid externalId)
         {
-            Professional? professional = await _professionalRepository.GetProfessionalByExternalIdAsync(externalId);
-            if (professional != null)
-            {
-                professional.IsActive = false;
-                await _professionalRepository.SaveAsync();
-            } else
-            {
-                throw new KeyNotFoundException($"Professional with ExternalId {externalId} not found.");
-            }
+            Professional? professional =
+                await _professionalRepository.GetProfessionalByExternalIdAsync(externalId);
+
+            if (professional == null)
+                return null;
+
+            if (professional.Business.ExternalId != businessExternalId)
+                throw new UnauthorizedAccessException();
+
+            professional.IsActive = false;
+            await _professionalRepository.SaveAsync();
 
             return professional;
         }
