@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import ErrorMessage from "@/app/components/ErrorMessage"
 import ModalForm from "@/app/components/ModalForm"
 import { createService, updateService } from "@/services/serviceService"
 import type { Professional, ServiceProfessional } from "@/types/professional"
@@ -269,6 +270,7 @@ export default function ServiceFormModal({
           <p>minutos</p>
         </div>
       </div>
+      {error && <ErrorMessage title="Ocurrió un error:" message={error} />}
     </ModalForm>
   )
 }

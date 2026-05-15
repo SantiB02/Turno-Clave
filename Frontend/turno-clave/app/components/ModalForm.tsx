@@ -1,7 +1,8 @@
 "use client"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import type { ReactNode } from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 
 interface ModalFormProps {
   open: boolean
@@ -28,6 +29,16 @@ export default function ModalForm({
   submitDisabled = false,
   width,
 }: ModalFormProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+
+    return () => {
+      setMounted(false)
+    }
+  }, [])
+
   useEffect(() => {
     if (!open) return
 
@@ -43,7 +54,7 @@ export default function ModalForm({
     }
   }, [open])
 
-  if (!open) return null
+  if (!open || !mounted) return null
 
   const widthClass = {
     xs: "max-w-xs",
@@ -56,7 +67,7 @@ export default function ModalForm({
     full: "max-w-full",
   }[width ?? "md"]
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 text-gray-800">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/40" />
@@ -85,7 +96,7 @@ export default function ModalForm({
               onSubmit={onSubmit}
               className="flex flex-col overflow-visible"
             >
-              <div className="space-y-4 overflow-visible px-6">{children}</div>
+              <div className="space-y-4 overflow-visible">{children}</div>
 
               {/* Actions */}
               <div className="flex justify-end gap-2 mt-6">
@@ -109,6 +120,7 @@ export default function ModalForm({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
