@@ -29,6 +29,16 @@ namespace turno_clave_API.Domain.Entities
                 Availabilities = p.Availabilities
                     .Select(ProfessionalAvailability.ToProfessionalAvailabilityDTO)
                     .ToList(),
+                Services = p.ProfessionalServices
+                    .Select(ps => new Application.DTOs.Service.MinimalServiceDTO
+                    {
+                        ExternalId = ps.Service.ExternalId,
+                        Name = ps.Service.Name,
+                        Description = ps.Service.Description,
+                        Price = ps.Service.Price,
+                        DurationMinutes = ps.Service.DurationMinutes,
+                    })
+                    .ToList(),
             };
         }
     }

@@ -9,6 +9,14 @@ export type Service = {
   professionals: ServiceProfessional[]
 }
 
+export type MinimalService = {
+  externalId: string
+  name: string
+  description: string
+  price: number
+  durationMinutes: number
+}
+
 export type CreateServiceDTO = {
   name: string
   description: string

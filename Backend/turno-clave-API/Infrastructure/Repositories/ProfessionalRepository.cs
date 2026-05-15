@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Application.DTOs.Professional;
+using turno_clave_API.Application.DTOs.Service;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
@@ -19,14 +22,51 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Professionals.Include(p => p.Business).ToListAsync();
         }
 
-        public Task<IEnumerable<Professional>> GetProfessionalsByBusinessExternalIdAsync(Guid businessExternalId)
+        public Task<List<Professional>> GetProfessionalsByBusinessExternalIdAsync(Guid businessExternalId)
         {
             return _context.Professionals
                 .Include(p => p.Availabilities)
                 .Include(p => p.Business)
+                .Include(p => p.ProfessionalServices)
+                    .ThenInclude(ps => ps.Service)
                 .Where(p => p.Business.ExternalId == businessExternalId)
-                .ToListAsync()
-                .ContinueWith(t => t.Result.AsEnumerable());
+                .ToListAsync();
+        }
+
+        public async Task<List<ProfessionalDTO>> GetProfessionalDtosByBusinessExternalIdAsync(Guid businessExternalId)
+        {
+            return await _context.Professionals
+                .Where(p => p.Business.ExternalId == businessExternalId)
+                .Select(p => new ProfessionalDTO
+                {
+                    ExternalId = p.ExternalId,
+                    BusinessExternalId = p.Business.ExternalId,
+                    BusinessName = p.Business.Name,
+                    Name = p.Name,
+                    IsActive = p.IsActive,
+
+                    Availabilities = p.Availabilities
+                        .Select(pa => new NestedProfessionalAvailabilityDTO
+                        {
+                            ExternalId = pa.ExternalId,
+                            DayOfWeek = pa.DayOfWeek,
+                            StartTime = pa.StartTime,
+                            EndTime = pa.EndTime,
+                        })
+                        .ToList(),
+
+                    Services = p.ProfessionalServices
+                        .Select(ps => new MinimalServiceDTO
+                        {
+                            ExternalId = ps.Service.ExternalId,
+                            Name = ps.Service.Name,
+                            Description = ps.Service.Description ?? "",
+                            Price = ps.Service.Price,
+                            DurationMinutes = ps.Service.DurationMinutes
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
         }
 
         public Task<Professional?> GetProfessionalByExternalIdAsync(Guid externalId)
@@ -35,6 +75,14 @@ namespace turno_clave_API.Infrastructure.Repositories
                 .Include(p => p.Availabilities)
                 .Include(p => p.Business)
                     .ThenInclude(b => b.BusinessAvailabilities)
+                .FirstOrDefaultAsync(p => p.ExternalId == externalId);
+        }
+
+        public Task<Professional?> GetProfessionalByExternalIdWithServicesAsync(Guid externalId)
+        {
+            return _context.Professionals
+                .Include(p => p.ProfessionalServices)
+                    .ThenInclude(ps => ps.Service)
                 .FirstOrDefaultAsync(p => p.ExternalId == externalId);
         }
 

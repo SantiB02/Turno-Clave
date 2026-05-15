@@ -23,12 +23,15 @@ export async function updateBusinessAvailabilities(
     )
 
     if (!res.ok) {
-      await throwResponseError(res, "Error updating business availabilities")
+      await throwResponseError(
+        res,
+        "Error actualizando disponibilidades de negocio",
+      )
     }
 
     return res.json()
   } catch (error) {
     console.error("[updateBusinessAvailabilities]", error)
-    rethrowWithFallback(error, "Error updating business availabilities")
+    rethrowWithFallback(error, "Error actualizando disponibilidades de negocio")
   }
 }

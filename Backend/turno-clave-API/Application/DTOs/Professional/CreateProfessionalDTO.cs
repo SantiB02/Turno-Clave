@@ -2,7 +2,7 @@
 {
     public class CreateProfessionalDTO
     {
-        public required Guid BusinessExternalId { get; set; }
         public required string Name { get; set; }
+        public List<Guid> ServiceExternalIds { get; set; } = [];
     }
 }

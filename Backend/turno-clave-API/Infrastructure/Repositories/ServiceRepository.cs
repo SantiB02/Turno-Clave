@@ -47,6 +47,13 @@ namespace turno_clave_API.Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.ExternalId == externalId);
         }
 
+        public Task<List<Service>> GetServicesByExternalIdsAsync(List<Guid> externalIds)
+        {
+            return _context.Services
+                .Where(s => externalIds.Contains(s.ExternalId))
+                .ToListAsync();
+        }
+
         public void AddService(Service service)
         {
             _context.Services.Add(service);

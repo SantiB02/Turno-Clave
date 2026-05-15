@@ -1,16 +1,7 @@
 "use client"
 
+import { DAYS } from "@/lib/availabilityLabels"
 import type { ShiftKey, WeekAvailability } from "@/types/business"
-
-const DAYS = [
-  { key: "monday", label: "Lunes" },
-  { key: "tuesday", label: "Martes" },
-  { key: "wednesday", label: "Miércoles" },
-  { key: "thursday", label: "Jueves" },
-  { key: "friday", label: "Viernes" },
-  { key: "saturday", label: "Sábado" },
-  { key: "sunday", label: "Domingo" },
-] as const
 
 const SHIFTS = {
   morning: { label: "Horario 1" },
@@ -51,7 +42,7 @@ export default function AvailabilityEditor({
                 id={key}
                 className="peer sr-only"
                 checked={day.enabled}
-                onChange={() => onToggleDay(key)}
+                onChange={() => onToggleDay(key as keyof WeekAvailability)}
               />
 
               <span
@@ -79,7 +70,9 @@ export default function AvailabilityEditor({
                   >
                     <button
                       type="button"
-                      onClick={() => onToggleShift(key, shiftKey)}
+                      onClick={() =>
+                        onToggleShift(key as keyof WeekAvailability, shiftKey)
+                      }
                       disabled={!day.enabled}
                       className={`w-20 shrink-0 cursor-pointer rounded-full border px-2 py-1 text-sm transition disabled:opacity-40 ${
                         shiftAvailability.enabled
@@ -94,13 +87,18 @@ export default function AvailabilityEditor({
                       type="time"
                       value={shiftAvailability.start}
                       onChange={(e) =>
-                        onUpdateTime(key, shiftKey, "start", e.target.value)
+                        onUpdateTime(
+                          key as keyof WeekAvailability,
+                          shiftKey,
+                          "start",
+                          e.target.value,
+                        )
                       }
                       disabled={!day.enabled || !shiftAvailability.enabled}
                       className="min-w-0 flex-1 rounded-full border px-2 py-1 text-sm disabled:opacity-40"
                     />
 
-                    <span className="shrink-0 text-sm text-gray-500 font-bold">
+                    <span className="shrink-0 text-sm font-bold text-gray-500">
                       -
                     </span>
 
@@ -108,7 +106,12 @@ export default function AvailabilityEditor({
                       type="time"
                       value={shiftAvailability.end}
                       onChange={(e) =>
-                        onUpdateTime(key, shiftKey, "end", e.target.value)
+                        onUpdateTime(
+                          key as keyof WeekAvailability,
+                          shiftKey,
+                          "end",
+                          e.target.value,
+                        )
                       }
                       disabled={!day.enabled || !shiftAvailability.enabled}
                       className="min-w-0 flex-1 rounded-full border px-2 py-1 text-sm disabled:opacity-40"

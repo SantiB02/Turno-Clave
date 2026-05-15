@@ -230,7 +230,7 @@ export default function InformacionTab({ business }: InformacionTabProps) {
       </div>
 
       <div className="max-w-120 border rounded-xl mt-2 border-gray-400">
-        <div className="h-20 relative w-full bg-gray-300 rounded-xl mb-2">
+        <div className="h-20 relative w-full bg-gray-300 rounded-t-xl mb-2">
           <Image
             alt="Logo de negocio"
             src={

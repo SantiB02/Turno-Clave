@@ -1,7 +1,7 @@
 "use client"
 
 import { ExclamationTriangleIcon } from "@heroicons/react/20/solid"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import AvailabilityEditor from "@/app/components/AvailabilityEditor"
 import {
@@ -13,7 +13,6 @@ import {
 } from "@/lib/businessAvailability"
 import { updateBusinessAvailabilities } from "@/services/businessAvailabilityService"
 import { updateProfessionalAvailabilities } from "@/services/professionalAvailabilityService"
-import { getProfessionalsByActiveBusiness } from "@/services/professionalService"
 import type {
   BusinessDetail,
   ShiftKey,
@@ -23,13 +22,79 @@ import type { Professional } from "@/types/professional"
 
 type HorariosTabProps = {
   business: BusinessDetail
+  professionals: Professional[]
+  setProfessionals: React.Dispatch<React.SetStateAction<Professional[]>>
 }
 
-export default function HorariosTab({ business }: HorariosTabProps) {
-  const router = useRouter()
+const SKELETON_DAY_KEYS = [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+] as const
 
-  const [professionals, setProfessionals] = useState<Professional[]>([])
-  const [selectedEntity, setSelectedEntity] = useState<string>("business")
+const SKELETON_SHIFT_KEYS = ["first", "second"] as const
+
+function HorariosTabSkeleton() {
+  return (
+    <div className="max-w-6xl animate-pulse">
+      <div className="flex items-center gap-2 px-4 py-2 rounded">
+        <div className="h-5 w-24 rounded bg-gray-200" />
+        <div className="h-9 w-48 rounded border border-gray-200 bg-gray-100" />
+      </div>
+
+      <div className="mt-1 flex items-center gap-2">
+        <div className="h-6 w-6 rounded bg-yellow-100" />
+        <div className="h-5 w-80 max-w-full rounded bg-gray-200" />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 justify-items-center gap-4 lg:grid-cols-2 xl:grid-cols-3">
+        {SKELETON_DAY_KEYS.map((dayKey) => (
+          <div
+            key={dayKey}
+            className="min-h-full w-full max-w-xl rounded-3xl border-2 border-primary-orange/30 px-4 py-3"
+          >
+            <div className="flex items-center">
+              <div className="h-5 w-5 rounded-full bg-gray-200" />
+              <div className="ml-5 h-5 w-28 rounded bg-gray-200" />
+            </div>
+
+            <div className="mt-3 space-y-2">
+              {SKELETON_SHIFT_KEYS.map((shiftKey) => (
+                <div key={shiftKey} className="flex w-full items-center gap-2">
+                  <div className="h-8 w-20 shrink-0 rounded-full bg-gray-200" />
+                  <div className="h-8 min-w-0 flex-1 rounded-full bg-gray-100" />
+                  <div className="h-4 w-3 shrink-0 rounded bg-gray-200" />
+                  <div className="h-8 min-w-0 flex-1 rounded-full bg-gray-100" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function HorariosTab({
+  business,
+  professionals,
+  setProfessionals,
+}: HorariosTabProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const selectedEntity = searchParams.get("professional") ?? "business"
+
+  const professional =
+    selectedEntity === "business"
+      ? null
+      : professionals.find((p) => p.externalId === selectedEntity)
+
+  const isLoadingProfessional = selectedEntity !== "business" && !professional
+
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [savedAvailabilities, setSavedAvailabilities] =
@@ -39,15 +104,6 @@ export default function HorariosTab({ business }: HorariosTabProps) {
 
   const [availabilities, setAvailabilities] =
     useState<WeekAvailability>(savedAvailabilities)
-
-  useEffect(() => {
-    async function loadProfessionals() {
-      const professionals: Professional[] =
-        await getProfessionalsByActiveBusiness()
-      setProfessionals(professionals)
-    }
-    loadProfessionals()
-  }, [])
 
   useEffect(() => {
     function getSelectedAvailabilities(): WeekAvailability {
@@ -119,6 +175,24 @@ export default function HorariosTab({ business }: HorariosTabProps) {
     hasInvalidAvailabilityRanges(availabilities) ||
     hasAvailabilitiesWithoutShift(availabilities)
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+
+    setError(null)
+
+    const params = new URLSearchParams(searchParams.toString())
+
+    params.set("tab", "horarios")
+
+    if (value === "business") {
+      params.delete("professional")
+    } else {
+      params.set("professional", value)
+    }
+
+    router.replace(`?${params.toString()}`)
+  }
+
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -165,16 +239,17 @@ export default function HorariosTab({ business }: HorariosTabProps) {
     }
   }
 
+  if (isLoadingProfessional) {
+    return <HorariosTabSkeleton />
+  }
+
   return (
     <div className="max-w-6xl">
       <div className="flex items-center gap-2 px-4 py-2 rounded">
         <p>Horarios de:</p>
         <select
           value={selectedEntity}
-          onChange={(e) => {
-            setSelectedEntity(e.target.value)
-            setError(null)
-          }}
+          onChange={(e) => handleOnChange(e)}
           className="border border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-1 rounded"
         >
           <option value="business">Negocio</option>

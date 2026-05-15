@@ -27,7 +27,8 @@ namespace turno_clave_API.Controllers
         {
             try
             {
-                Professional professional = await _professionalService.CreateAsync(createProfessionalDTO);
+                Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+                Professional professional = await _professionalService.CreateAsync(businessExternalId, createProfessionalDTO);
                 ProfessionalDTO dto = Professional.ToDto(professional);
                 return CreatedAtAction(nameof(GetByExternalId), new { externalId = dto.ExternalId }, dto);
             }
@@ -47,16 +48,13 @@ namespace turno_clave_API.Controllers
         public async Task<IActionResult> GetByActiveBusiness()
         {
             Guid businessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
-            Result<IEnumerable<Professional>> result = await _professionalService.GetByBusinessExternalIdAsync(businessExternalId);
+            Result<List<ProfessionalDTO>> result = await _professionalService.GetByBusinessExternalIdAsync(businessExternalId);
             if (!result.IsSuccess)
             {
                 return Problem(statusCode: 500, detail: result.Error);
             }
 
-            IEnumerable<ProfessionalDTO> dtos = (result.Value ?? Enumerable.Empty<Professional>())
-                .Select(Professional.ToDto);
-
-            return Ok(dtos);
+            return Ok(result.Value);
         }
 
         [HttpGet("{externalId:guid}")]
@@ -76,12 +74,12 @@ namespace turno_clave_API.Controllers
             return Ok(Professional.ToDto(professional));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateProfessionalDTO updateProfessionalDTO)
+        [HttpPut("{externalId:guid}")]
+        public async Task<IActionResult> Update(Guid externalId, [FromBody] UpdateProfessionalDTO updateProfessionalDTO)
         {
             try
             {
-                Professional? professional = await _professionalService.UpdateAsync(updateProfessionalDTO);
+                Professional? professional = await _professionalService.UpdateAsync(externalId, updateProfessionalDTO);
                 if (professional == null)
                     return NotFound();
                 return Ok(Professional.ToDto(professional));

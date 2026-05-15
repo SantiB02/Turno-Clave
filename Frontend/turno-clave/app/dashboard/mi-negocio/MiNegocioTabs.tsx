@@ -1,9 +1,14 @@
 "use client"
 
 import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { getProfessionalsByActiveBusiness } from "@/services/professionalService"
 import type { BusinessDetail } from "@/types/business"
+import type { Professional } from "@/types/professional"
+import type { Service } from "@/types/service"
 import HorariosTab from "./HorariosTab"
 import InformacionTab from "./InformacionTab"
+import ProfesionalesTab from "./ProfesionalesTab"
 
 const tabs = [
   { id: "informacion", label: "Información" },
@@ -14,18 +19,46 @@ const tabs = [
 
 type MiNegocioTabsProps = {
   business: BusinessDetail
+  services: Service[]
 }
 
-export default function MiNegocioTabs({ business }: MiNegocioTabsProps) {
+export default function MiNegocioTabs({
+  business,
+  services,
+}: MiNegocioTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const [professionals, setProfessionals] = useState<Professional[]>([])
+  const [loadingProfessionals, setLoadingProfessionals] =
+    useState<boolean>(false)
+
   const activeTab = searchParams.get("tab") || "informacion"
+
+  useEffect(() => {
+    async function loadProfessionals() {
+      try {
+        setLoadingProfessionals(true)
+
+        const data: Professional[] = await getProfessionalsByActiveBusiness()
+
+        setProfessionals(data)
+      } finally {
+        setLoadingProfessionals(false)
+      }
+    }
+
+    loadProfessionals()
+  }, [])
 
   function changeTab(tab: string) {
     const params = new URLSearchParams(searchParams.toString())
 
     params.set("tab", tab)
+
+    if (tab !== "horarios") {
+      params.delete("professional")
+    }
 
     router.replace(`?${params.toString()}`)
   }
@@ -57,9 +90,22 @@ export default function MiNegocioTabs({ business }: MiNegocioTabsProps) {
       <div className="py-6">
         {activeTab === "informacion" && <InformacionTab business={business} />}
 
-        {activeTab === "horarios" && <HorariosTab business={business} />}
+        {activeTab === "horarios" && (
+          <HorariosTab
+            business={business}
+            professionals={professionals}
+            setProfessionals={setProfessionals}
+          />
+        )}
 
-        {activeTab === "profesionales" && <div></div>}
+        {activeTab === "profesionales" && (
+          <ProfesionalesTab
+            professionals={professionals}
+            setProfessionals={setProfessionals}
+            businessServices={services}
+            loadingProfessionals={loadingProfessionals}
+          />
+        )}
 
         {activeTab === "mi-aplicacion" && <div></div>}
       </div>

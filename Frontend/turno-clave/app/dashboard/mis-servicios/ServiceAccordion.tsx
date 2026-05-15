@@ -1,12 +1,9 @@
 "use client"
 
-import {
-  ChevronDownIcon,
-  PencilIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline"
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import Accordion from "@/app/components/Accordion"
 import ModalForm from "@/app/components/ModalForm"
 import { deleteService } from "@/services/serviceService"
 import type { Professional } from "@/types/professional"
@@ -28,7 +25,6 @@ export default function ServiceAccordion({
 }: Props) {
   const router = useRouter()
 
-  const [open, setOpen] = useState(false)
   const [openEditModal, setOpenEditModal] = useState(false)
   const [openDeleteModal, setOpenDeleteModal] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -51,19 +47,8 @@ export default function ServiceAccordion({
   }
 
   return (
-    <div className="max-w-xl rounded-xl overflow-hidden shadow-sm border border-gray-200">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="w-full cursor-pointer flex items-center justify-between bg-primary-orange text-white px-4 py-3"
-      >
-        <span className="text-xl">{service.name}</span>
-        <ChevronDownIcon
-          className={`w-5 h-5 transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-
-      {open && (
+    <div>
+      <Accordion title={service.name}>
         <div className="px-4 py-3 text-md text-gray-700 space-y-1">
           <p>
             <span className="text-primary-orange font-bold">Precio:</span> $
@@ -112,7 +97,7 @@ export default function ServiceAccordion({
             </button>
           </div>
         </div>
-      )}
+      </Accordion>
 
       <ServiceFormModal
         open={openEditModal}

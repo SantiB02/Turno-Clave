@@ -8,6 +8,7 @@ namespace turno_clave_API.Infrastructure.Repositories.Interfaces
         public Task<IEnumerable<Service>> GetServicesByBusinessExternalIdAsync(Guid businessExternalId);
         public Task<IEnumerable<Service>> GetServicesByUserExternalIdAsync(Guid userExternalId);
         public Task<Service?> GetServiceByExternalIdAsync(Guid externalId);
+        public Task<List<Service>> GetServicesByExternalIdsAsync(List<Guid> externalIds);
         public void AddService(Service service);
         public void UpdateService(Service service);
         public Task DeleteServiceAsync(Guid externalId);

@@ -1,10 +1,20 @@
+import type { MinimalService } from "./service"
+
 export type Professional = {
   externalId: string
   name: string
   businessExternalId: string
   businessName: string
   availabilities: NestedProfessionalAvailability[]
+  services: MinimalService[]
 }
+
+export type CreateProfessionalDTO = {
+  name: string
+  serviceExternalIds: string[]
+}
+
+export type UpdateProfessionalDTO = CreateProfessionalDTO
 
 export type ServiceProfessional = {
   externalId: string
@@ -15,7 +25,7 @@ export type ServiceProfessional = {
 
 export type NestedProfessionalAvailability = {
   externalId: string
-  dayOfWeek: number
+  dayOfWeek: number | string
   startTime: string
   endTime: string
 }

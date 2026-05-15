@@ -1,7 +1,7 @@
 "use client"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import { useEffect } from "react"
 import type { ReactNode } from "react"
+import { useEffect } from "react"
 
 interface ModalFormProps {
   open: boolean
@@ -81,7 +81,10 @@ export default function ModalForm({
             </div>
 
             {/* Form */}
-            <form onSubmit={onSubmit} className="flex flex-col overflow-visible">
+            <form
+              onSubmit={onSubmit}
+              className="flex flex-col overflow-visible"
+            >
               <div className="space-y-4 overflow-visible px-6">{children}</div>
 
               {/* Actions */}

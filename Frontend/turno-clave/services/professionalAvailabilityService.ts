@@ -25,13 +25,16 @@ export async function updateProfessionalAvailabilities(
     if (!res.ok) {
       await throwResponseError(
         res,
-        "Error updating professional availabilities",
+        "Error actualizando disponibilidades de profesionales",
       )
     }
 
     return res.json()
   } catch (error) {
     console.error("[updateProfessionalAvailabilities]", error)
-    rethrowWithFallback(error, "Error updating professional availabilities")
+    rethrowWithFallback(
+      error,
+      "Error actualizando disponibilidades de profesionales",
+    )
   }
 }

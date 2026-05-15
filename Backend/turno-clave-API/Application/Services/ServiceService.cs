@@ -78,6 +78,13 @@ namespace turno_clave_API.Application.Services
             return Result<Service?>.Success(service);
         }
 
+        public async Task<Result<List<Service>>> GetByExternalIdsAsync(List<Guid> externalIds)
+        {
+            List<Service> services = await _serviceRepository.GetServicesByExternalIdsAsync(externalIds);
+
+            return Result<List<Service>>.Success(services);
+        }
+
         public async Task<Result<Service?>> UpdateAsync(Guid externalId, UpdateServiceDTO dto)
         {
             Service? service = await _serviceRepository.GetServiceByExternalIdAsync(externalId);

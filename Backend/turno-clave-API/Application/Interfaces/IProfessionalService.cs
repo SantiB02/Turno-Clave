@@ -6,10 +6,10 @@ namespace turno_clave_API.Application.Interfaces
 {
     public interface IProfessionalService
     {
-        Task<Professional> CreateAsync(CreateProfessionalDTO dto);
-        Task<Result<IEnumerable<Professional>>> GetByBusinessExternalIdAsync(Guid businessExternalId);
+        Task<Professional> CreateAsync(Guid businessExternalId, CreateProfessionalDTO dto);
+        Task<Result<List<ProfessionalDTO>>> GetByBusinessExternalIdAsync(Guid businessExternalId);
         Task<Professional?> GetByExternalIdAsync(Guid externalId);
-        Task<Professional?> UpdateAsync(UpdateProfessionalDTO dto);
+        Task<Professional?> UpdateAsync(Guid externalId, UpdateProfessionalDTO dto);
         Task<Professional?> DeleteAsync(Guid externalId);
     }
 }
