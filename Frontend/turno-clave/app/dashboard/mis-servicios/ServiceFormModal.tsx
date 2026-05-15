@@ -137,8 +137,8 @@ export default function ServiceFormModal({
       let result = null
       if (mode === "create") {
         result = await createService(data)
-      } else if (mode === "edit") {
-        result = await updateService(initialService!.externalId, data)
+      } else if (mode === "edit" && initialService) {
+        result = await updateService(initialService.externalId, data)
       }
 
       if (!result || !result.ok) {
