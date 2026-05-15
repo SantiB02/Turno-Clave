@@ -200,40 +200,51 @@ export default function HorariosTab({
     setError(null)
 
     try {
-      const updatedAvailabilities =
-        mapWeekToCreateBusinessAvailabilities(availabilities)
-
-      const data = {
-        availabilities: updatedAvailabilities,
+      const payload = {
+        availabilities: mapWeekToCreateBusinessAvailabilities(availabilities),
       }
 
       if (selectedEntity === "business") {
-        await updateBusinessAvailabilities(business.externalId, data)
-      } else {
-        const updatedAvailabilities = await updateProfessionalAvailabilities(
-          selectedEntity,
-          data,
+        const result = await updateBusinessAvailabilities(
+          business.externalId,
+          payload,
         )
 
-        setProfessionals((prev) =>
-          prev.map((professional) =>
-            professional.externalId === selectedEntity
-              ? {
-                  ...professional,
-                  availabilities: updatedAvailabilities,
-                }
-              : professional,
-          ),
-        )
+        if (!result.ok) {
+          setError(result.message)
+          return
+        }
+
+        setSavedAvailabilities(availabilities)
+        router.refresh()
+        return
       }
 
-      setSavedAvailabilities(availabilities)
-
-      router.refresh()
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error ? submitError.message : "Unknown error",
+      const result = await updateProfessionalAvailabilities(
+        selectedEntity,
+        payload,
       )
+
+      if (!result.ok) {
+        setError(result.message)
+        return
+      }
+
+      setProfessionals((prev) =>
+        prev.map((p) =>
+          p.externalId === selectedEntity
+            ? {
+                ...p,
+                availabilities: result.data,
+              }
+            : p,
+        ),
+      )
+
+      setSavedAvailabilities(availabilities)
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado")
     } finally {
       setLoading(false)
     }

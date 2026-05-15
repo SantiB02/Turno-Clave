@@ -9,17 +9,36 @@ export default async function Dashboard() {
     redirect("/")
   }
 
+  const TimeGreeting = () => {
+    const hours = new Date().getHours()
+    let greeting = ""
+
+    if (hours < 12) {
+      greeting = "Buenos días"
+    } else if (hours >= 12 && hours < 18) {
+      greeting = "Buenas tardes"
+    } else {
+      greeting = "Buenas noches"
+    }
+
+    return (
+      <h1 className="text-2xl">
+        ¡{greeting},{" "}
+        <span className="text-primary-orange">
+          {session.user?.name?.split(" ")[0]}
+        </span>
+        !
+      </h1>
+    )
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <h1 className="font-bold text-4xl mb-9">Panel de Control</h1>
         <Button label="Nuevo turno" href="/dashboard/mis-turnos" />
       </div>
-
-      <h1 className="text-2xl">
-        ¡Bienvenido/a,{" "}
-        <span className="text-primary-orange">{session?.user?.name}</span>!
-      </h1>
+      <TimeGreeting />
     </div>
   )
 }
