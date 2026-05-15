@@ -34,7 +34,9 @@ export default function AvailabilityEditor({
         return (
           <div
             key={key}
-            className="unselectable min-h-full w-full max-w-xl rounded-3xl border-2 border-primary-orange px-4 py-3"
+            className={`unselectable min-h-full w-full max-w-xl rounded-3xl border-2 px-4 py-3 ${
+              day.enabled ? "border-primary-orange" : "border-gray-300"
+            }`}
           >
             <label htmlFor={key} className="flex cursor-pointer items-center">
               <input
