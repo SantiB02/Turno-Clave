@@ -197,9 +197,15 @@ export default function ProfesionalesTab({
         } else if (modalMode === "create") {
           updated = [...prev, data]
         } else if (modalMode === "edit-services") {
-          updated = prev.map((p) =>
-            p.externalId === data.externalId ? data : p,
-          )
+          updated = prev.map((p) => {
+            if (p.externalId !== data.externalId) return p
+
+            return {
+              ...p,
+              ...data,
+              availabilities: p.availabilities, // To keep existing availabilities (Update DTO doesn't fetch them)
+            }
+          })
         } else {
           updated = prev
         }
