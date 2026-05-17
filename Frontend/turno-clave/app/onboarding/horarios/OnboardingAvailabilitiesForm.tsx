@@ -29,7 +29,7 @@ export default function OnboardingAvailabilitiesForm() {
   useEffect(() => {
     const storedData = localStorage.getItem("onboardingData")
     if (!storedData) {
-      router.replace("/onboarding/negocio")
+      router.replace("/onboarding")
     }
   }, [router])
 
@@ -87,7 +87,7 @@ export default function OnboardingAvailabilitiesForm() {
     )
 
     if (!onboardingData) {
-      router.push("/onboarding/negocio")
+      router.push("/onboarding")
       return
     }
 

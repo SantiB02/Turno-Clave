@@ -12,6 +12,7 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
         {
             builder.HasKey(x => x.Id);
             builder.HasIndex(x => x.Slug).IsUnique();
+            builder.Property(x => x.Slug).IsRequired().HasMaxLength(100);
 
             builder.Property(x => x.Name).IsRequired();
             builder.Property(x => x.Email).IsRequired();

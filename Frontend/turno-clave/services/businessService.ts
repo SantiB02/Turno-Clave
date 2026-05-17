@@ -7,6 +7,7 @@ import type {
   CreateBusinessDTO,
   MinimalBusiness,
   UpdateBusinessDTO,
+  UpdateBusinessPublicLinkStatusDTO,
 } from "@/types/business"
 
 const ROOT_PATH = "/businesses"
@@ -39,6 +40,18 @@ export async function updateBusiness(
   return apiRequest<BusinessDetail>(() =>
     authenticatedFetch(`${ROOT_PATH}/${externalId}`, {
       method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  )
+}
+
+export async function updateBusinessPublicLinkStatus(
+  externalId: string,
+  data: UpdateBusinessPublicLinkStatusDTO,
+) {
+  return apiRequest<BusinessDetail>(() =>
+    authenticatedFetch(`${ROOT_PATH}/${externalId}/public-link-status`, {
+      method: "PATCH",
       body: JSON.stringify(data),
     }),
   )

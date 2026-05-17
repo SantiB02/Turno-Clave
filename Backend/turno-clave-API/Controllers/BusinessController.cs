@@ -95,10 +95,44 @@ namespace turno_clave_API.Controllers
             return Ok(updatedBusiness.Value);
         }
 
+        [HttpPatch("{externalId:guid}/public-link-status")]
+        public async Task<IActionResult> UpdatePublicLinkStatus(Guid externalId, [FromBody] UpdatePublicLinkStatusDTO dto)
+        {
+            Guid activeBusinessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+
+            if (activeBusinessExternalId != externalId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            Result<bool> result = await _businessService.UpdatePublicLinkStatusAsync(externalId, dto.IsPublicLinkEnabled);
+
+            if (!result.IsSuccess)
+            {
+                return NotFound($"Business with external id {externalId} ");
+            }
+
+            return result.ToActionResult(this, _ => NoContent());
+        }
+
         [HttpDelete("{externalId:guid}")]
         public async Task<IActionResult> Delete(Guid externalId)
         {
             MinimalBusinessDTO? business = await _businessService.DeleteAsync(externalId);
+
+            return Ok(business);
+        }
+
+        // ----- Public endpoints -----
+
+        [AllowAnonymous]
+        [HttpGet("public/{slug}")]
+        public async Task<IActionResult> GetBySlug(string slug)
+        {
+            PublicBusinessDetailDTO? business = await _businessService.GetPublicBySlugAsync(slug);
+
+            if (business == null)
+                return NotFound($"Business with slug {slug} not found");
 
             return Ok(business);
         }

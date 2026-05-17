@@ -259,12 +259,12 @@ export default function HorariosTab({
 
   return (
     <div className="max-w-6xl">
-      <div className="flex items-center gap-2 px-4 py-2 rounded">
-        <p>Horarios de:</p>
+      <div className="flex items-center gap-2 px-1 py-2 rounded">
+        <p className="text-lg">Horarios de:</p>
         <select
           value={selectedEntity}
           onChange={(e) => handleOnChange(e)}
-          className="border border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-1 rounded"
+          className="border text-lg border-primary-orange focus:outline-primary-orange focus:ring-primary-orange p-1 rounded"
         >
           <option value="business">Negocio</option>
 

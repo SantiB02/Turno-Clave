@@ -1,4 +1,5 @@
 import type { PaymmentMethod } from "@/enums/paymentMethods"
+import type { Professional } from "./professional"
 
 export type MinimalBusiness = {
   externalId: string
@@ -19,8 +20,28 @@ export type BusinessDetail = {
   city: string
   state: string
   country: string
+  isPublicLinkEnabled: boolean
   availabilities: BusinessAvailabilityDTO[]
 }
+
+export type PublicBusinessDetail = {
+  externalId: string
+  name: string
+  slug: string
+  description: string
+  logoUrl: string
+  email: string
+  phone: string
+  paymentMethods: PaymmentMethod[]
+  address: string
+  city: string
+  state: string
+  country: string
+  isPublicLinkEnabled: boolean
+  availabilities: BusinessAvailabilityDTO[]
+  professionals: Professional[]
+}
+
 export type CreateBusinessDTO = {
   name: string
   description?: string
@@ -46,6 +67,10 @@ export type UpdateBusinessDTO = {
   address: string
   timeZone: string
   availabilities?: CreateBusinessAvailabilityDTO[]
+}
+
+export type UpdateBusinessPublicLinkStatusDTO = {
+  isPublicLinkEnabled: boolean
 }
 
 // ----- BUSINESS AVAILABILITY -----

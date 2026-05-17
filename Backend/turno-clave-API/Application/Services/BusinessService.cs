@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
-using turno_clave_API.Infrastructure.Time;
+using System.Xml.Linq;
+using turno_clave_API.Application.DTOs.Availability;
+using turno_clave_API.Application.DTOs.Business;
+using turno_clave_API.Application.DTOs.BusinessAvailability;
 using turno_clave_API.Application.Interfaces;
+using turno_clave_API.Application.Validators;
+using turno_clave_API.Common;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using turno_clave_API.Application.DTOs.Business;
 using turno_clave_API.Infrastructure.Repositories.Interfaces;
-using turno_clave_API.Common;
-using turno_clave_API.Application.DTOs.BusinessAvailability;
-using turno_clave_API.Application.DTOs.Availability;
-using turno_clave_API.Application.Validators;
+using turno_clave_API.Infrastructure.Time;
 
 namespace turno_clave_API.Application.Services
 {
@@ -41,7 +42,7 @@ namespace turno_clave_API.Application.Services
                 return Result<MinimalBusinessDTO>.Failure($"Unauthorized");
             }
 
-            string slug = await GenerateSlugAsync(dto.Name);
+            string slug = await GenerateUniqueSlugAsync(dto.Name);
             
 
             Result<string> timeZoneResult = TimeZoneHelper.NormalizeTimeZoneId(dto.TimeZone);
@@ -139,7 +140,7 @@ namespace turno_clave_API.Application.Services
             // Change slug only if business name is different from current one
             if (!business.Name.Equals(dto.Name, StringComparison.OrdinalIgnoreCase))
             {
-                string newSlug = await GenerateSlugAsync(dto.Name);
+                string newSlug = await GenerateUniqueSlugAsync(dto.Name);
                 business.Slug = newSlug;
             }
 
@@ -166,6 +167,17 @@ namespace turno_clave_API.Application.Services
 
             await _businessRepository.SaveAsync();
             return Result<MinimalBusinessDTO?>.Success(Business.ToDto(business));
+        }
+
+        public async Task<Result<bool>> UpdatePublicLinkStatusAsync(Guid externalId, bool PublicLinkStatus)
+        {
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(externalId);
+
+            if (business == null) throw new KeyNotFoundException(nameof(business));
+
+            business.IsPublicLinkEnabled = PublicLinkStatus;
+            await _businessRepository.SaveAsync();
+            return Result<bool>.Success(PublicLinkStatus);
         }
 
         public async Task<MinimalBusinessDTO?> DeleteAsync(Guid externalId)
@@ -316,13 +328,13 @@ namespace turno_clave_API.Application.Services
             return true;
         }
 
-        private async Task<string> GenerateSlugAsync(string name)
+        private static string FormatSlug(string businessName)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(businessName))
                 return string.Empty;
 
             // Normalize and remove diacritics (NFD -> remove NonSpacingMark -> NFC)
-            var normalized = name.Normalize(System.Text.NormalizationForm.FormD);
+            var normalized = businessName.Normalize(System.Text.NormalizationForm.FormD);
             var sb = new System.Text.StringBuilder();
             foreach (var ch in normalized)
             {
@@ -333,20 +345,26 @@ namespace turno_clave_API.Application.Services
             var noDiacritics = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
 
             // Lowercase, replace whitespace with hyphens, remove invalid chars, collapse hyphens, trim
-            string baseSlug = noDiacritics.ToLowerInvariant().Trim();
-            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"\s+", "-");
-            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"[^a-z0-9\-]", "");
-            baseSlug = System.Text.RegularExpressions.Regex.Replace(baseSlug, @"-+", "-").Trim('-');
+            string slug = noDiacritics.ToLowerInvariant().Trim();
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"\s+", "-");
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"[^a-z0-9\-]", "");
+            slug = System.Text.RegularExpressions.Regex.Replace(slug, @"-+", "-").Trim('-');
 
             // Limit length to 80 characters
-            if (baseSlug.Length > 80)
-                baseSlug = baseSlug.Substring(0, 80);
+            if (slug.Length > 80)
+                slug = slug.Substring(0, 80);
 
             // Fallback to a short random identifier if slug becomes empty
-            if (string.IsNullOrEmpty(baseSlug))
-                baseSlug = Guid.NewGuid().ToString("n").Substring(0, 8);
+            if (string.IsNullOrEmpty(slug))
+                slug = Guid.NewGuid().ToString("n").Substring(0, 8);
 
-            string slug = baseSlug;
+            return slug;
+        }
+
+        private async Task<string> GenerateUniqueSlugAsync(string name)
+        {
+            string slug = FormatSlug(name);
+            string baseSlug = slug;
             int counter = 2;
 
             // Adds a number if the slug already exists, to ensure uniqueness (e.g. "my-business", "my-business-2", "my-business-3", etc.)
@@ -383,6 +401,14 @@ namespace turno_clave_API.Application.Services
                     )
                 )
             );
+        }
+
+        // ----- Public methods -----
+        public async Task<PublicBusinessDetailDTO?> GetPublicBySlugAsync(string slug)
+        {
+            string normalisedSlug = slug.Trim().ToLowerInvariant();
+            Business? business = await _businessRepository.GetBusinessBySlugAsync(normalisedSlug);
+            return business != null ? Business.ToPublicDetailDto(business) : null;
         }
     }
 }

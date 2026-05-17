@@ -351,7 +351,7 @@ export default function ProfesionalesTab({
 
   return (
     <div>
-      <h1 className="mb-6 text-xl text-dark-blue underline">Profesionales</h1>
+      <h1 className="mb-6 text-xl text-dark-blue font-bold">Profesionales</h1>
       {professionalsError && (
         <div className="my-2">
           <ErrorMessage

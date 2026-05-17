@@ -28,6 +28,21 @@ namespace turno_clave_API.Infrastructure.Repositories
                 .FirstOrDefaultAsync(b => b.ExternalId == externalId);
         }
 
+        public Task<Business?> GetBusinessBySlugAsync(string slug)
+        {
+            return _context.Businesses
+                .Include(b => b.BusinessAvailabilities)
+
+                .Include(b => b.Professionals)
+                    .ThenInclude(p => p.Availabilities)
+
+                .Include(b => b.Professionals)
+                    .ThenInclude(p => p.ProfessionalServices)
+                    .ThenInclude(ps => ps.Service)
+
+                .FirstOrDefaultAsync(b => b.Slug == slug);
+        }
+
         public async Task<IEnumerable<Business>> GetBusinessesByUserExternalIdAsync(Guid userExternalId)
         {
             return await _context.UserBusinesses

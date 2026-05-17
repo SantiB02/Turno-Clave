@@ -38,7 +38,7 @@ export default async function DashboardLayout({
   }
 
   if (session.user?.email === "doetesting02@gmail.com") {
-    redirect("/onboarding/negocio")
+    redirect("/onboarding")
   }
 
   const result = await getMyBusinesses()
@@ -50,7 +50,7 @@ export default async function DashboardLayout({
   }
 
   if (businesses.length === 0) {
-    redirect("/onboarding/negocio")
+    redirect("/onboarding")
   }
 
   return (

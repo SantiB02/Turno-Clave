@@ -1,6 +1,6 @@
 export async function apiFetch(
   path: string,
-  token: string | undefined,
+  token?: string,
   options: RequestInit = {},
 ) {
   console.log("[apiFetch]", {
@@ -8,13 +8,20 @@ export async function apiFetch(
     method: options.method ?? "GET",
     body: options.body,
   })
+
+  const headers = new Headers(options.headers)
+
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json")
+  }
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`)
+  }
+
   return fetch(`${process.env.API_URL}/api${path}`, {
     ...options,
-    headers: {
-      ...(options.headers || {}),
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers,
     cache: "no-store",
   })
 }

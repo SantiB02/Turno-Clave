@@ -23,6 +23,7 @@ namespace turno_clave_API.Domain.Entities
         public string TimeZone { get; set; } = TimeZoneInfo.Utc.Id; // Default to UTC
 
         public bool IsActive { get; set; } = true;
+        public bool IsPublicLinkEnabled { get; set; } = false;
 
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
@@ -66,6 +67,7 @@ namespace turno_clave_API.Domain.Entities
                 City = business.City,
                 State = business.State,
                 Country = business.Country,
+                IsPublicLinkEnabled = business.IsPublicLinkEnabled,
 
                 Availabilities = business.BusinessAvailabilities.Select(ba => new BusinessAvailabilityDTO
                 {
@@ -74,6 +76,36 @@ namespace turno_clave_API.Domain.Entities
                     StartTime = ba.StartTime,
                     EndTime = ba.EndTime,
                 }).ToList(),
+            };
+        }
+
+        public static PublicBusinessDetailDTO ToPublicDetailDto(Business business)
+        {
+            return new PublicBusinessDetailDTO
+            {
+                ExternalId = business.ExternalId,
+                Name = business.Name,
+                Slug = business.Slug,
+                Description = business.Description ?? string.Empty,
+                LogoUrl = business.LogoUrl ?? string.Empty,
+                Email = business.Email,
+                Phone = business.Phone,
+                PaymentMethods = business.PaymentMethods,
+                Address = business.Address,
+                City = business.City,
+                State = business.State,
+                Country = business.Country,
+                IsPublicLinkEnabled = business.IsPublicLinkEnabled,
+
+                Availabilities = business.BusinessAvailabilities.Select(ba => new BusinessAvailabilityDTO
+                {
+                    ExternalId = ba.ExternalId,
+                    DayOfWeek = ba.DayOfWeek,
+                    StartTime = ba.StartTime,
+                    EndTime = ba.EndTime,
+                }).ToList(),
+
+                Professionals = business.Professionals.Select(p => Professional.ToDto(p) ).ToList(),
             };
         }
     }

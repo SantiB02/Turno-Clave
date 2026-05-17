@@ -11,6 +11,7 @@ namespace turno_clave_API.Application.Interfaces
         Task<BusinessDetailDTO?> GetByExternalIdAsync(Guid externalId);
         Task<IEnumerable<BusinessDetailDTO>> GetByUserExternalIdAsync(Guid userExternalId);
         Task<Result<MinimalBusinessDTO?>> UpdateAsync(Guid externalId, UpdateBusinessDTO dto);
+        Task<Result<bool>> UpdatePublicLinkStatusAsync(Guid externalId, bool PublicLinkStatus);
         Task<MinimalBusinessDTO?> DeleteAsync(Guid externalId);
         // Business availability methods
         Task<IEnumerable<BusinessAvailabilityDTO>> GetGlobalAvailabilityAsync(Guid businessExternalId);
@@ -19,5 +20,8 @@ namespace turno_clave_API.Application.Interfaces
         Task<List<BusinessAvailabilityDTO>?> UpdateGlobalAvailabilitiesAsync(Guid businessExternalId, UpdateBusinessAvailabilitiesDTO dto);
         Task<bool> DeleteGlobalAvailabilityAsync(Guid externalId);
         bool IsAvailabilityWithinBusinessHours(AvailabilityRange professionalAvailability, IEnumerable<AvailabilityRange> businessAvailabilities);
+
+        // ----- Public methods -----
+        Task<PublicBusinessDetailDTO?> GetPublicBySlugAsync(string slug);
     }
 }

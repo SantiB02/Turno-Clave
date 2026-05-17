@@ -9,13 +9,14 @@ import type { Professional } from "@/types/professional"
 import type { Service } from "@/types/service"
 import HorariosTab from "./HorariosTab"
 import InformacionTab from "./InformacionTab"
+import MiLink from "./MiLink"
 import ProfesionalesTab from "./ProfesionalesTab"
 
 const tabs = [
   { id: "informacion", label: "Información" },
   { id: "horarios", label: "Horarios" },
   { id: "profesionales", label: "Profesionales" },
-  { id: "mi-aplicacion", label: "Mi Aplicación" },
+  { id: "mi-link", label: "Mi Link" },
 ] as const
 
 type MiNegocioTabsProps = {
@@ -36,7 +37,7 @@ export default function MiNegocioTabs({
 
   const [professionals, setProfessionals] = useState<Professional[]>([])
   const [loadingProfessionals, setLoadingProfessionals] =
-    useState<boolean>(false)
+    useState<boolean>(true)
   const [professionalsError, setProfessionalsError] = useState<string | null>(
     null,
   )
@@ -45,8 +46,6 @@ export default function MiNegocioTabs({
 
   useEffect(() => {
     async function loadProfessionals() {
-      setLoadingProfessionals(true)
-
       const result = await getProfessionalsByActiveBusiness()
 
       if (!result.ok) {
@@ -159,7 +158,15 @@ export default function MiNegocioTabs({
           />
         )}
 
-        {activeTab === "mi-aplicacion" && <div></div>}
+        {activeTab === "mi-link" && business && !businessError && (
+          <MiLink
+            business={business}
+            professionals={professionals}
+            loadingProfessionals={loadingProfessionals}
+            professionalsError={professionalsError}
+            services={services}
+          />
+        )}
       </div>
     </div>
   )

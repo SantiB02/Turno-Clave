@@ -103,7 +103,7 @@ export default function ModalForm({
               <div className="space-y-4 overflow-visible">{children}</div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-2 mt-6">
+              <div className="flex justify-end gap-4 mt-6">
                 <button
                   type="button"
                   onClick={onClose}

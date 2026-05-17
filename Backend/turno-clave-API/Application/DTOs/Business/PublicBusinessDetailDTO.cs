@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using turno_clave_API.Application.DTOs.BusinessAvailability;
+using turno_clave_API.Application.DTOs.Professional;
 using turno_clave_API.Domain.Enums;
 
 namespace turno_clave_API.Application.DTOs.Business
 {
-    public class BusinessDetailDTO
+    public class PublicBusinessDetailDTO
     {
         [Required]
         public Guid ExternalId { get; set; } = default!;
@@ -32,5 +33,6 @@ namespace turno_clave_API.Application.DTOs.Business
         public bool IsPublicLinkEnabled { get; set; } = default!;
 
         public List<BusinessAvailabilityDTO> Availabilities { get; set; } = [];
+        public List<ProfessionalDTO> Professionals { get; set; } = [];
     }
 }

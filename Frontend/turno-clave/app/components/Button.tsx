@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { ReactNode } from "react"
 
 interface ButtonProps {
   label: string
@@ -8,6 +9,18 @@ interface ButtonProps {
   href?: string
   backgroundColor?: string
   hoverBackgroundColor?: string
+  size?:
+    | "text-sm"
+    | "text-md"
+    | "text-lg"
+    | "text-xl"
+    | "text-2xl"
+    | "text-3xl"
+    | "text-4xl"
+    | "text-5xl"
+    | "text-6xl"
+  icon?: ReactNode
+  className?: string
 }
 
 export default function Button({
@@ -18,6 +31,9 @@ export default function Button({
   href,
   backgroundColor,
   hoverBackgroundColor,
+  size,
+  icon,
+  className,
 }: ButtonProps) {
   if (href) {
     return (
@@ -27,11 +43,22 @@ export default function Button({
           onClick={onClick}
           disabled={disabled}
           className={`
+            ${className ?? ""}
             ${backgroundColor ?? "bg-primary-orange"}
             ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
-            cursor-pointer text-white px-4 py-2 rounded-lg transition
+            ${size ?? ""}
+            cursor-pointer
+            flex
+            items-center
+            gap-2
+            text-white
+            px-4
+            py-2
+            rounded-lg
+            transition
           `}
         >
+          {icon}
           {label}
         </button>
       </Link>
@@ -43,11 +70,22 @@ export default function Button({
         onClick={onClick}
         disabled={disabled}
         className={`
-            ${backgroundColor ?? "bg-primary-orange"}
-            ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
-            cursor-pointer text-white px-4 py-2 rounded-lg transition
-          `}
+          ${className ?? ""}
+          ${backgroundColor ?? "bg-primary-orange"}
+          ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
+          ${size ?? ""}
+          cursor-pointer
+          flex
+          items-center
+          gap-2
+          text-white
+          px-4
+          py-2
+          rounded-lg
+          transition
+        `}
       >
+        {icon}
         {label}
       </button>
     )
