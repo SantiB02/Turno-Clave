@@ -10,12 +10,19 @@ export default async function Dashboard() {
   }
 
   const TimeGreeting = () => {
-    const hours = new Date().getHours()
+    const hours = Number(
+      new Intl.DateTimeFormat("es-AR", {
+        hour: "numeric",
+        hour12: false,
+        timeZone: "America/Argentina/Buenos_Aires",
+      }).format(new Date()),
+    )
+
     let greeting = ""
 
     if (hours < 12) {
       greeting = "Buenos días"
-    } else if (hours >= 12 && hours < 18) {
+    } else if (hours < 18) {
       greeting = "Buenas tardes"
     } else {
       greeting = "Buenas noches"
