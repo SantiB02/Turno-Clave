@@ -3,7 +3,6 @@ import { notFound } from "next/navigation"
 import type { ReactNode } from "react"
 import OrangeWavesBottom from "@/app/components/OrangeWavesBottom"
 import { getBusinessBySlug } from "@/services/public/publicBusinessService"
-import type { PublicBusinessDetail } from "@/types/business"
 
 type Props = {
   children: ReactNode
