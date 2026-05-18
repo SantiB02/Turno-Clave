@@ -123,7 +123,7 @@ export default function SidebarNav({
             {isMobile ? <span>Configuración</span> : null}
           </Link>
 
-          <SignOutIcon variant={variant} onOpenChange={onNavigate} />
+          <SignOutIcon variant={variant} />
         </div>
       </div>
     </nav>
