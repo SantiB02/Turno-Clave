@@ -1,8 +1,8 @@
 import Image from "next/image"
-import { notFound } from "next/navigation"
 import type { ReactNode } from "react"
 import OrangeWavesBottom from "@/app/components/OrangeWavesBottom"
-import { getBusinessBySlug } from "@/services/public/publicBusinessService"
+import { getReservationBusiness } from "./business"
+import { ReservationBusinessProvider } from "./ReservationBusinessProvider"
 
 type Props = {
   children: ReactNode
@@ -13,12 +13,7 @@ type Props = {
 
 export default async function RootLayout({ children, params }: Props) {
   const { slug } = await params
-
-  const businessResult = await getBusinessBySlug(slug)
-
-  if (!businessResult.ok) {
-    notFound()
-  }
+  const business = await getReservationBusiness(slug)
 
   return (
     <main className={` antialiased min-h-screen relative`}>
@@ -31,7 +26,9 @@ export default async function RootLayout({ children, params }: Props) {
           className="mr-2"
         />
       </div>
-      {children}
+      <ReservationBusinessProvider business={business}>
+        {children}
+      </ReservationBusinessProvider>
       <OrangeWavesBottom />
     </main>
   )

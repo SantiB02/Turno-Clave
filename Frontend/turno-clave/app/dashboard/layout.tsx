@@ -9,6 +9,7 @@ import { getMyBusinesses } from "@/services/businessService"
 import type { BusinessDetail } from "@/types/business"
 import Footer from "../components/Footer"
 import HelpFloatingButton from "../components/HelpFloatingButton"
+import DashboardMobileNav from "./DashboardMobileNav"
 import SidebarNav from "./SidebarNav"
 
 const didactGothic = Didact_Gothic({
@@ -55,10 +56,11 @@ export default async function DashboardLayout({
 
   return (
     <div
-      className={`min-h-screen flex ${didactGothic.className} ${geistMono.variable} antialiased`}
+      className={`min-h-screen flex flex-col lg:flex-row ${didactGothic.className} ${geistMono.variable} antialiased`}
     >
       <HelpFloatingButton />
-      <aside className="sticky top-0 h-screen w-24 bg-primary-orange p-5 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-orange-400">
+      <DashboardMobileNav user={session.user} />
+      <aside className="sticky top-0 hidden h-screen w-24 flex-col overflow-y-auto bg-primary-orange p-5 scrollbar-thin scrollbar-thumb-gray-100 scrollbar-track-orange-400 lg:flex">
         <Link
           href="/"
           className="text-lg text-center mb-4 text-white font-bold"
@@ -69,7 +71,7 @@ export default async function DashboardLayout({
       </aside>
 
       <div className="flex flex-col flex-1">
-        <section className="flex-1 p-6 min-h-screen">
+        <section className="min-h-screen flex-1 p-4 sm:p-6">
           <main className="">{children}</main>
         </section>
         <Footer />

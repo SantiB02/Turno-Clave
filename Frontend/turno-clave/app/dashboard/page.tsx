@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
-import Button from "../components/Button"
 
 export default async function Dashboard() {
   const session = await auth()
@@ -22,7 +21,7 @@ export default async function Dashboard() {
 
     if (hours < 12) {
       greeting = "Buenos días"
-    } else if (hours < 18) {
+    } else if (hours < 19) {
       greeting = "Buenas tardes"
     } else {
       greeting = "Buenas noches"
@@ -43,7 +42,6 @@ export default async function Dashboard() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="font-bold text-4xl mb-9">Panel de Control</h1>
-        <Button label="Nuevo turno" href="/dashboard/mis-turnos" />
       </div>
       <TimeGreeting />
     </div>

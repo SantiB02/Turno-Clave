@@ -100,7 +100,7 @@ export default function MiNegocioTabs({
             type="button"
             onClick={() => changeTab(tab.id)}
             className={`
-              py-4 cursor-pointer text-lg border-b-2 transition-colors
+              py-4 cursor-pointer text-sm md:text-lg  border-b-2 transition-colors
               ${
                 activeTab === tab.id
                   ? "border-primary-orange text-primary-orange font-bold"
