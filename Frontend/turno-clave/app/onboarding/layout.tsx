@@ -43,9 +43,11 @@ export default async function RootLayout({
 
   return (
     <main
-      className={`${didactGothic.className} ${geistMono.variable} antialiased min-h-screen pl-10 pt-10 relative`}
+      className={`${didactGothic.className} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
     >
-      {children}
+      <div className="flex-1 pl-10 pt-10">
+        {children}
+      </div>
       <OrangeWavesBottom />
     </main>
   )

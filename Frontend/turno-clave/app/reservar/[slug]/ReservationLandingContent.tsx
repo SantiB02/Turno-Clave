@@ -3,15 +3,23 @@
 import {
   BuildingStorefrontIcon,
   CalendarDaysIcon,
+  CreditCardIcon,
   MapPinIcon,
   PhoneIcon,
 } from "@heroicons/react/24/outline"
 import Image from "next/image"
+import { useState } from "react"
 import Button from "@/app/components/Button"
+import { PAYMENT_METHOD_LABELS } from "@/enums/paymentMethods"
 import { useReservationBusiness } from "./ReservationBusinessProvider"
 
 export default function ReservationLandingContent() {
-  const business = useReservationBusiness()
+  const [isLoadingPage, setIsLoadingPage] = useState(false)
+  const { business } = useReservationBusiness()
+
+  const handleClickButton = () => {
+    setIsLoadingPage(true)
+  }
 
   return (
     <div className="m-4">
@@ -59,13 +67,27 @@ export default function ReservationLandingContent() {
               />
               <p>{business.phone}</p>
             </div>
+            <div className="flex items-center gap-2">
+              <CreditCardIcon
+                width={23}
+                height={23}
+                className="text-primary-orange"
+              />
+              <p>
+                {business.paymentMethods
+                  .map((pm) => PAYMENT_METHOD_LABELS[pm])
+                  .join(", ")}
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       <div className=" mt-10 flex flex-col items-center justify-center">
         <div>
-          <h2 className="text-2xl font-bold">Reserva tu turno</h2>
+          <h2 className="text-2xl font-bold text-dark-blue text-center">
+            Reserva tu turno
+          </h2>
           <p className="text-lg text-center">De forma rapida y sencilla</p>
         </div>
       </div>
@@ -73,8 +95,10 @@ export default function ReservationLandingContent() {
       <div className="flex justify-center my-4">
         <Button
           href={`/reservar/${business.slug}/servicios`}
+          onClick={handleClickButton}
           className="px-6"
-          label="Sacar turno"
+          label={isLoadingPage ? "Cargando..." : "Sacar turno"}
+          disabled={isLoadingPage}
           size="text-2xl"
           icon={<CalendarDaysIcon width={30} height={30} />}
         />

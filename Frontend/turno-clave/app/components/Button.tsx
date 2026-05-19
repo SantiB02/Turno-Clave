@@ -43,9 +43,10 @@ export default function Button({
           onClick={onClick}
           disabled={disabled}
           className={`
+            ${disabled ? "bg-gray-300" : ""}
             ${className ?? ""}
-            ${backgroundColor ?? "bg-primary-orange"}
-            ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
+            ${!disabled ? (backgroundColor ?? "bg-primary-orange") : "bg-gray-300"}
+            ${!disabled ? (hoverBackgroundColor ?? "hover:bg-primary-orange") : ""}
             ${size ?? ""}
             cursor-pointer
             flex
@@ -70,9 +71,10 @@ export default function Button({
         onClick={onClick}
         disabled={disabled}
         className={`
+          ${disabled ? "bg-gray-300" : ""}
           ${className ?? ""}
-          ${backgroundColor ?? "bg-primary-orange"}
-          ${hoverBackgroundColor ?? "hover:bg-primary-orange"}
+          ${!disabled ? (backgroundColor ?? "bg-primary-orange") : "bg-gray-300"}
+          ${!disabled ? (hoverBackgroundColor ?? "hover:bg-primary-orange") : ""}
           ${size ?? ""}
           cursor-pointer
           flex

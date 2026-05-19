@@ -1,6 +1,6 @@
 export default function OrangeWavesBottom() {
   return (
-    <div className="absolute bottom-0 left-0 w-full h-30 transform scale-y-[-1]">
+    <div className="w-full h-30 shrink-0 transform scale-y-[-1]">
       <svg
         viewBox="0 0 1200 120"
         preserveAspectRatio="none"

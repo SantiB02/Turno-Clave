@@ -16,7 +16,7 @@ export default async function RootLayout({ children, params }: Props) {
   const business = await getReservationBusiness(slug)
 
   return (
-    <main className={` antialiased min-h-screen relative`}>
+    <main className="antialiased min-h-screen flex flex-col">
       <div className="flex justify-center items-center h-16">
         <Image
           src="/header-logo-300x100.png"
@@ -26,9 +26,11 @@ export default async function RootLayout({ children, params }: Props) {
           className="mr-2"
         />
       </div>
-      <ReservationBusinessProvider business={business}>
-        {children}
-      </ReservationBusinessProvider>
+      <div className="flex-1">
+        <ReservationBusinessProvider business={business} slug={slug}>
+          {children}
+        </ReservationBusinessProvider>
+      </div>
       <OrangeWavesBottom />
     </main>
   )

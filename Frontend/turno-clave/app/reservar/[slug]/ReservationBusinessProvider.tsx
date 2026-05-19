@@ -3,33 +3,44 @@
 import { createContext, type PropsWithChildren, useContext } from "react"
 import type { PublicBusinessDetail } from "@/types/business"
 
-const ReservationBusinessContext = createContext<PublicBusinessDetail | null>(
-  null,
-)
+type ReservationBusinessContextType = {
+  business: PublicBusinessDetail
+  slug: string
+}
+
+const ReservationBusinessContext =
+  createContext<ReservationBusinessContextType | null>(null)
 
 type ReservationBusinessProviderProps = PropsWithChildren<{
   business: PublicBusinessDetail
+  slug: string
 }>
 
 export function ReservationBusinessProvider({
   business,
+  slug,
   children,
 }: ReservationBusinessProviderProps) {
   return (
-    <ReservationBusinessContext.Provider value={business}>
+    <ReservationBusinessContext.Provider
+      value={{
+        business,
+        slug,
+      }}
+    >
       {children}
     </ReservationBusinessContext.Provider>
   )
 }
 
 export function useReservationBusiness() {
-  const business = useContext(ReservationBusinessContext)
+  const context = useContext(ReservationBusinessContext)
 
-  if (!business) {
+  if (!context) {
     throw new Error(
       "useReservationBusiness debe usarse dentro de ReservationBusinessProvider",
     )
   }
 
-  return business
+  return context
 }
