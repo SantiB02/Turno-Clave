@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace turno_clave_API.Domain.Entities
 {
     public class ProfessionalService

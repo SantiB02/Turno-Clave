@@ -24,6 +24,13 @@ namespace turno_clave_API.Infrastructure.Repositories
             return _context.Clients.Include(c => c.Business).FirstOrDefaultAsync(c => c.ExternalId == externalId);
         }
 
+        public Task<Client?> GetClientByEmailAsync(int businessId, string email)
+        {
+            return _context.Clients
+                .Include(c => c.Business)
+                .FirstOrDefaultAsync(c => c.BusinessId == businessId && c.Email == email);
+        }
+
         public void AddClient(Client client)
         {
             _context.Clients.Add(client);

@@ -20,7 +20,7 @@ namespace turno_clave_API.Domain.Entities
         public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 
         // Navigation
-        public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<AppointmentItem> AppointmentItems { get; set; } = [];
         public ICollection<ProfessionalService> ProfessionalServices { get; set; } = [];
 
         public static ServiceDTO ToDto(Service s)
@@ -36,7 +36,7 @@ namespace turno_clave_API.Domain.Entities
                 DurationMinutes = s.DurationMinutes,
 
                 Professionals = s.ProfessionalServices
-                    .Select(ps => new ServiceProfessionalDTO
+                    .Select(ps => new MinimalProfessionalDTO
                     {
                         ExternalId = ps.Professional.ExternalId,
                         Name = ps.Professional.Name,

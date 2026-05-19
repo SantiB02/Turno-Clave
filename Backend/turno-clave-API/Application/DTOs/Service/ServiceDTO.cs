@@ -12,6 +12,6 @@ namespace turno_clave_API.Application.DTOs.Service
         public decimal Price { get; set; }
         public int DurationMinutes { get; set; }
 
-        public List<ServiceProfessionalDTO> Professionals { get; set; } = [];
+        public List<MinimalProfessionalDTO> Professionals { get; set; } = [];
     }
 }

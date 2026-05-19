@@ -48,6 +48,12 @@ namespace turno_clave_API.Application.Services
             return client;
         }
 
+        public async Task<Client?> GetByEmailAsync(int businessId, string email)
+        {
+            Client? client = await _clientRepository.GetClientByEmailAsync(businessId, email);
+            return client;
+        }
+
         // THIS SHOULD NOT BE INCLUDED IN MVP. A CLIENT'S PERSONAL DATA IS ONLY ASKED ONCE WHEN THEY BOOK AN APPOINTMENT
 
         //public async Task<Client?> UpdateAsync(UpdateClientDTO dto)

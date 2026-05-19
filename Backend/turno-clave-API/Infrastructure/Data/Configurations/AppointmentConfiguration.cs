@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using turno_clave_API.Domain.Entities;
+using turno_clave_API.Domain.Enums;
 
 namespace turno_clave_API.Infrastructure.Data.Configurations
 {
@@ -9,12 +10,25 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<Appointment> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasIndex(x => x.ExternalId).IsUnique();
-            builder.HasIndex(x => new { x.ProfessionalId, x.StartDateTime });
 
-            builder.Property(x => x.StartDateTime).IsRequired();
-            builder.Property(x => x.EndDateTime).IsRequired();
-            builder.Property(x => x.Status).HasConversion<string>().IsRequired();
+            builder.HasIndex(x => x.ExternalId)
+                   .IsUnique();
+
+            builder.Property(x => x.StartDateTime)
+                   .IsRequired();
+
+            builder.Property(x => x.EndDateTime)
+                   .IsRequired();
+
+            builder.Property(x => x.Status)
+                   .HasConversion<string>()
+                   .IsRequired();
+
+            builder.Property(x => x.CreatedAt)
+                   .IsRequired();
+
+            builder.Property(x => x.UpdatedAt)
+                   .IsRequired();
 
             builder.HasOne(x => x.Business)
                    .WithMany(b => b.Appointments)
@@ -22,16 +36,14 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Client)
-                   .WithMany(cl => cl.Appointments)
+                   .WithMany(c => c.Appointments)
                    .HasForeignKey(x => x.ClientId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasOne(x => x.Service)
-                   .WithMany(s => s.Appointments)
-                   .HasForeignKey(x => x.ServiceId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasQueryFilter(x => x.Status != Domain.Enums.AppointmentStatus.Cancelled);
+            builder.HasMany(x => x.Items)
+                   .WithOne(i => i.Appointment)
+                   .HasForeignKey(i => i.AppointmentId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

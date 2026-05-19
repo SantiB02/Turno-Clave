@@ -13,7 +13,7 @@ namespace turno_clave_API.Domain.Entities
         public required string Name { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public ICollection<Appointment> Appointments { get; set; } = [];
+        public ICollection<AppointmentItem> AppointmentItems { get; set; } = [];
         public ICollection<ProfessionalAvailability> Availabilities { get; set; } = [];
         public ICollection<ProfessionalService> ProfessionalServices { get; set; } = [];
 

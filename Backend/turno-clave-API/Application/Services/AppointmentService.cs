@@ -1,4 +1,5 @@
 ﻿using turno_clave_API.Application.DTOs.Appointment;
+using turno_clave_API.Application.DTOs.Client;
 using turno_clave_API.Application.Interfaces;
 using turno_clave_API.Domain.Entities;
 using turno_clave_API.Common;
@@ -37,64 +38,86 @@ namespace turno_clave_API.Application.Services
             if (dto.StartDateTime >= dto.EndDateTime)
                 return Result<Appointment>.Failure("StartDateTime must be earlier than EndDateTime.");
 
+            if (dto.Items == null || dto.Items.Count == 0)
+                return Result<Appointment>.Failure("Appointment must have at least one service item.");
+
+            // Validate business
             Business? business = await _businessRepository.GetBusinessByExternalIdAsync(dto.BusinessExternalId);
             if (business == null)
                 return Result<Appointment>.Failure($"Business with ExternalId {dto.BusinessExternalId} not found.");
 
-            Professional? professional = await _professionalService.GetByExternalIdAsync(dto.ProfessionalExternalId);
-            if (professional == null)
-                return Result<Appointment>.Failure($"Professional with ExternalId {dto.ProfessionalExternalId} not found.");
-
-            // TODO: Check availability of the professional for the given time slot (e.g. check if there are no overlapping appointments and if the time slot is within the professional's working hours)
-            // dto.StartDateTime.Deconstruct(out _, out TimeOnly startTime, out _);
-            // dto.EndDateTime.Deconstruct(out _, out TimeOnly endTime, out _);
+            // Get or create client (deduplicación por email)
+            Client? client = await _clientService.GetByEmailAsync(business.Id, dto.Client.Email);
+            if (client == null)
+            {
+                // Cliente no existe, crear uno nuevo
+                client = await _clientService.CreateAsync(new CreateClientDTO
+                {
+                    BusinessExternalId = dto.BusinessExternalId,
+                    Name = dto.Client.Name,
+                    Email = dto.Client.Email,
+                    Phone = dto.Client.Phone,
+                    Notes = dto.Client.Notes
+                });
+            }
 
             TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(business.TimeZone);
             DateTimeOffset startLocal = TimeZoneInfo.ConvertTime(dto.StartDateTime, tz);
-            TimeOnly startTime = TimeOnly.FromTimeSpan(startLocal.TimeOfDay);
-
             DateTimeOffset endLocal = TimeZoneInfo.ConvertTime(dto.EndDateTime, tz);
-            TimeOnly endTime = TimeOnly.FromTimeSpan(endLocal.TimeOfDay);
-
             DayOfWeek day = startLocal.DayOfWeek;
 
-            bool isAppointmentTaken = await _appointmentRepository.IsAppointmentTakenAsync(professional.Id, dto.StartDateTime, dto.EndDateTime);
+            // Validate and create items
+            List<AppointmentItem> appointmentItems = new();
 
-            // TODO: fix bug down below
-            // BUG: If the professional isn't available at the appointment's time range, the appointment will still be created.
-            if (isAppointmentTaken)
-                return Result<Appointment>.Failure($"The professional is not available on {day} from {startTime} to {endTime}."); // TODO: improve error message to specify if the issue is with the day, time range, or both
+            foreach (var itemDto in dto.Items)
+            {
+                // Validate professional
+                Professional? professional = await _professionalService.GetByExternalIdAsync(itemDto.ProfessionalExternalId);
+                if (professional == null)
+                    return Result<Appointment>.Failure($"Professional with ExternalId {itemDto.ProfessionalExternalId} not found.");
 
-            bool isDayWorkDay = await _professionalAvailabilityService.IsDayWorkDayAsync(professional, day);
-            if (!isDayWorkDay)
-                return Result<Appointment>.Failure($"The professional does not work on {day}.");
+                // Validate service
+                Result<Service?> serviceResult = await _serviceService.GetByExternalIdAsync(itemDto.ServiceExternalId);
+                if (!serviceResult.IsSuccess || serviceResult.Value == null)
+                    return Result<Appointment>.Failure($"Service with ExternalId {itemDto.ServiceExternalId} not found.");
 
-            Client? client = await _clientService.GetByExternalIdAsync(dto.ClientExternalId);
-            if (client == null)
-                return Result<Appointment>.Failure($"Client with ExternalId {dto.ClientExternalId} not found.");
+                Service service = serviceResult.Value;
 
-            Result<Service?> serviceResult = await _serviceService.GetByExternalIdAsync(dto.ServiceExternalId);
-            if (!serviceResult.IsSuccess || serviceResult.Value == null)
-                return Result<Appointment>.Failure($"Service with ExternalId {dto.ServiceExternalId} not found.");
+                // Check professional availability for this time block
+                bool isAppointmentTaken = await _appointmentRepository.IsAppointmentTakenAsync(professional.Id, dto.StartDateTime, dto.EndDateTime);
+                if (isAppointmentTaken)
+                    return Result<Appointment>.Failure($"Professional {professional.Name} is not available at the requested time slot.");
 
-            Service service = serviceResult.Value;
+                bool isDayWorkDay = await _professionalAvailabilityService.IsDayWorkDayAsync(professional, day);
+                if (!isDayWorkDay)
+                    return Result<Appointment>.Failure($"Professional {professional.Name} does not work on {day}.");
 
+                // Create appointment item
+                appointmentItems.Add(new AppointmentItem
+                {
+                    ServiceId = service.Id,
+                    Service = service,
+                    ProfessionalId = professional.Id,
+                    Professional = professional,
+                    StartDateTime = new DateTime(DateOnly.FromDateTime(dto.StartDateTime.DateTime), itemDto.StartTime).ToUniversalTime(),
+                    EndDateTime = new DateTime(DateOnly.FromDateTime(dto.StartDateTime.DateTime), itemDto.EndTime).ToUniversalTime()
+                });
+            }
+
+            // Create appointment with all items
             Appointment appointment = new()
             {
                 ExternalId = Guid.NewGuid(),
                 BusinessId = business.Id,
                 Business = business,
-                ProfessionalId = professional.Id,
-                Professional = professional,
                 ClientId = client.Id,
                 Client = client,
-                ServiceId = service.Id,
-                Service = service,
                 StartDateTime = dto.StartDateTime,
                 EndDateTime = dto.EndDateTime,
                 Notes = dto.Notes,
                 CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
+                UpdatedAt = DateTimeOffset.UtcNow,
+                Items = appointmentItems
             };
 
             _appointmentRepository.AddAppointment(appointment);

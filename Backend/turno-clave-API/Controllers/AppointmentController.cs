@@ -27,6 +27,17 @@ namespace turno_clave_API.Controllers
         {
             Result<Appointment> result = await _appointmentService.CreateAsync(dto);
 
+            if (!result.IsSuccess)
+            {
+                return Problem(
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Appointment Creation Failed",
+                    detail: result.Error,
+                    type: "/errors/AppointmentCreationFailed",
+                    instance: HttpContext.Request.Path
+                );
+            }
+
             return result.ToActionResult(this, appointment =>
             {
                 AppointmentDTO dto = Appointment.ToDto(appointment);

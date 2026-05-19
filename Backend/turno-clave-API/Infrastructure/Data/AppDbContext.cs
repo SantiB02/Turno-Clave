@@ -18,6 +18,7 @@ namespace turno_clave_API.Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<UserBusiness> UserBusinesses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentItem> AppointmentItems { get; set; }
         public DbSet<ProfessionalAvailability> ProfessionalAvailabilities { get; set; }
         public DbSet<AvailabilityException> AvailabilityExceptions { get; set; }
         public DbSet<Professional> Professionals { get; set; }

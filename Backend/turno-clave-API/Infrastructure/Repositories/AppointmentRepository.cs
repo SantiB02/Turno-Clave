@@ -21,7 +21,14 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public Task<Appointment?> GetAppointmentByExternalIdAsync(Guid externalId)
         {
-            return _context.Appointments.Include(a => a.Business).Include(a => a.Professional).Include(a => a.Client).Include(a => a.Service).FirstOrDefaultAsync(a => a.ExternalId == externalId);
+            return _context.Appointments
+                .Include(a => a.Business)
+                .Include(a => a.Client)
+                .Include(a => a.Items)
+                    .ThenInclude(ai => ai.Professional)
+                .Include(a => a.Items)
+                    .ThenInclude(ai => ai.Service)
+                .FirstOrDefaultAsync(a => a.ExternalId == externalId);
         }
 
         public void AddAppointment(Appointment appointment)
@@ -43,7 +50,8 @@ namespace turno_clave_API.Infrastructure.Repositories
         public async Task<bool> IsAppointmentTakenAsync(int professionalId, DateTimeOffset startTime, DateTimeOffset endTime)
         {
             return await _context.Appointments
-                .Where(a => a.ProfessionalId == professionalId)
+                .Include(a => a.Items)
+                .Where(a => a.Items.Any(item => item.ProfessionalId == professionalId))
                 .AnyAsync(a =>
                     startTime < a.EndDateTime &&
                     endTime > a.StartDateTime
