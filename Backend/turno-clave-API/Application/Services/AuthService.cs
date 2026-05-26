@@ -71,11 +71,18 @@ public class AuthService : IAuthService
         _context.RefreshTokens.Add(refreshToken);
         await _context.SaveChangesAsync();
 
+        // Load user's businesses
+        List<Business> userBusinesses = await _context.UserBusinesses
+            .Where(ub => ub.User.ExternalId == user.ExternalId)
+            .Select(ub => ub.Business)
+            .ToListAsync();
+
         return new AuthResponseDTO
         {
             AccessToken = accessToken,
             RefreshToken = refreshTokenValue,
-            AccessTokenExpiresAt = accessTokenExpiresAt
+            AccessTokenExpiresAt = accessTokenExpiresAt,
+            Businesses = userBusinesses.Select(Business.ToDto).ToList()
         };
     }
 

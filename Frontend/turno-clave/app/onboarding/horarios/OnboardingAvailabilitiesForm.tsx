@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import AvailabilityEditor from "@/app/components/AvailabilityEditor"
 import ErrorMessage from "@/app/components/ErrorMessage"
+import { addBusinessToSession } from "@/lib/actions/session"
 import {
   createDefaultWeekAvailability,
   hasInvalidAvailabilityRanges,
@@ -104,6 +105,7 @@ export default function OnboardingAvailabilitiesForm() {
       return
     }
 
+    await addBusinessToSession(result.data)
     localStorage.removeItem("onboardingData")
     router.push("/onboarding/listo")
   }

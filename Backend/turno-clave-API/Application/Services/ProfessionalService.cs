@@ -64,6 +64,15 @@ namespace turno_clave_API.Application.Services
             return professional;
         }
 
+        public async Task<List<Professional>> GetByExternalIdsAsync(List<Guid> externalIds)
+        {
+            if (externalIds == null || externalIds.Count == 0)
+                return new List<Professional>();
+
+            List<Professional> professionals = await _professionalRepository.GetProfessionalsByExternalIdsAsync(externalIds);
+            return professionals;
+        }
+
         public async Task<Professional?> UpdateAsync(Guid externalId, UpdateProfessionalDTO dto)
         {
             Professional? professional = await _professionalRepository.GetProfessionalByExternalIdWithServicesAsync(externalId);

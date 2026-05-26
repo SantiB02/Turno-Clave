@@ -4,9 +4,7 @@ import "../globals.css"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import type { ReactNode } from "react"
-import { auth } from "@/auth"
-import { getMyBusinesses } from "@/services/businessService"
-import type { BusinessDetail } from "@/types/business"
+import { auth, type ExtendedSession } from "@/auth"
 import Footer from "../components/Footer"
 import HelpFloatingButton from "../components/HelpFloatingButton"
 import DashboardMobileNav from "./DashboardMobileNav"
@@ -32,7 +30,7 @@ export default async function DashboardLayout({
 }: {
   children: ReactNode
 }) {
-  const session = await auth()
+  const session = (await auth()) as ExtendedSession | null
 
   if (!session) {
     redirect("/")
@@ -42,15 +40,7 @@ export default async function DashboardLayout({
     redirect("/onboarding")
   }
 
-  const result = await getMyBusinesses()
-
-  let businesses: BusinessDetail[] = []
-
-  if (result.ok) {
-    businesses = result.data
-  }
-
-  if (businesses.length === 0) {
+  if (session.businesses?.length === 0) {
     redirect("/onboarding")
   }
 

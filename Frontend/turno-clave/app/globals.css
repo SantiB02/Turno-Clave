@@ -212,3 +212,50 @@ aside::-webkit-scrollbar-track {
   top: auto;
   bottom: calc(100% + 4px);
 }
+
+.available-date {
+  background-color: #e8f5e9 !important;
+  border-radius: 4px;
+}
+
+.available-date:hover {
+  background-color: #c8e6c9 !important;
+}
+
+.slots-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.slot-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slot-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.slot-details {
+  flex: 1;
+  margin: 0 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.duration {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0.25rem 0;
+}

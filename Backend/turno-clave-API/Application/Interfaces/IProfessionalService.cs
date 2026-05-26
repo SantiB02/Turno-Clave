@@ -9,6 +9,7 @@ namespace turno_clave_API.Application.Interfaces
         Task<Professional> CreateAsync(Guid businessExternalId, CreateProfessionalDTO dto);
         Task<Result<List<ProfessionalDTO>>> GetByBusinessExternalIdAsync(Guid businessExternalId);
         Task<Professional?> GetByExternalIdAsync(Guid externalId);
+        Task<List<Professional>> GetByExternalIdsAsync(List<Guid> externalIds);
         Task<Professional?> UpdateAsync(Guid externalId, UpdateProfessionalDTO dto);
         Task<Professional?> DeleteAsync(Guid businessExternalId, Guid externalId);
     }

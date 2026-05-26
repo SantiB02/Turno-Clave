@@ -1,8 +1,6 @@
 import { Didact_Gothic, Geist_Mono } from "next/font/google"
 import { redirect } from "next/navigation"
-import { auth } from "@/auth"
-import { getMyBusinesses } from "@/services/businessService"
-import type { BusinessDetail } from "@/types/business"
+import { auth, type ExtendedSession } from "@/auth"
 import OrangeWavesBottom from "../components/OrangeWavesBottom"
 
 const didactGothic = Didact_Gothic({
@@ -20,23 +18,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await auth()
+  const session = (await auth()) as ExtendedSession | null
 
   if (!session) {
     redirect("/")
   }
 
-  let businesses: BusinessDetail[] = []
-
   // Only enable onboarding for the testing account, so we can test the flow without having to create a new business every time. For other users, if they have businesses, redirect them to the dashboard.
   if (session.user?.email !== "doetesting02@gmail.com") {
-    const result = await getMyBusinesses()
-
-    if (result.ok) {
-      businesses = result.data
-    }
-
-    if (businesses.length > 0) {
+    if ((session.businesses?.length ?? 0) > 0) {
       redirect("/dashboard")
     }
   }

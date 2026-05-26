@@ -4,24 +4,58 @@ import { useState } from "react"
 import BackButton from "@/app/components/BackButton"
 import Button from "@/app/components/Button"
 import type { Service } from "@/types/service"
-import { useReservationBusiness } from "../ReservationBusinessProvider"
+import { useReservationFlow } from "../ReservationFlowProvider"
 import ReservationService from "./ReservationService"
 import ServicesTotal from "./ServicesTotal"
 
 export default function ServicesSelection() {
-  const [selectedServices, setSelectedServices] = useState<Service[]>([])
   const [isLoadingPage, setIsLoadingPage] = useState(false)
 
-  const handleClickButton = () => {}
+  const handleClickButton = () => {
+    setIsLoadingPage(true)
+  }
 
-  const { business, slug } = useReservationBusiness()
+  const {
+    business,
+    slug,
+    selectedServices,
+    setSelectedServices,
+    selectedProfessionalsByService,
+    setSelectedProfessionalsByService,
+  } = useReservationFlow()
 
   const onClickService = (service: Service) => {
-    if (selectedServices.includes(service)) {
-      setSelectedServices(selectedServices.filter((s) => s !== service))
-    } else {
-      setSelectedServices([...selectedServices, service])
+    const isSelected = selectedServices.some(
+      (selectedService) => selectedService.externalId === service.externalId,
+    )
+
+    if (isSelected) {
+      setSelectedServices((prevSelected) =>
+        prevSelected.filter((s) => s.externalId !== service.externalId),
+      )
+      setSelectedProfessionalsByService((prevSelected) => {
+        const nextSelected = { ...prevSelected }
+        delete nextSelected[service.externalId]
+        return nextSelected
+      })
+      return
     }
+
+    setSelectedServices((prevSelected) => [...prevSelected, service])
+    setSelectedProfessionalsByService((prevSelected) => ({
+      ...prevSelected,
+      [service.externalId]: prevSelected[service.externalId] ?? null,
+    }))
+  }
+
+  const onChangeProfessional = (
+    serviceExternalId: string,
+    professionalExternalId: string | null,
+  ) => {
+    setSelectedProfessionalsByService((prevSelected) => ({
+      ...prevSelected,
+      [serviceExternalId]: professionalExternalId,
+    }))
   }
 
   const services = Array.from(
@@ -48,8 +82,17 @@ export default function ServicesSelection() {
             <ReservationService
               key={service.externalId}
               service={service}
-              professionals={business.professionals}
+              professionals={business.professionals.filter((professional) =>
+                professional.services.some(
+                  (professionalService) =>
+                    professionalService.externalId === service.externalId,
+                ),
+              )}
               onClick={onClickService}
+              onChangeProfessional={onChangeProfessional}
+              selectedProfessionalExternalId={
+                selectedProfessionalsByService[service.externalId] ?? null
+              }
               selected={selectedServices.some(
                 (s) => s.externalId === service.externalId,
               )}
@@ -61,7 +104,7 @@ export default function ServicesSelection() {
         </div>
         <div className="flex justify-center my-2">
           <Button
-            href={`/reservar/${business.slug}/servicios`}
+            href={`/reservar/${business.slug}/horarios`}
             onClick={handleClickButton}
             className="px-6"
             label={isLoadingPage ? "Cargando..." : "Continuar"}

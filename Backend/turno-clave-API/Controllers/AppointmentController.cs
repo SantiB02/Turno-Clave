@@ -62,6 +62,7 @@ namespace turno_clave_API.Controllers
             return Ok(Appointment.ToDto(appointment));
         }
 
+
         //[HttpPut]
         //public async Task<IActionResult> Update([FromBody] UpdateAppointmentDTO dto)
         //{
@@ -76,21 +77,13 @@ namespace turno_clave_API.Controllers
             return result.ToActionResult(this, _ => NoContent());
         }
 
-        private bool TryParseExternalId(string externalId, out Guid parsed, [NotNullWhen(false)] out IActionResult? error)
+        // ----- Public Endpoints -----
+        [AllowAnonymous]
+        [HttpPost("/public/available-slots")]
+        public async Task<IActionResult> GetAvailableSlots([FromBody] SelectionRequestDTO request)
         {
-            if (!Guid.TryParse(externalId, out parsed))
-            {
-                error = Problem(
-                    statusCode: StatusCodes.Status400BadRequest,
-                    title: "Invalid ExternalId",
-                    detail: $"The provided ExternalId '{externalId}' is not a valid GUID.",
-                    type: "/errors/InvalidExternalId",
-                    instance: HttpContext.Request.Path
-                );
-                return false;
-            }
-            error = null;
-            return true;
+            AvailabilitySlotsResponseDTO response = await _appointmentService.GetAvailableSlotsAsync(request);
+            return Ok(response);
         }
     }
 }

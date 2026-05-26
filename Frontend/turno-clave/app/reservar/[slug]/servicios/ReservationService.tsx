@@ -8,6 +8,11 @@ type Props = {
   professionals: Professional[]
   selected: boolean
   onClick: (service: Service) => void
+  selectedProfessionalExternalId: string | null
+  onChangeProfessional: (
+    serviceExternalId: string,
+    professionalExternalId: string | null,
+  ) => void
 }
 
 export default function ReservationService({
@@ -15,6 +20,8 @@ export default function ReservationService({
   professionals,
   selected,
   onClick,
+  selectedProfessionalExternalId,
+  onChangeProfessional,
 }: Props) {
   return (
     <label
@@ -67,8 +74,15 @@ export default function ReservationService({
           <select
             className="border border-gray-300 rounded-full px-2"
             onClick={(e) => e.stopPropagation()}
+            value={selectedProfessionalExternalId ?? ""}
+            onChange={(e) => {
+              onChangeProfessional(
+                service.externalId,
+                e.target.value.length > 0 ? e.target.value : null,
+              )
+            }}
           >
-            <option>Cualquier profesional</option>
+            <option value="">Cualquier profesional</option>
 
             {professionals.map((professional) => (
               <option

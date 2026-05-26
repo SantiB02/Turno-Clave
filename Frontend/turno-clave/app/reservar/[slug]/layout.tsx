@@ -2,7 +2,7 @@ import Image from "next/image"
 import type { ReactNode } from "react"
 import OrangeWavesBottom from "@/app/components/OrangeWavesBottom"
 import { getReservationBusiness } from "./business"
-import { ReservationBusinessProvider } from "./ReservationBusinessProvider"
+import { ReservationFlowProvider } from "./ReservationFlowProvider"
 
 type Props = {
   children: ReactNode
@@ -27,9 +27,9 @@ export default async function RootLayout({ children, params }: Props) {
         />
       </div>
       <div className="flex-1">
-        <ReservationBusinessProvider business={business} slug={slug}>
+        <ReservationFlowProvider business={business} slug={slug}>
           {children}
-        </ReservationBusinessProvider>
+        </ReservationFlowProvider>
       </div>
       <OrangeWavesBottom />
     </main>

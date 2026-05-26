@@ -2,11 +2,13 @@ import { jwtDecode } from "jwt-decode"
 import NextAuth, { type Session } from "next-auth"
 import type { JWT } from "next-auth/jwt"
 import Google from "next-auth/providers/google"
+import type { MinimalBusiness } from "@/types/business"
 
 interface ExtendedJWT extends JWT {
   backendToken?: string
   backendRefreshToken?: string
   backendTokenExpiresAt?: number
+  businesses?: MinimalBusiness[]
   userId?: string
   authError?: "RefreshAccessTokenError"
 }
@@ -27,11 +29,12 @@ const RECENT_REFRESH_TTL_MS = 5_000
 export interface ExtendedSession extends Session {
   backendToken?: string
   backendRefreshToken?: string
+  businesses?: MinimalBusiness[]
   userId?: string
   authError?: "RefreshAccessTokenError"
 }
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const { handlers, signIn, signOut, auth, unstable_update } = NextAuth({
   providers: [
     Google({
       clientId: process.env.GOOGLE_ID,
@@ -39,8 +42,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, trigger, session }) {
       const extendedToken = token as ExtendedJWT
+
+      if (trigger === "update") {
+        const updatedSession = session as ExtendedSession
+
+        if (updatedSession.businesses) {
+          return {
+            ...extendedToken,
+            businesses: updatedSession.businesses,
+          }
+        }
+      }
 
       if (account?.provider === "google" && account.id_token) {
         const response = await fetch(
@@ -63,6 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           backendToken: data.accessToken,
           backendRefreshToken: data.refreshToken,
           backendTokenExpiresAt: decodedToken.exp * 1000,
+          businesses: data.businesses ?? [],
           userId: decodedToken.userId,
         }
       }
@@ -88,6 +103,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       extendedSession.backendToken = extendedToken.backendToken
       extendedSession.backendRefreshToken = extendedToken.backendRefreshToken
+      extendedSession.businesses = extendedToken.businesses
       extendedSession.userId = extendedToken.userId
       extendedSession.authError = extendedToken.authError
 
@@ -147,6 +163,7 @@ async function refreshBackendToken(token: ExtendedJWT): Promise<ExtendedJWT> {
         backendToken: data.accessToken,
         backendRefreshToken: data.refreshToken,
         backendTokenExpiresAt: decodedToken.exp * 1000,
+        businesses: data.businesses ?? token.businesses,
         authError: undefined,
       }
     } catch {

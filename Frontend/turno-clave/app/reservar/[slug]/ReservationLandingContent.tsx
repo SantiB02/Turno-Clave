@@ -11,11 +11,11 @@ import Image from "next/image"
 import { useState } from "react"
 import Button from "@/app/components/Button"
 import { PAYMENT_METHOD_LABELS } from "@/enums/paymentMethods"
-import { useReservationBusiness } from "./ReservationBusinessProvider"
+import { useReservationFlow } from "./ReservationFlowProvider"
 
 export default function ReservationLandingContent() {
   const [isLoadingPage, setIsLoadingPage] = useState(false)
-  const { business } = useReservationBusiness()
+  const { business } = useReservationFlow()
 
   const handleClickButton = () => {
     setIsLoadingPage(true)

@@ -88,12 +88,18 @@ namespace turno_clave_API.Infrastructure.Repositories
 
         public async Task<List<Professional>> GetProfessionalsByExternalIdsAsync(List<Guid> externalIds)
         {
-            if (externalIds.Count == 0)
+            if (externalIds == null || externalIds.Count == 0)
             {
-                return [];
+                return new List<Professional>();
             }
 
-            return await _context.Professionals.Where(p => externalIds.Contains(p.ExternalId)).ToListAsync();
+            return await _context.Professionals
+                .Include(p => p.Availabilities)
+                .Include(p => p.ProfessionalServices)
+                    .ThenInclude(ps => ps.Service)
+                .Include(p => p.Business)
+                .Where(p => externalIds.Contains(p.ExternalId))
+                .ToListAsync();
         }
 
         public void AddProfessional(Professional professional)
