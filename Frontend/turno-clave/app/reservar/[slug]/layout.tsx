@@ -26,7 +26,7 @@ export default async function RootLayout({ children, params }: Props) {
           className="mr-2"
         />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 max-w-xl mx-auto w-full">
         <ReservationFlowProvider business={business} slug={slug}>
           {children}
         </ReservationFlowProvider>

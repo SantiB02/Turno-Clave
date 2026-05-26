@@ -4,6 +4,7 @@ import { useState } from "react"
 import BackButton from "@/app/components/BackButton"
 import Button from "@/app/components/Button"
 import type { Service } from "@/types/service"
+import ReservationHeader from "../../ReservationHeader"
 import { useReservationFlow } from "../ReservationFlowProvider"
 import ReservationService from "./ReservationService"
 import ServicesTotal from "./ServicesTotal"
@@ -68,13 +69,12 @@ export default function ServicesSelection() {
 
   return (
     <>
-      <div className="flex relative justify-center items-center">
-        <BackButton href={`/reservar/${slug}`} className="absolute left-0" />
-        <h1 className="text-2xl font-bold text-dark-blue text-center">
-          Elegí tus servicios
-        </h1>
-      </div>
-      <div className="flex flex-col max-w-xl gap-4 my-4">
+      <ReservationHeader
+        backButtonUrl={`/reservar/${slug}`}
+        title="Elegí tus servicios"
+      />
+
+      <div className="flex flex-col gap-4">
         {services.length === 0 ? (
           <div>No hay servicios</div>
         ) : (

@@ -22,8 +22,8 @@ export default function ReservationLandingContent() {
   }
 
   return (
-    <div className="m-4">
-      <div className="max-w-xl mx-auto border border-gray-200 rounded-lg shadow-sm/25">
+    <div className="mt-4">
+      <div className=" border border-gray-200 rounded-lg shadow-sm/25">
         <div className="relative h-20 bg-orange-300 rounded-t-lg">
           <Image
             alt="Logo de negocio"

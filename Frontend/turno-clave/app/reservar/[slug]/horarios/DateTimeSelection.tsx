@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getAvailableSlots } from "@/services/public/publicAppointmentService"
 import type { IAvailabilitySlot, ISelectionRequest } from "@/types/reservation"
+import ReservationHeader from "../../ReservationHeader"
 import { useReservationFlow } from "../ReservationFlowProvider"
 
 function getInitialSearchRange() {
@@ -106,47 +107,53 @@ export function DateTimeSelection() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      <h2>Selecciona una fecha</h2>
-      <Calendar
-        locale="ES"
-        onChange={(date) => handleDateClick(date as Date)}
-        value={selectedDate}
-        tileClassName={getTileClass}
-        minDate={new Date(`${availableSlots.searchFromDate}T00:00:00`)}
-        maxDate={new Date(`${availableSlots.searchToDate}T23:59:59`)}
+    <>
+      <ReservationHeader
+        backButtonUrl={`/reservar/${slug}/servicios`}
+        title="Elegí el día y la hora"
       />
-
-      {slotsForDate.length > 0 && (
-        <div className="slots-container">
-          <h3>
-            Horarios disponibles para {selectedDate?.toLocaleDateString()}
-          </h3>
-          {slotsForDate.map((slot) => (
-            <div key={`${slot.date}-${slot.startTime}`} className="slot-card">
-              <div>
-                <strong>
-                  {slot.startTime} - {slot.endTime}
-                </strong>
-                <p className="duration">{slot.totalDurationMinutes} minutos</p>
-              </div>
-              <div className="slot-details">
-                {slot.serviceDetails.map((service) => (
-                  <p key={service.serviceExternalId}>
-                    {service.serviceName} ({service.durationMinutes}min)
-                    {service.assignedProfessionalName && (
-                      <span> - {service.assignedProfessionalName}</span>
-                    )}
+      <div className="flex flex-col items-center gap-6">
+        <Calendar
+          locale="ES"
+          onChange={(date) => handleDateClick(date as Date)}
+          value={selectedDate}
+          tileClassName={getTileClass}
+          minDate={new Date(`${availableSlots.searchFromDate}T00:00:00`)}
+          maxDate={new Date(`${availableSlots.searchToDate}T23:59:59`)}
+        />
+        {slotsForDate.length > 0 && (
+          <div className="slots-container">
+            <h3>
+              Horarios disponibles para {selectedDate?.toLocaleDateString()}
+            </h3>
+            {slotsForDate.map((slot) => (
+              <div key={`${slot.date}-${slot.startTime}`} className="slot-card">
+                <div>
+                  <strong>
+                    {slot.startTime} - {slot.endTime}
+                  </strong>
+                  <p className="duration">
+                    {slot.totalDurationMinutes} minutos
                   </p>
-                ))}
+                </div>
+                <div className="slot-details">
+                  {slot.serviceDetails.map((service) => (
+                    <p key={service.serviceExternalId}>
+                      {service.serviceName} ({service.durationMinutes}min)
+                      {service.assignedProfessionalName && (
+                        <span> - {service.assignedProfessionalName}</span>
+                      )}
+                    </p>
+                  ))}
+                </div>
+                <button type="button" onClick={() => handleSlotClick(slot)}>
+                  Seleccionar
+                </button>
               </div>
-              <button type="button" onClick={() => handleSlotClick(slot)}>
-                Seleccionar
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   )
 }
