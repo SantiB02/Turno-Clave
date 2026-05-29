@@ -26,8 +26,6 @@ namespace turno_clave_API.Domain.Entities
             return new ClientDTO
             {
                 ExternalId = client.ExternalId,
-                BusinessExternalId = client.Business.ExternalId,
-                BusinessName = client.Business.Name,
                 Name = client.Name,
                 Email = client.Email,
                 Phone = client.Phone,

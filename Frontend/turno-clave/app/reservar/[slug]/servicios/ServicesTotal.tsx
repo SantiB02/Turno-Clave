@@ -26,7 +26,7 @@ export default function ServicesTotal({ services }: Props) {
 
   return (
     <div
-      className={`flex ${services.length === 0 ? "justify-center items-center" : "justify-between"} h-15 border border-gray-300 rounded-lg px-2 py-3`}
+      className={`flex ${services.length === 0 ? "justify-center items-center" : "justify-between"} h-15 border border-gray-300 rounded-lg px-4 py-3`}
     >
       {services.length === 0 ? (
         <p className="text-gray-500 italic">Seleccione al menos un servicio.</p>

@@ -1,10 +1,26 @@
+function buildApiUrl(path: string) {
+  const normalizedPath = path.startsWith("/api/")
+    ? path
+    : `/api${path.startsWith("/") ? path : `/${path}`}`
+  const baseUrl =
+    (
+      typeof window === "undefined"
+        ? process.env.API_URL
+        : process.env.NEXT_PUBLIC_API_URL
+    )?.replace(/\/$/, "") ?? ""
+
+  return `${baseUrl}${normalizedPath}`
+}
+
 export async function apiFetch(
   path: string,
   token?: string,
   options: RequestInit = {},
 ) {
+  const url = buildApiUrl(path)
+
   console.log("[apiFetch]", {
-    url: `${process.env.API_URL}/api${path}`,
+    url,
     method: options.method ?? "GET",
     body: options.body,
   })
@@ -19,7 +35,7 @@ export async function apiFetch(
     headers.set("Authorization", `Bearer ${token}`)
   }
 
-  return fetch(`${process.env.API_URL}/api${path}`, {
+  return fetch(url, {
     ...options,
     headers,
     cache: "no-store",

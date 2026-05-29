@@ -58,6 +58,31 @@ namespace turno_clave_API.Infrastructure.Repositories
                 );
         }
 
+        public async Task<bool> ExistsByReservationCodeAsync(string reservationCode)
+        {
+            return await _context.Appointments.AnyAsync(a => a.ReservationCode == reservationCode);
+        }
+
+        public async Task<List<Appointment>> GetByBusinessIdAndDateRangeAsync(int businessId, DateTimeOffset fromDate, DateTimeOffset toDate)
+        {
+            DateTime fromUtc = fromDate.UtcDateTime;
+            DateTime toUtc = toDate.UtcDateTime;
+
+            return await _context.Appointments
+                .Include(a => a.Business)
+                .Include(a => a.Client)
+                .Include(a => a.Items)
+                    .ThenInclude(ai => ai.Professional)
+                .Include(a => a.Items)
+                    .ThenInclude(ai => ai.Service)
+                .Where(a =>
+                    a.BusinessId == businessId &&
+                    a.StartDateTime >= fromUtc &&
+                    a.StartDateTime <= toUtc)
+                .OrderBy(a => a.StartDateTime)
+                .ToListAsync();
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

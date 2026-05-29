@@ -15,7 +15,7 @@ export default function BackButton({ className = "", href }: Props) {
   if (href)
     return (
       <Link href={href} className={`flex items-center gap-2 ${className}`}>
-        <ChevronLeftIcon className="w-6 h-6" />
+        <ChevronLeftIcon className="w-6 h-6 md:w-8 md:h-8" />
       </Link>
     )
   else
@@ -25,7 +25,7 @@ export default function BackButton({ className = "", href }: Props) {
         onClick={() => router.back()}
         className={`flex items-center gap-2 ${className}`}
       >
-        <ChevronLeftIcon className="w-6 h-6" />
+        <ChevronLeftIcon className="w-6 h-6 md:w-8 md:h-8" />
       </button>
     )
 }

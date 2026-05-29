@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import BackButton from "@/app/components/BackButton"
 import Button from "@/app/components/Button"
 import type { Service } from "@/types/service"
 import ReservationHeader from "../../ReservationHeader"
@@ -23,6 +22,7 @@ export default function ServicesSelection() {
     setSelectedServices,
     selectedProfessionalsByService,
     setSelectedProfessionalsByService,
+    setSelectedSlot,
   } = useReservationFlow()
 
   const onClickService = (service: Service) => {
@@ -31,6 +31,7 @@ export default function ServicesSelection() {
     )
 
     if (isSelected) {
+      setSelectedSlot(null)
       setSelectedServices((prevSelected) =>
         prevSelected.filter((s) => s.externalId !== service.externalId),
       )
@@ -42,6 +43,7 @@ export default function ServicesSelection() {
       return
     }
 
+    setSelectedSlot(null)
     setSelectedServices((prevSelected) => [...prevSelected, service])
     setSelectedProfessionalsByService((prevSelected) => ({
       ...prevSelected,
@@ -53,6 +55,7 @@ export default function ServicesSelection() {
     serviceExternalId: string,
     professionalExternalId: string | null,
   ) => {
+    setSelectedSlot(null)
     setSelectedProfessionalsByService((prevSelected) => ({
       ...prevSelected,
       [serviceExternalId]: professionalExternalId,
@@ -72,6 +75,7 @@ export default function ServicesSelection() {
       <ReservationHeader
         backButtonUrl={`/reservar/${slug}`}
         title="Elegí tus servicios"
+        currentStep={0}
       />
 
       <div className="flex flex-col gap-4">

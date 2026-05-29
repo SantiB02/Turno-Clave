@@ -1,5 +1,6 @@
 ﻿using turno_clave_API.Application.DTOs.Appointment;
 using turno_clave_API.Application.DTOs.AppointmentItem;
+using turno_clave_API.Application.DTOs.Client;
 using turno_clave_API.Application.DTOs.Professional;
 using turno_clave_API.Application.DTOs.Service;
 using turno_clave_API.Domain.Enums;
@@ -10,6 +11,8 @@ namespace turno_clave_API.Domain.Entities
     {
         public int Id { get; set; }
         public Guid ExternalId { get; set; } = Guid.NewGuid();
+
+        public string ReservationCode { get; set; } = null!; // Unique code for client reference, can be generated as needed
 
         public int BusinessId { get; set; }
         public required Business Business { get; set; }
@@ -32,8 +35,9 @@ namespace turno_clave_API.Domain.Entities
             return new AppointmentDTO
             {
                 ExternalId = appt.ExternalId,
+                ReservationCode = appt.ReservationCode,
                 BusinessExternalId = appt.Business.ExternalId,
-                ClientExternalId = appt.Client.ExternalId,
+                Client = ClientDTO.FromClient(appt.Client),
                 StartDateTime = appt.StartDateTime,
                 EndDateTime = appt.EndDateTime,
                 Notes = appt.Notes,
@@ -48,6 +52,19 @@ namespace turno_clave_API.Domain.Entities
                     EndDateTime = item.EndDateTime,
                 }).ToList()
             };
+        }
+
+        private static readonly char[] Chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789".ToCharArray();
+
+        public static string GenerateReservationCode(int length = 6)
+        {
+            Random random = new();
+
+            return new string(
+                Enumerable.Range(0, length)
+                    .Select(_ => Chars[random.Next(Chars.Length)])
+                    .ToArray()
+            );
         }
     }
 }

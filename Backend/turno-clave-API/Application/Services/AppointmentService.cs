@@ -16,6 +16,7 @@ namespace turno_clave_API.Application.Services
         private readonly IClientService _clientService;
         private readonly IServiceService _serviceService;
         private readonly IProfessionalAvailabilityService _professionalAvailabilityService;
+        private readonly ICurrentUserService _currentUserService;
 
         public AppointmentService(
             IAppointmentRepository appointmentRepository,
@@ -23,7 +24,8 @@ namespace turno_clave_API.Application.Services
             IProfessionalService professionalService,
             IClientService clientService,
             IServiceService serviceService,
-            IProfessionalAvailabilityService professionalAvailabilityService)
+            IProfessionalAvailabilityService professionalAvailabilityService,
+            ICurrentUserService currentUserService)
         {
             _appointmentRepository = appointmentRepository;
             _businessRepository = businessRepository;
@@ -31,6 +33,7 @@ namespace turno_clave_API.Application.Services
             _clientService = clientService;
             _serviceService = serviceService;
             _professionalAvailabilityService = professionalAvailabilityService;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Result<Appointment>> CreateAsync(CreateAppointmentDTO dto)
@@ -104,10 +107,13 @@ namespace turno_clave_API.Application.Services
                 });
             }
 
+            string reservationCode = await GenerateUniqueReservationCodeAsync();
+
             // Create appointment with all items
             Appointment appointment = new()
             {
                 ExternalId = Guid.NewGuid(),
+                ReservationCode = reservationCode,
                 BusinessId = business.Id,
                 Business = business,
                 ClientId = client.Id,
@@ -130,6 +136,30 @@ namespace turno_clave_API.Application.Services
         {
             Appointment? appointment = await _appointmentRepository.GetAppointmentByExternalIdAsync(externalId);
             return appointment;
+        }
+
+        public async Task<IEnumerable<Appointment>> GetMyAppointmentsAsync(DateTimeOffset fromDate, DateTimeOffset toDate)
+        {
+            Guid userExternalId = _currentUserService.GetExternalId();
+            if (userExternalId == Guid.Empty)
+            {
+                return Enumerable.Empty<Appointment>();
+            }
+
+            Guid activeBusinessExternalId = await _currentUserService.GetActiveBusinessExternalIdAsync();
+            Business? business = await _businessRepository.GetBusinessByExternalIdAsync(activeBusinessExternalId);
+            if (business == null)
+            {
+                return Enumerable.Empty<Appointment>();
+            }
+
+            List<Appointment> appointments = await _appointmentRepository.GetByBusinessIdAndDateRangeAsync(
+                business.Id,
+                fromDate,
+                toDate
+            );
+
+            return appointments;
         }
 
         public async Task<AvailabilitySlotsResponseDTO> GetAvailableSlotsAsync(SelectionRequestDTO request)
@@ -279,6 +309,7 @@ namespace turno_clave_API.Application.Services
 
             // Timezone for business
             TimeZoneInfo tz = TimeZoneInfo.FindSystemTimeZoneById(business.TimeZone);
+            DateTime businessNow = TimeZoneInfo.ConvertTime(DateTime.UtcNow, tz);
 
             // Helper: generate all combinations of professionals (cartesian product)
             IEnumerable<List<Professional>> GenerateCombinations()
@@ -317,7 +348,20 @@ namespace turno_clave_API.Application.Services
 
                     // Step through the day in 15-minute increments
                     const int step = 15;
-                    for (int minute = 0; minute < 24 * 60; minute += step)
+
+                    bool isToday = date.Date == businessNow.Date;
+
+                    int startMinute = 0;
+
+                    if (isToday)
+                    {
+                        // round up to next interval
+                        int currentMinutes = businessNow.Hour * 60 + businessNow.Minute;
+
+                        startMinute = ((currentMinutes + step - 1) / step) * step;
+                    }
+
+                    for (int minute = startMinute; minute < 24 * 60; minute += step)
                     {
                         TimeOnly candidateStart = TimeOnly.FromTimeSpan(TimeSpan.FromMinutes(minute));
                         TimeOnly candidateEnd = candidateStart.AddMinutes(totalDurationMinutes);
@@ -431,6 +475,20 @@ namespace turno_clave_API.Application.Services
             appointment.Status = AppointmentStatus.Cancelled;
             await _appointmentRepository.SaveAsync();
             return Result<Appointment>.Success(appointment);
+        }
+
+        private async Task<string> GenerateUniqueReservationCodeAsync()
+        {
+            while (true)
+            {
+                string code = Appointment.GenerateReservationCode();
+
+                bool exists = await _appointmentRepository
+                    .ExistsByReservationCodeAsync(code);
+
+                if (!exists)
+                    return code;
+            }
         }
     }
 }

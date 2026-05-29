@@ -72,8 +72,9 @@ export default function ReservationService({
           <p>Brindado por</p>
 
           <select
-            className="border border-gray-300 rounded-full px-2"
+            className={`border border-gray-300 rounded-full px-2 py-1 text-sm ${!selected ? "text-gray-400" : ""}`}
             onClick={(e) => e.stopPropagation()}
+            disabled={!selected}
             value={selectedProfessionalExternalId ?? ""}
             onChange={(e) => {
               onChangeProfessional(

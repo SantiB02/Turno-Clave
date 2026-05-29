@@ -8,6 +8,7 @@ namespace turno_clave_API.Application.Interfaces
     {
         Task<Result<Appointment>> CreateAsync(CreateAppointmentDTO dto);
         Task<Appointment?> GetByExternalIdAsync(Guid externalId);
+        Task<IEnumerable<Appointment>> GetMyAppointmentsAsync(DateTimeOffset fromDate, DateTimeOffset toDate);
         // Task<Result<Appointment>> UpdateAsync(UpdateAppointmentDTO dto); // too complex for MVP (?)
         Task<AvailabilitySlotsResponseDTO> GetAvailableSlotsAsync(SelectionRequestDTO request);
         Task<Result<Appointment>> CancelAsync(Guid externalId);

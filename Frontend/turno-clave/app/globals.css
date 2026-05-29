@@ -213,13 +213,242 @@ aside::-webkit-scrollbar-track {
   bottom: calc(100% + 4px);
 }
 
-.available-date {
-  background-color: #e8f5e9 !important;
-  border-radius: 4px;
+.reservation-calendar {
+  width: 100%;
+  max-width: 24rem;
+  border: none !important;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: #fff7f2;
+  box-shadow: 0 10px 30px rgba(54, 47, 43, 0.08);
 }
 
-.available-date:hover {
-  background-color: #c8e6c9 !important;
+.reservation-calendar .react-calendar__navigation {
+  margin-bottom: 0.75rem;
+}
+
+.reservation-calendar .react-calendar__navigation button {
+  min-width: 2.5rem;
+  border-radius: 0;
+  background: transparent !important;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.reservation-calendar .react-calendar__navigation button:hover,
+.reservation-calendar .react-calendar__navigation button:focus {
+  background-color: transparent !important;
+}
+
+.reservation-calendar .react-calendar__month-view__weekdays__weekday {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.reservation-calendar .react-calendar__tile {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  max-width: 2.75rem;
+  margin: 0.2rem auto;
+  border-radius: 9999px;
+  color: var(--foreground);
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.reservation-calendar .react-calendar__tile:hover,
+.reservation-calendar .react-calendar__tile:focus {
+  background-color: rgba(253, 97, 0, 0.14) !important;
+  transform: translateY(-1px);
+}
+
+.reservation-calendar .react-calendar__tile:disabled,
+.reservation-calendar .react-calendar__tile:disabled:hover,
+.reservation-calendar .react-calendar__tile:disabled:focus {
+  background: transparent !important;
+  color: #9ca3af !important;
+  transform: none;
+  cursor: default;
+}
+
+.reservation-calendar .react-calendar__tile--now {
+  background: rgba(253, 97, 0, 0.1) !important;
+  color: var(--primary-orange) !important;
+}
+
+.reservation-calendar .react-calendar__tile--active,
+.reservation-calendar .react-calendar__tile--active:hover,
+.reservation-calendar .react-calendar__tile--active:focus {
+  background: var(--primary-orange) !important;
+  color: #ffffff !important;
+}
+
+.reservation-calendar .react-calendar__tile--active.available-date,
+.reservation-calendar .react-calendar__tile--active.available-date:hover,
+.reservation-calendar .react-calendar__tile--active.available-date:focus {
+  background: var(--primary-orange) !important;
+  color: #ffffff !important;
+}
+
+.reservation-calendar .available-date {
+  background-color: #fff1e8 !important;
+  color: var(--primary-orange) !important;
+}
+
+.reservation-calendar .available-date:hover,
+.reservation-calendar .available-date:focus {
+  background-color: #ffd9c2 !important;
+}
+
+.mis-turnos-calendar {
+  width: 100%;
+  overflow: hidden;
+}
+
+.mis-turnos-calendar-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.mis-turnos-calendar .fc {
+  --fc-border-color: #b7b8b9;
+  --fc-button-bg-color: var(--dark-blue);
+  --fc-button-border-color: var(--dark-blue);
+  --fc-button-hover-bg-color: var(--primary-orange);
+  --fc-button-hover-border-color: var(--primary-orange);
+  --fc-button-active-bg-color: var(--primary-orange);
+  --fc-button-active-border-color: var(--primary-orange);
+  --fc-event-bg-color: var(--primary-orange);
+  --fc-event-border-color: var(--primary-orange);
+  --fc-event-text-color: #ffffff;
+  --fc-today-bg-color: rgba(253, 97, 0, 0.08);
+  --fc-now-indicator-color: var(--primary-orange);
+  color: var(--dark-blue);
+}
+
+.mis-turnos-calendar .fc-toolbar {
+  align-items: center;
+  gap: 1rem;
+}
+
+.mis-turnos-calendar .fc-toolbar-title {
+  color: var(--dark-blue);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.mis-turnos-calendar .fc-button {
+  border-radius: 0.5rem;
+  box-shadow: none !important;
+  font-weight: 600;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.mis-turnos-calendar .fc .fc-button-primary {
+  background-color: var(--dark-blue);
+  border-color: var(--dark-blue);
+  color: #ffffff;
+}
+
+.mis-turnos-calendar .fc .fc-button-primary:hover,
+.mis-turnos-calendar .fc .fc-button-primary:active,
+.mis-turnos-calendar .fc .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: var(--primary-orange);
+  border-color: var(--primary-orange);
+  color: #ffffff;
+}
+
+.mis-turnos-calendar .fc-button:focus,
+.mis-turnos-calendar .fc-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(253, 97, 0, 0.25) !important;
+}
+
+.mis-turnos-calendar .fc-col-header-cell {
+  background-color: var(--dark-blue);
+}
+
+.mis-turnos-calendar .fc-col-header-cell-cushion {
+  color: #ffffff;
+  padding: 0.75rem 0.5rem;
+  text-decoration: none;
+}
+
+.mis-turnos-calendar .fc-timegrid-axis,
+.mis-turnos-calendar .fc-timegrid-slot-label {
+  color: #6b7280;
+}
+
+.mis-turnos-calendar .fc-timegrid-slot {
+  height: 2.75rem;
+}
+
+.mis-turnos-calendar .fc-non-business {
+  background: #f9fafb;
+}
+
+.mis-turnos-calendar .fc-event {
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(253, 97, 0, 0.18);
+}
+
+.mis-turnos-calendar .fc-event-main {
+  padding: 0.125rem 0.25rem;
+}
+
+.appointment-tooltip {
+  position: fixed;
+  z-index: 9999;
+
+  width: min(20rem, calc(100vw - 1.5rem));
+
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: #ffffff;
+
+  padding: 1rem;
+
+  box-shadow: 0 18px 35px rgba(26, 32, 44, 0.18);
+
+  pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+  .mis-turnos-calendar .fc {
+    min-width: 44rem;
+  }
+
+  .mis-turnos-calendar .fc-toolbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .mis-turnos-calendar .fc-toolbar-title {
+    font-size: 1.125rem;
+  }
+
+  .mis-turnos-calendar .fc-col-header-cell-cushion {
+    padding: 0.5rem 0.25rem;
+  }
+
+  .appointment-tooltip {
+    right: 0.75rem;
+    bottom: 0.75rem;
+    left: 0.75rem !important;
+    top: auto !important;
+    width: auto;
+    max-height: min(70vh, 28rem);
+    overflow-y: auto;
+  }
 }
 
 .slots-container {

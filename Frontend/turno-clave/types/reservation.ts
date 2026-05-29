@@ -187,6 +187,23 @@ export interface ICreateAppointment {
   notes?: string | null
 }
 
+export interface IReservationConfirmationServiceDetail {
+  serviceExternalId: string
+  serviceName: string
+  professionalName?: string | null
+  startTime: string
+  endTime: string
+}
+
+export interface IReservationConfirmationDetails {
+  clientEmail: string
+  reservationCode: string | null
+  date: string
+  startTime: string
+  endTime: string
+  services: IReservationConfirmationServiceDetail[]
+}
+
 // ============================================
 // HELPER TYPES
 // ============================================

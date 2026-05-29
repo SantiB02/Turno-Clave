@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using turno_clave_API.Domain.Entities;
-using turno_clave_API.Domain.Enums;
 
 namespace turno_clave_API.Infrastructure.Data.Configurations
 {
@@ -12,6 +11,9 @@ namespace turno_clave_API.Infrastructure.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder.HasIndex(x => x.ExternalId)
+                   .IsUnique();
+
+            builder.HasIndex(x => x.ReservationCode)
                    .IsUnique();
 
             builder.Property(x => x.StartDateTime)
