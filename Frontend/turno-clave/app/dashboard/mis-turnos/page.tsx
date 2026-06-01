@@ -29,7 +29,7 @@ export default async function MisTurnos() {
             />
           </div>
         )}
-        {/* <MisTurnosCalendar businessAvailabilities={businessAvailabilities} /> */}
+        <MisTurnosCalendar businessAvailabilities={businessAvailabilities} />
       </div>
     </div>
   )
